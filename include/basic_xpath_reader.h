@@ -1,4 +1,4 @@
-/* $Id: basic_xpath_reader.h,v 1.7 2003-09-08 15:45:08 bjoo Exp $
+/* $Id: basic_xpath_reader.h,v 1.8 2003-09-08 20:49:12 edwards Exp $
  *
  * File: basic_xpath_reader.h
  *
@@ -46,7 +46,7 @@
  *                                 short, unsigned short,
  *                                 long,  unsigned long,
  *                                 float, double, 
- *                                 bool, std::string)
+ *                                 bool, string)
  *
  *   The semantics are: 
  *       - the query string must identify a unique element node with simple 
@@ -98,29 +98,16 @@
 #define BASIC_XPATH_READER_H
 
 
-#include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include <libxml/xpath.h>
-#include <libxml/xpathInternals.h>
 #include <ostream>
 #include <istream>
-#include <iostream>
 #include <sstream>
 #include <string>
 #include <document.h>
 
 
-using namespace std;
-
 namespace XMLXPathReader {
-
-  static bool xpath_is_initialised = false;
-
-  static void initXPath(void) {
-    xmlXPathInit();
-    xpath_is_initialised = true;
-  }
-
 
   class BasicXPathReader {
   public:
@@ -129,75 +116,75 @@ namespace XMLXPathReader {
     // BasicXPathReader(XMLDocument& doc);
 
     BasicXPathReader(void);
-    BasicXPathReader(istream& is);
-    BasicXPathReader(const string& filename);
+    BasicXPathReader(std::istream& is);
+    BasicXPathReader(const std::string& filename);
     ~BasicXPathReader(void);
 
 
     /* This should let you clone an XPath reader */
-    BasicXPathReader(BasicXPathReader& old, const string& xpath);
+    BasicXPathReader(BasicXPathReader& old, const std::string& xpath);
 
-    void open(const string& filename);
-    void open(istream &is);
+    void open(const std::string& filename);
+    void open(std::istream &is);
     void close(void);
     
     /* So should these, there is just a lot of overloading */
-    void get(const string& xpath, string& result);
-    void get(const string& xpath, int& result);
-    void get(const string& xpath, unsigned int& result);
-    void get(const string& xpath, short int& result);
-    void get(const string& xpath, unsigned short int& result);
-    void get(const string& xpath, long int& result);
-    void get(const string& xpath, unsigned long int& result);
-    void get(const string& xpath, float& result);
-    void get(const string& xpath, double& result);
-    void get(const string& xpath, bool& result);
+    void get(const std::string& xpath, std::string& result);
+    void get(const std::string& xpath, int& result);
+    void get(const std::string& xpath, unsigned int& result);
+    void get(const std::string& xpath, short int& result);
+    void get(const std::string& xpath, unsigned short int& result);
+    void get(const std::string& xpath, long int& result);
+    void get(const std::string& xpath, unsigned long int& result);
+    void get(const std::string& xpath, float& result);
+    void get(const std::string& xpath, double& result);
+    void get(const std::string& xpath, bool& result);
 
     /* So should these, especially if you read the introductory comments */
-    void getAttribute(const string& xpath_to_node,
-		      const string& attrib_name, 
-		      string& result);
+    void getAttribute(const std::string& xpath_to_node,
+		      const std::string& attrib_name, 
+		      std::string& result);
 
-    void getAttribute(const string& xpath_to_node,
-		      const string& attrib_name, 
+    void getAttribute(const std::string& xpath_to_node,
+		      const std::string& attrib_name, 
 		      int& result);
 
-    void getAttribute(const string& xpath_to_node,
-		      const string& attrib_name, 
+    void getAttribute(const std::string& xpath_to_node,
+		      const std::string& attrib_name, 
 		      unsigned int& result);
 
-    void getAttribute(const string& xpath_to_node,
-		      const string& attrib_name, 
+    void getAttribute(const std::string& xpath_to_node,
+		      const std::string& attrib_name, 
 		      short int& result);
 
-    void getAttribute(const string& xpath_to_node,
-		      const string& attrib_name, 
+    void getAttribute(const std::string& xpath_to_node,
+		      const std::string& attrib_name, 
 		      unsigned short int& result);
 
-    void getAttribute(const string& xpath_to_node,
-		      const string& attrib_name, 
+    void getAttribute(const std::string& xpath_to_node,
+		      const std::string& attrib_name, 
 		      long int& result);
 
-    void getAttribute(const string& xpath_to_node,
-		      const string& attrib_name, 
+    void getAttribute(const std::string& xpath_to_node,
+		      const std::string& attrib_name, 
 		      unsigned long int& result);
 
-    void getAttribute(const string& xpath_to_node,
-		      const string& attrib_name, 
+    void getAttribute(const std::string& xpath_to_node,
+		      const std::string& attrib_name, 
 		      float& result);
 
-    void getAttribute(const string& xpath_to_node,
-		      const string& attrib_name, 
+    void getAttribute(const std::string& xpath_to_node,
+		      const std::string& attrib_name, 
 		      double& result);
 
-    void getAttribute(const string& xpath_to_node,
-		      const string& attrib_name, 
+    void getAttribute(const std::string& xpath_to_node,
+		      const std::string& attrib_name, 
 		      bool& result);
 
-    int count(const string& xpath);
+    int count(const std::string& xpath);
 
-    void evaluateXPath(const string& xpath);
-    void printQueryResult(ostream& os);
+    void evaluateXPath(const std::string& xpath);
+    void printQueryResult(std::ostream& os);
 
     /*    void setCurrentXPath(const string& xpath);
     xmlNodePtr getCurrentContextNode(void);
@@ -205,13 +192,13 @@ namespace XMLXPathReader {
     */
 
     //! Print the entire contents as a stream
-    void print(ostream& os);
+    void print(std::ostream& os);
 
     //! Print the root element as a stream
-    void printRoot(ostream& os);
+    void printRoot(std::ostream& os);
 
     //! Print an element selected by XPath
-    void printXPathNode(ostream& os, const string& xpath_to_node);
+    void printXPathNode(std::ostream& os, const std::string& xpath_to_node);
 
   private:
 
@@ -227,33 +214,33 @@ namespace XMLXPathReader {
 			 xmlXPathContextPtr xpath_context);
     
     /* Ensure that the query returned something non-null */
-    void checkQuery(const string& xpath);
+    void checkQuery(const std::string& xpath);
 
     /* Ensure that the query has returned something non-null, 
        and that the query result consists of a unique node with
        simple content */
-    void checkQueryPrimitive(const string& xpath);
+    void checkQueryPrimitive(const std::string& xpath);
 
     /* Get a string from a path expression that matches checkQueryPrimitive.
      * this string is copied into result, after which the query result
      * is freed (hopefully properly).
      */
-    void getPrimitiveString(const string& xpath, string& result);
+    void getPrimitiveString(const std::string& xpath, std::string& result);
 
     /* Get the attribute string from a query, that satisfies 
        checkQuery, and is a unique element node ( but doesn't have to have 
        simple content). It copies the attribute into result after which 
        the query result is freed (hopefully properly).
     */
-    void getAttributeString(const string& xpath_to_node,
-			    const string& attrib_name,
-			    string& result);
+    void getAttributeString(const std::string& xpath_to_node,
+			    const std::string& attrib_name,
+			    std::string& result);
 
     /* Once you snarfed your data out of s, call this function to check
        there are no further whitespaces (ie another string) following 
        -- inelegant, but I don't know an elegant way without casting 
        -- doubles etc. */
-    bool findNonWhitespace(istringstream& s);
+    bool findNonWhitespace(std::istringstream& s);
 
     /* Templated getPrimitive function. Called by all the overloaded
        get wrappers. This level of indirection also allows that the 
@@ -270,9 +257,9 @@ namespace XMLXPathReader {
     */
     template< typename T >
       void
-      getPrimitive(const string& xpath,
+      getPrimitive(const std::string& xpath,
 		   T& result,
-		   const string& ptype);
+		   const std::string& ptype);
 
     /* Templated getAttribute function, much like getPrimitive<T>. 
      * apart from the case of string, all the overloaded getAttribute
@@ -283,14 +270,14 @@ namespace XMLXPathReader {
      */
     template< typename T >
       void
-      getPrimitiveAttribute(const string& xpath_to_node,
-			    const string& attrib_name,
+      getPrimitiveAttribute(const std::string& xpath_to_node,
+			    const std::string& attrib_name,
 			    T& result,
-			    const string& ptype);
+			    const std::string& ptype);
 
 
     /* Generic function to print a node to an ostream */
-    void printNode(ostream& os, xmlNodePtr node);
+    void printNode(std::ostream& os, xmlNodePtr node);
   };
 
 };
