@@ -71,6 +71,10 @@ int main(int argc, char *argv[])
   swriter2.closeTag();
   
 
+  swriter2.openTag("unnormalizedString");
+  swriter2.write((string)"        Spaces before me spaces behind me      ");
+  swriter2.closeTag();
+
   swriter2.closeTag();
 
   cout << "Swriter2 Contains:" <<endl;
@@ -96,7 +100,7 @@ int main(int argc, char *argv[])
   int i;
   int size=y.size();
   for(i=0; i < size; i++) {
-    cout << " y [ " << i << "] = " << y[i] << endl;
+    cout << " y [ " << i << " ] = " << y[i] << endl;
   }
   cout << endl;
 
@@ -108,9 +112,17 @@ int main(int argc, char *argv[])
   
   size=back.size();
   for(i=0; i < size; i++) {
-    cout << " back [ " << i << "] = " << "Re: " <<  back[i].real() << " " << "Im : " << back[i].imag()  << endl;
+    cout << " back [ " << i << " ] = " << "Re: " <<  back[i].real() << " " << "Im : " << back[i].imag()  << endl;
   }
   cout << endl;
+
+  string unnormalized_str;
+
+  reader.getXPath<string>("//unnormalizedString", unnormalized_str);
+
+  cout << "Unnormalized string is: \"" << unnormalized_str << "\"" << endl;
+
+  reader.close();
 
   return(EXIT_SUCCESS);
 }
