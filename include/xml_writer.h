@@ -96,7 +96,20 @@ namespace XMLWriterAPI {
       }
       indent_level=0;
     }  
-  
+
+    ~XMLSimpleStringWriter(void) {
+      bool done=false;
+      
+      while( ! done ) { 
+	try { 
+	  closeTag();
+	}
+	catch(string& error) { 
+	  done = true;
+	}
+      }
+    }
+
     // Get the string -- not the stream...
     std::string str(void) const { 
       return output_stream.str();
@@ -131,6 +144,17 @@ namespace XMLWriterAPI {
       }
 
     ~XMLSimpleFileWriter(void) {
+      bool done=false;
+      
+      while( ! done ) { 
+	try { 
+	  closeTag();
+	}
+	catch(string& error) { 
+	  done = true;
+	}
+      }
+
       output_stream.close();
     }
 

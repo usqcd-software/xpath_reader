@@ -17,11 +17,11 @@ namespace XMLWriterAPI {
       primitive_last = false;
     }
 
-    ~XMLSimpleWriter() { 
-      while ( namestack.empty() == false ) {
-	closeTag();
-      }
-    }
+    //    ~XMLSimpleWriter() { 
+    //  while ( namestack.empty() == false ) {
+    //	closeTag();
+    // }
+    // }
 
     void openTag(const std::string& tagname);
     void openTag(const std::string& nsprefix, const std::string& tagname);
