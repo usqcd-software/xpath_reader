@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader.cc,v 1.5 2003-05-12 11:30:48 bjoo Exp $
+/* ID: $Id: basic_xpath_reader.cc,v 1.6 2003-05-13 04:21:57 edwards Exp $
  *
  * File: basic_xpath_reader.cc
  * 
@@ -483,6 +483,8 @@ BasicXPathReader::printNode(ostream& os, xmlNodePtr node)
     throw error_message.str();
   }
 
+#if 0
+  // RGE: This was the original: updated below
   int size;
   size = xmlNodeDump(xmlBuf, doc, node, 2, 1);
 
@@ -492,6 +494,11 @@ BasicXPathReader::printNode(ostream& os, xmlNodePtr node)
   }
 
   os.write((char *)xmlBufferContent(xmlBuf), size);
+#else
+  xmlNodeDump(xmlBuf, doc, node, 2, 1);
+
+  os << string((char *)xmlBufferContent(xmlBuf));
+#endif
 
   xmlBufferFree(xmlBuf);
 }
