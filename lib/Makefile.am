@@ -1,7 +1,7 @@
 
 INCFLAGS=-I@top_srcdir@/include
 
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ @LIBXML2_CXXFLAGS@
+AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @LIBXML2_CXXFLAGS@
 VPATH = @top_srcdir@/lib
 VPATH += @top_srcdir@/include
 

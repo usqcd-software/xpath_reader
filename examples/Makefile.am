@@ -1,12 +1,12 @@
 
 INCFLAGS=-I@top_srcdir@/include
 
-AM_CXXFLAGS= $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ @LIBXML2_CXXFLAGS@
+AM_CXXFLAGS= $(INCFLAGS) @CXXFLAGS@ @LIBXML2_CXXFLAGS@
 
 
-AM_LDFLAGS=-L@top_builddir@/lib @QDPXX_LDFLAGS@
+AM_LDFLAGS=-L@top_builddir@/lib
 
-LDADD = -lXPathReader -lxmlWriter @LIBS@ @QDPXX_LIBS@ @LIBXML2_LIBS@ 
+LDADD = -lXPathReader -lxmlWriter @LIBS@ @LIBXML2_LIBS@ 
 
 check_PROGRAMS=basic_xpath_reader_test  basic_xpath_reader_test2 \
 	xpath_reader_test simple_writer_test
