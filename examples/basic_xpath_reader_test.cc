@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader_test.cc,v 1.4 2003-09-08 15:45:08 bjoo Exp $ 
+/* ID: $Id: basic_xpath_reader_test.cc,v 1.5 2003-09-08 20:49:35 edwards Exp $ 
  * File: basic_xpath_reader_test.cc 
  * 
  * This file was a test to see how well I understood libxml xpath, 
@@ -19,8 +19,6 @@ using namespace XMLXPathReader;
 
 int main(int argc, char *argv[])
 {
-
-  initXPath();
 
   BasicXPathReader reader;
 

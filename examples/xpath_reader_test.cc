@@ -12,8 +12,6 @@ using namespace XMLXPathReader;
 int main(int argc, char *argv[])
 {
   // Instantiate a reader
-  initXPath();
-
   XPathReader reader;
 
  

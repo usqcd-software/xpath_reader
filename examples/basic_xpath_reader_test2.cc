@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader_test2.cc,v 1.4 2003-09-08 15:45:08 bjoo Exp $
+/* ID: $Id: basic_xpath_reader_test2.cc,v 1.5 2003-09-08 20:49:35 edwards Exp $
  *
  * file: basic_xpath_reader2.cc
  *
@@ -18,9 +18,6 @@ using namespace XMLXPathReader;
 
 int main(int argc, char *argv[])
 {
-
-  // Get this going
-  initXPath();
 
   // Get the reader
   BasicXPathReader reader;
