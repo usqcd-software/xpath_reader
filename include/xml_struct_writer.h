@@ -26,6 +26,8 @@ namespace XMLStructWriterAPI {
       qname=tagname;
     }
 
+    virtual ~XMLStructWriterBase() {};
+
     void writeSimple(const string& tagname, const int& value) {
       writeSimpleTag(tagname, value);
     }

@@ -33,6 +33,8 @@ namespace XMLStructWriterAPI {
       type=atype;
     }
 
+    virtual ~XMLArrayWriterBase() { };
+
     void elementSimple(const int& value) {
       if (type == SIMPLE_INT) { 
 	writeSimpleTag(value);
