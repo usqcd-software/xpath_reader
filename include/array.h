@@ -1,4 +1,4 @@
-/* $Id: array.h,v 1.5 2003-07-16 04:33:56 edwards Exp $ 
+/* $Id: array.h,v 1.6 2003-10-13 16:24:13 edwards Exp $ 
  *
  * File: array.h
  *
@@ -53,7 +53,7 @@ template<class T> class Array
   //! Equal operator uses underlying = of T
   Array<T>& operator=(const Array<T>& s1)
   {
-    if (F == 0)
+    if (size() != s1.size())   // a simple check avoids resizing always
       resize(s1.size());
     
     for(int i=0; i < n1; ++i)
@@ -63,7 +63,7 @@ template<class T> class Array
   
   //! Equal operator uses underlying = of T
   template<class T1>
-    Array<T>& operator=(const T1& s1)
+  Array<T>& operator=(const T1& s1)
   {
     if (F == 0)
       {
