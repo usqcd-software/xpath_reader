@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader_test.cc,v 1.2 2003-08-25 10:48:59 bjoo Exp $ 
+/* ID: $Id: basic_xpath_reader_test.cc,v 1.3 2003-09-05 15:43:52 bjoo Exp $ 
  * File: basic_xpath_reader_test.cc 
  * 
  * This file was a test to see how well I understood libxml xpath, 
@@ -19,7 +19,8 @@ using namespace XMLXPathReader;
 
 int main(int argc, char *argv[])
 {
-  BasicXPathReader reader;
+
+  XMLDocument the_document;
 
   // Check command line arguments
   if(argc != 2 ) { 
@@ -30,13 +31,17 @@ int main(int argc, char *argv[])
   // Read the XML
   string filename(argv[1]);
   cout << "Reading via " << filename << " via the file interface... " <<endl;
+
+  
   try { 
-  reader.open(filename);
+    the_document.open(filename);
   } 
   catch (string &error_mesg) {
     cerr << error_mesg << endl;
     throw;
   }
+  
+  BasicXPathReader reader(the_document);
   cout << "Reader Open Complete" << endl;
 
   // Loop until "exit" or "quit"
@@ -46,24 +51,16 @@ int main(int argc, char *argv[])
     string xpath_expression;
     cout << "Enter XPATH expression (exit or quit to finish)" << endl;
     cin >> xpath_expression;
-
+    
     if ( (xpath_expression != "exit") && (xpath_expression != "quit") ) {
-      // Tryto evaluate the XPath
-      if( xpath_expression == "set" ) { 
-	cout << "Enter XPATH to set:" << endl;
-	cin >> xpath_expression;
-	reader.setCurrentXPath(xpath_expression);
+      try { 
+	reader.evaluateXPath(xpath_expression);
       }
-      else { 
-	try { 
-	  reader.evaluateXPath(xpath_expression);
-	}
-	catch(string &error_mesg) { 
-	  // Catch errors but don't bomb. 
-	  // let the user try again...
-	  cerr << error_mesg;
-	}      
-      }
+      catch(string &error_mesg) { 
+	// Catch errors but don't bomb. 
+	// let the user try again...
+	cerr << error_mesg;
+      }      
     }
     else {
       // exit or quit was entered 
@@ -77,8 +74,8 @@ int main(int argc, char *argv[])
   
   // bye
   cout << "Closing reader." << endl;
-  reader.close();
-
+  
+  
   return EXIT_SUCCESS;
 }
 

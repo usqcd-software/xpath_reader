@@ -1,4 +1,4 @@
-/* Id: $Id: xpath_reader.h,v 1.3 2003-08-25 10:48:59 bjoo Exp $
+/* Id: $Id: xpath_reader.h,v 1.4 2003-09-05 15:43:52 bjoo Exp $
  *
  * File: xpath_reader.h
  *
@@ -124,7 +124,7 @@ namespace XMLXPathReader {
   // Your basic Reader.
   class XPathReader : private BasicXPathReader {
   public:
-
+    /*
     // Open file. filename contains name of file.
     void open(const string& filename) {
       BasicXPathReader::open(filename);
@@ -139,6 +139,12 @@ namespace XMLXPathReader {
     void close(void) {
       BasicXPathReader::close();
     }
+    */
+
+    XPathReader(XMLDocument& document) : BasicXPathReader(document) {};
+    // ~XPathReader() : ~BasicXPathReader() {};
+    XPathReader(XPathReader& old, const string& xpath) : BasicXPathReader((BasicXPathReader&) old, xpath) {} ;
+
 
     // evaluate "count(xpath)" and return an INTEGER
     int countXPath(const string& xpath) {
@@ -189,57 +195,30 @@ namespace XMLXPathReader {
       {
 	ostringstream error_message;
 
-	xmlNodePtr context_node_before_read = getCurrentContextNode();
-
-	// Change context to the top of the complex
-	setCurrentXPath(xpath);
-
-	// Relative XPath for the real part 
-	string path_real = "cmpx/re";
-	
-	// Relative XPath for the imaginary part.
-	string path_imag = "cmpx/im";
-	
-	// Try and recursively get the real part
 	try { 
-	  // Save current context 
-	  xmlNodePtr context_node_before_real = getCurrentContextNode();
-
-	  // Recurse
-	  getXPath(path_real, result.real());
-
-	  // Restore current context
-	  setCurrentContextNode(context_node_before_real);
+	  XPathReader complex_re(*this, xpath);
+	  complex_re.getXPath("cmpx/re", result.real());
 	}
 	catch(const string &e) {
 	  error_message << "XPath Query: " << xpath << " Error: "
-			<< "Failed to match real part of TComplex Object with self constructed path: " << path_real;
-	  
+			<< "Failed to match real part of TComplex Object with self constructed path: re" ;
+
+
 	  throw error_message.str();
 	}
-	
-	// Try and recursively get the imaginary part
-	try {
 
-	  // Save context
-	  xmlNodePtr context_node_before_imag = getCurrentContextNode();
 
-	  // Recurse
-	  getXPath(path_imag, result.imag());
-
-	  // Restore context
-	  setCurrentContextNode(context_node_before_imag);
-
+	try { 
+	  XPathReader complex_im(*this, xpath);
+	  complex_im.getXPath("cmpx/im", result.imag());
 	}
 	catch(const string &e) {
-	  error_message << "XPath Query: " << xpath <<" Error:"
-			<<"Failed to match imaginary part of TComplex Object with self constructed path: " << path_imag;
-	  
-	  throw error_message.str();
-	}
+	  error_message << "XPath Query: " << xpath << " Error: "
+			<< "Failed to match real part of TComplex Object with self constructed path: ./cmpx/im" ;
 
-	// Restore context to before you called this function
-	setCurrentContextNode(context_node_before_read);
+	  throw error_message.str();
+	}	
+
       }
 
     // getXPath for Arrays
@@ -249,17 +228,8 @@ namespace XMLXPathReader {
       {
 	ostringstream error_message;
 
-	xmlNodePtr context_node_before_read = getCurrentContextNode();
-	cout << "Setting Current Path to " << xpath << endl;
-	try { 
-	  setCurrentXPath(xpath);
-	}
-	catch( const string& e) { 
-	  error_message << "Couldnt set current path to " << xpath << endl;
-	  throw error_message.str();
-	}
-
-	// XPath to array tag
+	XPathReader arraytop(*this, xpath);
+	
 	string array_xpath = "array";
 
 	// Values to be gleaned from attributes of <array>
@@ -272,55 +242,71 @@ namespace XMLXPathReader {
 	//
 	// get sizeName attribute
 	try {
-	  getXPathAttribute(array_xpath, "sizeName", sizeName);
+	  arraytop.getXPathAttribute(array_xpath, "sizeName", sizeName);
 	} 
 	catch(const string& e) { 
 	  error_message << "Couldn't match sizeName attribute for array"
 			<< " starting at XPath: " << xpath
 			<< endl
 			<< "array_xpath is: " << array_xpath;
+
+	  // Kill! Kill!! Kill!!!
+	  arraytop.~XPathReader();
+
 	  throw error_message.str();
 	}
 
 	// get elemName attribute
 	try {
-	  getXPathAttribute(array_xpath, "elemName", elemName);
+	  arraytop.getXPathAttribute(array_xpath, "elemName", elemName);
 	} 
 	catch(const string& e) { 
 	  error_message << "Couldn't match elemName attribute for array"
 			<< " starting at XPath: " << xpath
 			<< endl
 			<< "array_xpath is: " << array_xpath;
+
+	  // Kill! Kill!! Kill!!!
+	  arraytop.~XPathReader();
+
+	  
 	  throw error_message.str();
 	}
 
 	// get indexName attribute
 	try {
-	  getXPathAttribute(array_xpath, "indexName", indexName);
+	  arraytop.getXPathAttribute(array_xpath, "indexName", indexName);
 	} 
 	catch(const string& e) { 
 	  error_message << "Couldn't match indexName attribute for array"
 			<< " starting at XPath: " << xpath
 			<< endl
 			<< "array_xpath is: " << array_xpath;
+
+	  // Kill! Kill!! Kill!!!
+	  arraytop.~XPathReader();
 	  throw error_message.str();
 	}
 
 	// get index start attribute
 	try {
-	  getXPathAttribute(array_xpath, "indexStart", indexStart);
+	  arraytop.getXPathAttribute(array_xpath, "indexStart", indexStart);
 	} 
 	catch(const string& e) { 
 	  error_message << "Couldn't match index attribute for array"
 			<< " starting at XPath: " << xpath
 			<< endl
 			<< "array_xpath is: " << array_xpath;
+
+	  // Kill! Kill!! Kill!!!
+	  arraytop.~XPathReader();
 	  throw error_message.str();
 	}
 
 	// Construct query to read size of array from <sizeName> 
 	// tag
-	setCurrentXPath(array_xpath);
+	XPathReader arrayelem(arraytop, array_xpath);
+
 
 	string n_elem_query =  sizeName;
 	int array_size; 
@@ -329,12 +315,16 @@ namespace XMLXPathReader {
 	try {
 	  cout << "Getting no of array elements with query: " << n_elem_query << endl;
 
-	  getXPath(n_elem_query, array_size) ;
+	  arrayelem.getXPath(n_elem_query, array_size) ;
 	}
 	catch( const string& e) {
 	  error_message << "Couldn't match array size tag: " << sizeName
 			<< "with XPath Query: " << n_elem_query
 			<< endl;
+
+	  arrayelem.~XPathReader();
+	  arraytop.~XPathReader();
+
 	  throw error_message.str();
 	}
 	
@@ -345,7 +335,7 @@ namespace XMLXPathReader {
 	try {
 
 	  cout << "Getting array size check with count of "<<elem_base_query<< endl;
-	  array_size_check = countXPath(elem_base_query);
+	  array_size_check = arrayelem.countXPath(elem_base_query);
 	}
 	catch( const string& e) { 
 	  error_message << "Exception occurred while counting " << elem_base_query 
@@ -357,6 +347,10 @@ namespace XMLXPathReader {
 	  error_message << "Array markup claims array has " << array_size 
 			<< " elements but " << array_size_check 
 			<< " were counted" << endl;
+
+	  arrayelem.~XPathReader();
+	  arraytop.~XPathReader();
+
 
 	  throw error_message.str();
 	}
@@ -377,24 +371,29 @@ namespace XMLXPathReader {
 
 	  // recursively try and get the element.
 	  try {
-
-
-	    xmlNodePtr context_node_before_recurse = getCurrentContextNode();
-	    getXPath(element_xpath.str(), result[i]);
-	    setCurrentContextNode(context_node_before_recurse);
+	    
+	    arrayelem.getXPath(element_xpath.str(), result[i]);
+	   
 
 	  } catch( const string& e ) {
 	    error_message << "Failed to match element " << i
 			  << " of array with query " << element_xpath.str()
 			  << endl
 			  << "Query returned error: " << e;
+
+	  arrayelem.~XPathReader();
+	  arraytop.~XPathReader();
+
+
 	    throw error_message.str();
 	  }
 
 	}
 
 
-        setCurrentContextNode(context_node_before_read);
+	// Arraytop and Arrayelem should get disposed of here, and 
+	// should decrease their refcount on 'the document'
+
       }    
   };
 

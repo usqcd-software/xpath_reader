@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader.cc,v 1.9 2003-08-28 17:00:28 edwards Exp $
+/* ID: $Id: basic_xpath_reader.cc,v 1.10 2003-09-05 15:43:52 bjoo Exp $
  *
  * File: basic_xpath_reader.cc
  * 
@@ -20,97 +20,27 @@ using namespace std;
 using namespace XMLXPathReader;
 
 /*! Open a file whose name is in filename */
-void 
-BasicXPathReader::open(const string& filename)
+BasicXPathReader::BasicXPathReader(XMLDocument& document) : docref(document)
 {
-  // Call libxml2 to parse a file into a document.
-  doc = xmlParseFile(filename.c_str());
+
+  doc = docref.getDocument();
 
   // Check the document is non null
   if ( doc == (xmlDocPtr)NULL ) { 
-    throw "Could not parse document";
+    throw "Attempting to instantiate reader on null document";
   }
 
-  // Setup the XPath system
+  docref.increaseRefcount();
+
+  query_result = (xmlXPathObjectPtr) NULL;
+  
   setupXPath();
 
-  // Stuff to do with dumping back node selections
-  xmlIndentTreeOutput = 1;
-  xmlKeepBlanksDefault(0);
+  
 }
 
-/*! Open a file from an istream */
-void 
-BasicXPathReader::open(istream& is)
-{
-  string xml_document;
-  
-#if 0
-  char buffer[256];
 
-  // Read the file line by line
-  // NOTE: on really long lines, this seems to fail under gcc
-  // for my test input
-  while( is.eof() == false && is.good() ) {
-    is.getline(buffer, 255);
-    // append to the internal document
-    buffer[ is.gcount() ] = '\0';
-    xml_document += string(buffer);
-  }
-#endif
-
-#if 0
-  char buffer[256];
-
-  // Read the stream chunk by chunk
-  // NOTE: this just always returns len on first read and sets errors
-  // for my test input
-  while( is.good() ) 
-  {
-    int len = is.readsome(buffer, 255);
-    // append to the internal document
-    buffer[ len ] = '\0';
-    xml_document += string(buffer);
-  }
-#endif
-
-#if 1
-  // RGE: I don't understand why, but the above 2 failed on some particular
-  // input. This method works fine. It is not necessarily that bad since the
-  // underlying stream will buffer the data. However, the above should be
-  // faster and are preferable.
-  xml_document = "";
-
-  // Read the stream char by char
-  int c = is.get();
-  while( is.good() ) 
-  {
-    // append to the internal document
-    xml_document += c;
-
-    // get next char
-    c = is.get();
-  }
-#endif
-
-  // Now parse the document from memory.
-  doc = xmlParseMemory(xml_document.c_str(), xml_document.length());
-  
-  // Ensure success
-  if ( doc == (xmlDocPtr)NULL ) { 
-    throw "Could not parse document";
-  }
-
-  // Init the XPath system
-  setupXPath();
-
-  // Stuff to do with reading back node selections
-  xmlIndentTreeOutput = 1;
-  xmlKeepBlanksDefault(0);
-}
- 
-void 
-BasicXPathReader::close()
+BasicXPathReader::~BasicXPathReader(void)
 {
   /* Clean Up the XPath stuff */
 
@@ -124,10 +54,57 @@ BasicXPathReader::close()
     xmlXPathFreeContext(xpath_context);
   }
 
-  // Free the document
-  if( doc != (xmlDocPtr)NULL ) { 
-    xmlFreeDoc(doc);
+  // I can set mine to NULL as it is just a pointer to the docref's
+  doc = (xmlDocPtr)NULL;
+
+  // I can signal my document that I am done with it.
+  docref.decreaseRefcount();
+
+}
+
+BasicXPathReader::BasicXPathReader(BasicXPathReader& old, const string& xpath) : docref(old.docref)
+{
+  /* Copy the document and the root node poinetrs */
+  doc = docref.getDocument();
+
+  // Check the document is non null
+  if ( doc == (xmlDocPtr)NULL ) { 
+    throw "Attempting to instantiate reader on null document";
   }
+
+  docref.increaseRefcount();
+
+  setupXPath();
+
+  /* Now execute the xpath query and set the context node */
+  ostringstream error_message;
+  
+  try { 
+    old.evaluateXPath(xpath);
+  }
+  catch ( const string& e ) { 
+    throw e;
+  }
+
+  // Check that the query returned non-empty result
+  try { 
+    old.checkQuery(xpath);
+  }
+  catch( const string& e) { 
+    throw;
+  }
+
+      /* Check that the node set contains only 1 element */
+  if( old.query_result->nodesetval->nodeNr != 1 ) {
+    error_message << "XPath Query: " << xpath << " did not return unique node."
+		  << " nodes returned = " << old.query_result->nodesetval->nodeNr 
+		  << endl;
+    throw error_message.str();
+  }
+
+  /* Check that the node returned is an element */
+  xpath_context->node = old.query_result->nodesetval->nodeTab[0];
+
 }
 
 
@@ -307,6 +284,7 @@ BasicXPathReader::getAttribute(const string& xpath_to_node,
 				  "bool");
 }
 
+/*
 xmlNodePtr 
 BasicXPathReader::getCurrentContextNode(void) {
   return xpath_context->node;
@@ -316,8 +294,10 @@ void
 BasicXPathReader::setCurrentContextNode(xmlNodePtr new_context_node) {
   xpath_context->node = new_context_node;
 }
+*/
 
 /*! Set the XPath Context to the Current XPath */
+/*
 void 
 BasicXPathReader::setCurrentXPath(const string& xpath)
 {
@@ -338,7 +318,7 @@ BasicXPathReader::setCurrentXPath(const string& xpath)
     throw;
   }
 
-      /* Check that the node set contains only 1 element */
+  // Check that the node set contains only 1 element
   if( query_result->nodesetval->nodeNr != 1 ) {
     error_message << "XPath Query: " << xpath << " did not return unique node."
 		  << " nodes returned = " << query_result->nodesetval->nodeNr 
@@ -346,12 +326,13 @@ BasicXPathReader::setCurrentXPath(const string& xpath)
     throw error_message.str();
   }
 
-  /* Check that the node returned is an element */
+  // Check that the node returned is an element
   xmlNodePtr res_node = query_result->nodesetval->nodeTab[0];
 
-  /* Set the current context */
+  // Set the current context
   xpath_context->node = res_node;
 }
+*/
 
 /*! count elements returned by xpath */
 int
@@ -501,7 +482,7 @@ BasicXPathReader::print(ostream& os)
 void 
 BasicXPathReader::printRoot(ostream& os)
 {
-  printNode(os, root_node);
+  printNode(os,xmlDocGetRootElement(doc) );
 }
 
 void 
@@ -954,16 +935,16 @@ BasicXPathReader::printQueryResult(ostream& os)
  *  This may or may not be standard compliant as is */
 void 
 BasicXPathReader::snarfNamespaces(xmlNodePtr current_node,
-				  xmlXPathContextPtr xpath_context)
-{
+		     xmlXPathContextPtr xpath_context) {
+  
   ostringstream error_message;
-
+  
   if( current_node == (xmlNodePtr)NULL ) {
     /* End of recursion -- we are NULL */
     return;
   }
   else { 
-
+    
     /* Do my own namespaces */
     xmlNsPtr nsdefptr = current_node->nsDef;
     while( nsdefptr != NULL ) { 
@@ -971,24 +952,28 @@ BasicXPathReader::snarfNamespaces(xmlNodePtr current_node,
       // if the namespace prefix is not null it is a non-default
       // namespace -- register it.
       if( nsdefptr->prefix != NULL ) { 
-        string prefix((char *)nsdefptr->prefix);
-        string href((char *)nsdefptr->href);
-        cout << "Found Namespace Definition: " << endl;
-        cout << "\t Prefix = " << prefix << " URI = " << href;
+	string prefix((char *)nsdefptr->prefix);
+	string href((char *)nsdefptr->href);
+#if 0
+	cout << "Found Namespace Definition: " << endl;
+	cout << "\t Prefix = " << prefix << " URI = " << href;
 	cout << "... Registering" << endl; 
+#endif
 	xmlXPathRegisterNs(xpath_context, 
 			   nsdefptr->prefix,
-			   nsdefptr->href);
+			       nsdefptr->href);
       }
       else { 
 	// If the prefix is null, the namespace is 'a' default
 	// namespace. Dunno what to do with it...
 	string href((char *)nsdefptr->href);
+#if 0
 	cout << "Found Default Namespace Definition: " << endl;
 	cout << "\t URI = " << href;
 	cout << " ... Not Registering Default Namespace" << endl;
+#endif
       }
-
+      
       nsdefptr=nsdefptr->next;
     }
     
@@ -1007,18 +992,14 @@ void
 BasicXPathReader::setupXPath(void)
 {
   /* Initialise the XPathEnvironment */
-  xmlXPathInit();
-  
+  /*   if ( XMLXPathReader::is_XPath_initialised == false ) { */
   /* Get the XPath context */
   xpath_context = xmlXPathNewContext(doc);
- 
-  query_result = NULL; 
-  /* It is at this point that I should snarf all the namespaces
-     from doc and register them with the XPath processor */
-  root_node = xmlDocGetRootElement(doc);
 
-  
-  /* Recursively register every namespace you find into the 
+  query_result = NULL;
+  /* It is at this point that I should snarf all the namespaces
+     from doc and register them with the XPath processor 
+     Recursively register every namespace you find into the 
      xpath context */
-  snarfNamespaces(root_node, xpath_context);
+  snarfNamespaces(xmlDocGetRootElement(doc), xpath_context);
 }
