@@ -1,4 +1,4 @@
-/* $Id: array.h,v 1.3 2003-07-02 16:05:37 edwards Exp $ 
+/* $Id: array.h,v 1.4 2003-07-03 12:42:04 edwards Exp $ 
  *
  * File: array.h
  *
@@ -20,13 +20,13 @@
 template<class T> class Array
 {
  public:
-  Array() {F=0;n1=0;copymem=false;}
-  Array(T *f, int ns1) {F=f; n1=ns1;copymem=true;}
-  explicit Array(int ns1) {copymem=false;F=0;resize(ns1);}
-  ~Array() {if (! copymem) {delete[] F;}}
+  Array() {F=0;n1=0;}
+  Array(T *f, int ns1) {F=f; n1=ns1;}
+  explicit Array(int ns1) {F=0;resize(ns1);}
+  ~Array() {delete[] F;}
   
   //! Copy constructor
-  Array(const Array& s): copymem(false), n1(s.n1), F(0)
+  Array(const Array& s): n1(s.n1), F(0)
     {
       resize(n1);
       
@@ -36,7 +36,7 @@ template<class T> class Array
   
   //! Allocate mem for the array
   void resize(int ns1) 
-    {if(copymem) {std::cerr<<"invalid resize in 1d\n";exit(1);}; delete[] F; n1=ns1; F = new T[n1];}
+    {if (ns1 < 0) {std::cerr<<"invalid resize in 1d\n";exit(1);}; delete[] F; n1=ns1; F = new T[n1];}
   
   //! Size of array
   int size() const {return n1;}
@@ -158,7 +158,6 @@ template<class T> class Array
   const T& operator[](int i) const {return F[i];}
   
  private:
-  bool copymem;
   int n1;
   T *F;
 };
