@@ -96,4 +96,8 @@
         </el>
        </array>
      </rarraytest>
+     <size>
+       <x value="16"/>
+       <y value="16"/>
+     </size>
 </foo>

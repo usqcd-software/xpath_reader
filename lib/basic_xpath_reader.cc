@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader.cc,v 1.1 2003-04-27 03:26:39 edwards Exp $
+/* ID: $Id: basic_xpath_reader.cc,v 1.2 2003-05-05 16:22:00 bjoo Exp $
  *
  * File: basic_xpath_reader.cc
  * 
@@ -46,8 +46,9 @@ BasicXPathReader::open(istream& is)
   
   // Read the file line by line
   while( is.eof() == false ) {
-    is.getline(buffer, 256);
+    is.getline(buffer, 255);
     // append to the internal document
+    buffer[ is.gcount() ] = '\0';
     xml_document += string(buffer);
   }
 
@@ -488,13 +489,13 @@ BasicXPathReader::getPrimitiveString(const string& xpath, string& result)
     throw e;
   }
 
-  // check it returns a nodeset with a unique node having simple content
   try { 
     checkQueryPrimitive(xpath);
   }
   catch(const string& e) {
     throw;
   }
+  
 
   // get the "simple" content as a string.
   xmlChar *element_content = xmlNodeGetContent(query_result->nodesetval->nodeTab[0]);
@@ -503,7 +504,6 @@ BasicXPathReader::getPrimitiveString(const string& xpath, string& result)
   if(element_content != NULL ) {
     // COPY it into result 
     result = (string)((const char *)element_content);
-
     // Free memory malloced by libxml2
     xmlFree(element_content); 
   }

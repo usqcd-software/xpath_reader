@@ -115,10 +115,10 @@ AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ @LIBXML2_CXXFLAGS@
 
 AM_LDFLAGS = -L@top_builddir@/lib @QDPXX_LDFLAGS@
 
-LDADD = -lXPathReader @LIBS@ @QDPXX_LIBS@ @LIBXML2_LIBS@ 
+LDADD = -lXPathReader -lxmlWriter @LIBS@ @QDPXX_LIBS@ @LIBXML2_LIBS@ 
 
 check_PROGRAMS = basic_xpath_reader_test  basic_xpath_reader_test2 \
-	xpath_reader_test
+	xpath_reader_test simple_writer_test
 
 
 basic_xpath_reader_test_SOURCES = basic_xpath_reader_test.cc
@@ -129,11 +129,15 @@ basic_xpath_reader_test2_DEPENDENCIES = build_lib
 
 xpath_reader_test_SOURCES = xpath_reader_test.cc
 xpath_reader_test_DEPENDENCIES = build_lib
+
+simple_writer_test_SOURCES = simple_writer_test.cc
+simple_writer_test_DEPENDENCIES = build_lib
 subdir = examples
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
 check_PROGRAMS = basic_xpath_reader_test$(EXEEXT) \
-	basic_xpath_reader_test2$(EXEEXT) xpath_reader_test$(EXEEXT)
+	basic_xpath_reader_test2$(EXEEXT) xpath_reader_test$(EXEEXT) \
+	simple_writer_test$(EXEEXT)
 am_basic_xpath_reader_test_OBJECTS = basic_xpath_reader_test.$(OBJEXT)
 basic_xpath_reader_test_OBJECTS = $(am_basic_xpath_reader_test_OBJECTS)
 basic_xpath_reader_test_LDADD = $(LDADD)
@@ -143,6 +147,10 @@ basic_xpath_reader_test2_OBJECTS = \
 	$(am_basic_xpath_reader_test2_OBJECTS)
 basic_xpath_reader_test2_LDADD = $(LDADD)
 basic_xpath_reader_test2_LDFLAGS =
+am_simple_writer_test_OBJECTS = simple_writer_test.$(OBJEXT)
+simple_writer_test_OBJECTS = $(am_simple_writer_test_OBJECTS)
+simple_writer_test_LDADD = $(LDADD)
+simple_writer_test_LDFLAGS =
 am_xpath_reader_test_OBJECTS = xpath_reader_test.$(OBJEXT)
 xpath_reader_test_OBJECTS = $(am_xpath_reader_test_OBJECTS)
 xpath_reader_test_LDADD = $(LDADD)
@@ -153,6 +161,7 @@ depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/basic_xpath_reader_test.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/basic_xpath_reader_test2.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/simple_writer_test.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/xpath_reader_test.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -161,9 +170,9 @@ CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 DIST_SOURCES = $(basic_xpath_reader_test_SOURCES) \
 	$(basic_xpath_reader_test2_SOURCES) \
-	$(xpath_reader_test_SOURCES)
+	$(simple_writer_test_SOURCES) $(xpath_reader_test_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(basic_xpath_reader_test_SOURCES) $(basic_xpath_reader_test2_SOURCES) $(xpath_reader_test_SOURCES)
+SOURCES = $(basic_xpath_reader_test_SOURCES) $(basic_xpath_reader_test2_SOURCES) $(simple_writer_test_SOURCES) $(xpath_reader_test_SOURCES)
 
 all: all-am
 
@@ -183,6 +192,9 @@ basic_xpath_reader_test$(EXEEXT): $(basic_xpath_reader_test_OBJECTS) $(basic_xpa
 basic_xpath_reader_test2$(EXEEXT): $(basic_xpath_reader_test2_OBJECTS) $(basic_xpath_reader_test2_DEPENDENCIES) 
 	@rm -f basic_xpath_reader_test2$(EXEEXT)
 	$(CXXLINK) $(basic_xpath_reader_test2_LDFLAGS) $(basic_xpath_reader_test2_OBJECTS) $(basic_xpath_reader_test2_LDADD) $(LIBS)
+simple_writer_test$(EXEEXT): $(simple_writer_test_OBJECTS) $(simple_writer_test_DEPENDENCIES) 
+	@rm -f simple_writer_test$(EXEEXT)
+	$(CXXLINK) $(simple_writer_test_LDFLAGS) $(simple_writer_test_OBJECTS) $(simple_writer_test_LDADD) $(LIBS)
 xpath_reader_test$(EXEEXT): $(xpath_reader_test_OBJECTS) $(xpath_reader_test_DEPENDENCIES) 
 	@rm -f xpath_reader_test$(EXEEXT)
 	$(CXXLINK) $(xpath_reader_test_LDFLAGS) $(xpath_reader_test_OBJECTS) $(xpath_reader_test_LDADD) $(LIBS)
@@ -195,6 +207,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basic_xpath_reader_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basic_xpath_reader_test2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_writer_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xpath_reader_test.Po@am__quote@
 
 distclean-depend:
@@ -395,9 +408,6 @@ uninstall-am: uninstall-info-am
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-info-am
 
-
-#basic_xpath_writer_test_SOURCES=basic_xpath_writer_test.cc
-#basic_xpath_writer_test_DEPENDENCIES = build_lib
 
 .PHONY: build_lib
 build_lib:

@@ -1,4 +1,4 @@
-/*! $Id: tcomplex.h,v 1.1 2003-04-27 03:26:39 edwards Exp $
+/*! $Id: tcomplex.h,v 1.2 2003-05-05 16:22:00 bjoo Exp $
  *
  * File: tcomplex.h
  * 
@@ -14,50 +14,44 @@
 
 using namespace std;
 
-namespace XMLXPathReader {
+// This is a templated class for complex things (not necessarily numbers
+template < typename T > class TComplex {
+ public:
+  // Destructor
+  ~TComplex() {};
   
-  // This is a templated class for complex things (not necessarily numbers
-  template < typename T > class TComplex {
-  public:
-    // Destructor
-    ~TComplex() {};
+  // Empty constructor
+  TComplex() {};
+  
+  // Other onstructor
+  TComplex(const T& _real, const T& _imag) {
+    // COPY the "contents" of the reference into r
+    r = T(_real);
+    
+    // COPY the "contents" of the reference into r
+    i = T(_imag);
+  }
 
-    // Empty constructor
-    TComplex() {};
-
-    // Other onstructor
-    TComplex(const T& _real, const T& _imag) {
-      // COPY the "contents" of the reference into r
-      r = T(_real);
-
-      // COPY the "contents" of the reference into r
-      i = T(_imag);
+  // Copy Constructor 
+  TComplex(const TComplex& c)
+    {
+      r = c.r;
+      i = c.i;
     }
-
-    // Copy Constructor 
-    TComplex(const TComplex& c)
-      {
-	r = c.r;
-	i = c.i;
-      }
-
-    // Get a reference to real part
-    // not constant so that x.real() = T 
-    // assignment can work.
-     T& real() { return r; }
-
-     // Get 'imag' part
-     // not constant sot that x.imag() = T 
-     // can work.
-     T& imag() { return i; }
-
-  private:
-     T r;
-     T i;
-  };
-
-
+  
+  // Get a reference to real part
+  // not constant so that x.real() = T 
+  // assignment can work.
+  T& real() { return r; }
+  
+  // Get 'imag' part
+  // not constant sot that x.imag() = T 
+  // can work.
+  T& imag() { return i; }
+  
+ private:
+  T r;
+  T i;
 };
-
 
 #endif

@@ -113,12 +113,17 @@ INCFLAGS = -I@top_srcdir@/include
 
 AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ @LIBXML2_CXXFLAGS@
 
-HDRS = basic_xpath_reader.h tcomplex.h array.h attribute.h
+TYPE_HDRS = tcomplex.h array.h
+READER_HDRS = basic_xpath_reader.h $(TYPE_HDRS)
+WRITER_HDRS = xml_writer.h attribute.h $(TYPE_HDRS)
 
-lib_LIBRARIES = libXPathReader.a
+lib_LIBRARIES = libXPathReader.a libxmlWriter.a
 
-libXPathReader_a_SOURCES = basic_xpath_reader.cc attribute.cc
-libXPathReader_a_DEPENDENCIES = $(HDRS)
+libXPathReader_a_SOURCES = basic_xpath_reader.cc 
+libXPathReader_a_DEPENDENCIES = $(READER_HDRS)
+
+libxmlWriter_a_SOURCES = xml_writer.cc attribute.cc
+libxmlWriter_a_DEPENDENCIES = $(WRITER_HDRS)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -126,23 +131,27 @@ LIBRARIES = $(lib_LIBRARIES)
 
 libXPathReader_a_AR = $(AR) cru
 libXPathReader_a_LIBADD =
-am_libXPathReader_a_OBJECTS = basic_xpath_reader.$(OBJEXT) \
-	attribute.$(OBJEXT)
+am_libXPathReader_a_OBJECTS = basic_xpath_reader.$(OBJEXT)
 libXPathReader_a_OBJECTS = $(am_libXPathReader_a_OBJECTS)
+libxmlWriter_a_AR = $(AR) cru
+libxmlWriter_a_LIBADD =
+am_libxmlWriter_a_OBJECTS = xml_writer.$(OBJEXT) attribute.$(OBJEXT)
+libxmlWriter_a_OBJECTS = $(am_libxmlWriter_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/attribute.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/basic_xpath_reader.Po
+@AMDEP_TRUE@	./$(DEPDIR)/basic_xpath_reader.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/xml_writer.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-DIST_SOURCES = $(libXPathReader_a_SOURCES)
+DIST_SOURCES = $(libXPathReader_a_SOURCES) $(libxmlWriter_a_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(libXPathReader_a_SOURCES)
+SOURCES = $(libXPathReader_a_SOURCES) $(libxmlWriter_a_SOURCES)
 
 all: all-am
 
@@ -189,6 +198,10 @@ libXPathReader.a: $(libXPathReader_a_OBJECTS) $(libXPathReader_a_DEPENDENCIES)
 	-rm -f libXPathReader.a
 	$(libXPathReader_a_AR) libXPathReader.a $(libXPathReader_a_OBJECTS) $(libXPathReader_a_LIBADD)
 	$(RANLIB) libXPathReader.a
+libxmlWriter.a: $(libxmlWriter_a_OBJECTS) $(libxmlWriter_a_DEPENDENCIES) 
+	-rm -f libxmlWriter.a
+	$(libxmlWriter_a_AR) libxmlWriter.a $(libxmlWriter_a_OBJECTS) $(libxmlWriter_a_LIBADD)
+	$(RANLIB) libxmlWriter.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -198,6 +211,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/attribute.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basic_xpath_reader.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xml_writer.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
