@@ -7,12 +7,12 @@ VPATH += @top_srcdir@/include
 
 TYPE_HDRS = tcomplex.h array.h
 READER_HDRS = basic_xpath_reader.h $(TYPE_HDRS)
-WRITER_HDRS = xml_writer.h attribute.h $(TYPE_HDRS)
+WRITER_HDRS = xml_simplewriter.h xml_writer.h attribute.h $(TYPE_HDRS)
 
 lib_LIBRARIES = libXPathReader.a libxmlWriter.a
 
 libXPathReader_a_SOURCES = basic_xpath_reader.cc 
 libXPathReader_a_DEPENDENCIES = $(READER_HDRS)
 
-libxmlWriter_a_SOURCES = xml_writer.cc attribute.cc
+libxmlWriter_a_SOURCES = xml_simplewriter.cc attribute.cc
 libxmlWriter_a_DEPENDENCIES = $(WRITER_HDRS)
