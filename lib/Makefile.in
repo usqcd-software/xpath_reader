@@ -119,7 +119,7 @@ lib_LIBRARIES = libXPathReader.a libxmlWriter.a
 libXPathReader_a_SOURCES = basic_xpath_reader.cc 
 libXPathReader_a_DEPENDENCIES = $(READER_HDRS)
 
-libxmlWriter_a_SOURCES = xml_simplewriter.cc attribute.cc
+libxmlWriter_a_SOURCES = xml_simplewriter.cc attribute.cc xml_struct_writer.cc
 libxmlWriter_a_DEPENDENCIES = $(WRITER_HDRS)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
@@ -133,7 +133,7 @@ libXPathReader_a_OBJECTS = $(am_libXPathReader_a_OBJECTS)
 libxmlWriter_a_AR = $(AR) cru
 libxmlWriter_a_LIBADD =
 am_libxmlWriter_a_OBJECTS = xml_simplewriter.$(OBJEXT) \
-	attribute.$(OBJEXT)
+	attribute.$(OBJEXT) xml_struct_writer.$(OBJEXT)
 libxmlWriter_a_OBJECTS = $(am_libxmlWriter_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -141,7 +141,8 @@ depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/attribute.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/basic_xpath_reader.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/xml_simplewriter.Po
+@AMDEP_TRUE@	./$(DEPDIR)/xml_simplewriter.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/xml_struct_writer.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -210,6 +211,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/attribute.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basic_xpath_reader.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xml_simplewriter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xml_struct_writer.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)

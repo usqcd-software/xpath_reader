@@ -116,7 +116,7 @@ LDADD = -lXPathReader -lxmlWriter @LIBS@ @LIBXML2_LIBS@
 
 check_PROGRAMS = basic_xpath_reader_test  basic_xpath_reader_test2 \
 	xpath_reader_test simple_writer_test simple_schema_writer_test \
-	schema_writer_test
+	schema_writer_test struct_writer_test
 
 
 basic_xpath_reader_test_SOURCES = basic_xpath_reader_test.cc
@@ -136,13 +136,16 @@ simple_schema_writer_test_DEPENDENCIES = build_lib
 
 schema_writer_test_SOURCES = schema_writer_test.cc
 schema_writer_test_DEPENDENCIES = build_lib
+
+struct_writer_test_SOURCES = struct_writer_test.cc
+struct_writer_test_DEPENDENCIES = build_lib
 subdir = examples
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
 check_PROGRAMS = basic_xpath_reader_test$(EXEEXT) \
 	basic_xpath_reader_test2$(EXEEXT) xpath_reader_test$(EXEEXT) \
 	simple_writer_test$(EXEEXT) simple_schema_writer_test$(EXEEXT) \
-	schema_writer_test$(EXEEXT)
+	schema_writer_test$(EXEEXT) struct_writer_test$(EXEEXT)
 am_basic_xpath_reader_test_OBJECTS = basic_xpath_reader_test.$(OBJEXT)
 basic_xpath_reader_test_OBJECTS = $(am_basic_xpath_reader_test_OBJECTS)
 basic_xpath_reader_test_LDADD = $(LDADD)
@@ -166,6 +169,10 @@ am_simple_writer_test_OBJECTS = simple_writer_test.$(OBJEXT)
 simple_writer_test_OBJECTS = $(am_simple_writer_test_OBJECTS)
 simple_writer_test_LDADD = $(LDADD)
 simple_writer_test_LDFLAGS =
+am_struct_writer_test_OBJECTS = struct_writer_test.$(OBJEXT)
+struct_writer_test_OBJECTS = $(am_struct_writer_test_OBJECTS)
+struct_writer_test_LDADD = $(LDADD)
+struct_writer_test_LDFLAGS =
 am_xpath_reader_test_OBJECTS = xpath_reader_test.$(OBJEXT)
 xpath_reader_test_OBJECTS = $(am_xpath_reader_test_OBJECTS)
 xpath_reader_test_LDADD = $(LDADD)
@@ -179,6 +186,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/schema_writer_test.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/simple_schema_writer_test.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/simple_writer_test.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/struct_writer_test.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/xpath_reader_test.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -189,9 +197,10 @@ DIST_SOURCES = $(basic_xpath_reader_test_SOURCES) \
 	$(basic_xpath_reader_test2_SOURCES) \
 	$(schema_writer_test_SOURCES) \
 	$(simple_schema_writer_test_SOURCES) \
-	$(simple_writer_test_SOURCES) $(xpath_reader_test_SOURCES)
+	$(simple_writer_test_SOURCES) $(struct_writer_test_SOURCES) \
+	$(xpath_reader_test_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(basic_xpath_reader_test_SOURCES) $(basic_xpath_reader_test2_SOURCES) $(schema_writer_test_SOURCES) $(simple_schema_writer_test_SOURCES) $(simple_writer_test_SOURCES) $(xpath_reader_test_SOURCES)
+SOURCES = $(basic_xpath_reader_test_SOURCES) $(basic_xpath_reader_test2_SOURCES) $(schema_writer_test_SOURCES) $(simple_schema_writer_test_SOURCES) $(simple_writer_test_SOURCES) $(struct_writer_test_SOURCES) $(xpath_reader_test_SOURCES)
 
 all: all-am
 
@@ -220,6 +229,9 @@ simple_schema_writer_test$(EXEEXT): $(simple_schema_writer_test_OBJECTS) $(simpl
 simple_writer_test$(EXEEXT): $(simple_writer_test_OBJECTS) $(simple_writer_test_DEPENDENCIES) 
 	@rm -f simple_writer_test$(EXEEXT)
 	$(CXXLINK) $(simple_writer_test_LDFLAGS) $(simple_writer_test_OBJECTS) $(simple_writer_test_LDADD) $(LIBS)
+struct_writer_test$(EXEEXT): $(struct_writer_test_OBJECTS) $(struct_writer_test_DEPENDENCIES) 
+	@rm -f struct_writer_test$(EXEEXT)
+	$(CXXLINK) $(struct_writer_test_LDFLAGS) $(struct_writer_test_OBJECTS) $(struct_writer_test_LDADD) $(LIBS)
 xpath_reader_test$(EXEEXT): $(xpath_reader_test_OBJECTS) $(xpath_reader_test_DEPENDENCIES) 
 	@rm -f xpath_reader_test$(EXEEXT)
 	$(CXXLINK) $(xpath_reader_test_LDFLAGS) $(xpath_reader_test_OBJECTS) $(xpath_reader_test_LDADD) $(LIBS)
@@ -235,6 +247,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schema_writer_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_schema_writer_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_writer_test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/struct_writer_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xpath_reader_test.Po@am__quote@
 
 distclean-depend:

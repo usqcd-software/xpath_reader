@@ -14,5 +14,5 @@ lib_LIBRARIES = libXPathReader.a libxmlWriter.a
 libXPathReader_a_SOURCES = basic_xpath_reader.cc 
 libXPathReader_a_DEPENDENCIES = $(READER_HDRS)
 
-libxmlWriter_a_SOURCES = xml_simplewriter.cc attribute.cc
+libxmlWriter_a_SOURCES = xml_simplewriter.cc attribute.cc xml_struct_writer.cc
 libxmlWriter_a_DEPENDENCIES = $(WRITER_HDRS)
