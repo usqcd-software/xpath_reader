@@ -1,4 +1,4 @@
-/* Id: $Id: xpath_reader.h,v 1.5 2003-09-08 15:45:08 bjoo Exp $
+/* Id: $Id: xpath_reader.h,v 1.6 2003-09-10 09:25:52 bjoo Exp $
  *
  * File: xpath_reader.h
  *
@@ -126,11 +126,15 @@ namespace XMLXPathReader {
   public:
 
     XPathReader(void) : BasicXPathReader() {} ;
-    XPathReader(istream& is) : BasicXPathReader(is) {} ;
-    XPathReader(const string& filename) : BasicXPathReader(filename) {} ;
-    ~XPathReader(void) {};
+    XPathReader(istream& is) : BasicXPathReader(is) {};
 
-    XPathReader(XPathReader& old, const string& xpath) : BasicXPathReader((BasicXPathReader&) old, xpath) {} ;
+    XPathReader(const string& filename) : BasicXPathReader(filename) {}
+
+    ~XPathReader(void) {}
+
+    //   XPathReader(XPathReader& old, const string& xpath) : BasicXPathReader(old,xpath) {};
+
+    XPathReader(XPathReader& old, const string& xpath):BasicXPathReader(old,xpath) {};
 
 
     void open(const string& filename) { 
@@ -145,6 +149,9 @@ namespace XMLXPathReader {
       BasicXPathReader::close();
     }
 
+    void open(XPathReader &old, const string& xpath) {
+      BasicXPathReader::open((BasicXPathReader &)old, xpath);
+    }
     // evaluate "count(xpath)" and return an INTEGER
     int countXPath(const string& xpath) {
       return BasicXPathReader::count(xpath);

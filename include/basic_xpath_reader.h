@@ -1,4 +1,4 @@
-/* $Id: basic_xpath_reader.h,v 1.9 2003-09-09 20:29:49 bjoo Exp $
+/* $Id: basic_xpath_reader.h,v 1.10 2003-09-10 09:25:52 bjoo Exp $
  *
  * File: basic_xpath_reader.h
  *
@@ -176,65 +176,12 @@ namespace XMLXPathReader {
     
     /* This should let you clone an XPath reader */
     BasicXPathReader(BasicXPathReader& old, const string& xpath) {
-      if( old.docref != 0x0) { 
-	
-	docref = old.docref;
-	
-	query_result = (xmlXPathObjectPtr) NULL;
-	xmlDocPtr doc = docref->getDoc();
-	xpath_context = xmlXPathNewContext(doc);
 
-	int i;
-	// Copy the namespaces 
-	if( old.xpath_context->nsNr >  0 ) {
-	  xpath_context->nsNr = old.xpath_context->nsNr;
-	  xpath_context->namespaces = new (xmlNs *)[xpath_context->nsNr];
-	  for(i=0; i < xpath_context->nsNr; i++) { 
-	    xpath_context->namespaces[i] = xmlCopyNamespace(old.xpath_context->namespaces[i]);
-	  }
-	}
-	if( old.xpath_context->tmpNsNr > 0 ) { 
-	  xpath_context->tmpNsNr = old.xpath_context->tmpNsNr;
-	  xpath_context->tmpNsList = new (xmlNs *)[xpath_context->tmpNsNr];
-	  for(i=0; i < xpath_context->tmpNsNr; i++) { 
-	    xpath_context->tmpNsList[i] = xmlCopyNamespace(old.xpath_context->tmpNsList[i]);
-	  }
-	}
-	
-	// Now execute the xpath query and set the context node
-	ostringstream error_message;
-	
-	try { 
-	  old.evaluateXPath(xpath);
-	}
-	catch ( const string& e ) { 
-	  throw e;
-	}
-	
-	// Check that the query returned non-empty result
-	try { 
-	  old.checkQuery(xpath);
-	}
-	catch( const string& e) { 
-	  throw;
-	}
-	
-	//Check that the node set contains only 1 element
-	if( old.query_result->nodesetval->nodeNr != 1 ) {
-	  error_message << "XPath Query: " << xpath << " did not return unique node."
-			<< " nodes returned = " << old.query_result->nodesetval->nodeNr 
-			<< endl;
-	  throw error_message.str();
-	}
-	
-	// Check that the node returned is an element
-	xpath_context->node = old.query_result->nodesetval->nodeTab[0];
-	docref->increaseRefcount();
-      }
-      else { 
-	throw "Attempting to clone a closed Reader";
-      }
-      
+      docref=0x0;
+      xpath_context = NULL;
+      query_result = NULL;
+
+      open(old, xpath);
     }
     
 
@@ -303,6 +250,71 @@ namespace XMLXPathReader {
       catch ( const string& e ) { 
 	throw;
       }
+    }
+
+    /* This should let you clone an XPath reader */
+    void open(BasicXPathReader& old, const string& xpath) {
+      close();
+
+      if( old.docref != 0x0) { 
+	
+	docref = old.docref;
+	
+	query_result = (xmlXPathObjectPtr) NULL;
+	xmlDocPtr doc = docref->getDoc();
+	xpath_context = xmlXPathNewContext(doc);
+
+	int i;
+	// Copy the namespaces 
+	if( old.xpath_context->nsNr >  0 ) {
+	  xpath_context->nsNr = old.xpath_context->nsNr;
+	  xpath_context->namespaces = new (xmlNs *)[xpath_context->nsNr];
+	  for(i=0; i < xpath_context->nsNr; i++) { 
+	    xpath_context->namespaces[i] = xmlCopyNamespace(old.xpath_context->namespaces[i]);
+	  }
+	}
+	if( old.xpath_context->tmpNsNr > 0 ) { 
+	  xpath_context->tmpNsNr = old.xpath_context->tmpNsNr;
+	  xpath_context->tmpNsList = new (xmlNs *)[xpath_context->tmpNsNr];
+	  for(i=0; i < xpath_context->tmpNsNr; i++) { 
+	    xpath_context->tmpNsList[i] = xmlCopyNamespace(old.xpath_context->tmpNsList[i]);
+	  }
+	}
+	
+	// Now execute the xpath query and set the context node
+	ostringstream error_message;
+	
+	try { 
+	  old.evaluateXPath(xpath);
+	}
+	catch ( const string& e ) { 
+	  throw e;
+	}
+	
+	// Check that the query returned non-empty result
+	try { 
+	  old.checkQuery(xpath);
+	}
+	catch( const string& e) { 
+	  throw;
+	}
+	
+	//Check that the node set contains only 1 element
+	if( old.query_result->nodesetval->nodeNr != 1 ) {
+	  error_message << "XPath Query: " << xpath << " did not return unique node."
+			<< " nodes returned = " << old.query_result->nodesetval->nodeNr 
+			<< endl;
+	  throw error_message.str();
+	}
+	
+	// Check that the node returned is an element
+	xpath_context->node = old.query_result->nodesetval->nodeTab[0];
+	docref->increaseRefcount();
+      }
+      else { 
+	throw "Attempting to clone a closed Reader";
+      }
+      
     }
       
     void close(void) { 
@@ -549,15 +561,13 @@ namespace XMLXPathReader {
     //! Print an element selected by XPath
     void printXPathNode(ostream& os, const string& xpath_to_node);
 
-  private:
-
-
+  protected:
     /* Stuff needed by libxml */
     XMLDocument* docref;
     xmlXPathContextPtr xpath_context;
     xmlXPathObjectPtr  query_result;
 
-
+  private:
 /*! This contentious piece of code goes through the whole "tree"
  *  and registers every single namespace it finds into the XPath context.
  *  This may or may not be standard compliant as is */
