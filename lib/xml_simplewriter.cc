@@ -230,10 +230,10 @@ XMLSimpleWriter::writeXML(const string& output)
 }
 
 void 
-XMLSimpleWriter::writePrologue(ostream& os)
+XMLSimpleWriter::writePrologue(ostream& os) const
 {
-   os << (const string)"<?xml version=\"1.0\"?>" << endl;
-   os << (const string)"<!-- Written by XMLSimpleWriter class by Balint Joo -->";
+   os << "<?xml version=\"1.0\"?>" << endl;
+   os << "<!-- Written by XMLSimpleWriter class by Balint Joo -->";
    os << endl;
    os.flush();
 }

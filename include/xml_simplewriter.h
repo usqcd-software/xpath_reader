@@ -67,7 +67,7 @@ namespace XMLWriterAPI {
     virtual std::ostream& getOstream() = 0;
 
     // Write the prologue
-    void writePrologue(std::ostream& os);
+    void writePrologue(std::ostream& os) const;
     unsigned int indent_level;
 
   private:
