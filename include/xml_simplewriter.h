@@ -7,8 +7,6 @@
 #include <stack>
 
 
-#define INDENT_SPACES ((unsigned int)3)
-
 namespace XMLWriterAPI {
 
   // Base class for the XMLSimpleWriter classes
@@ -57,6 +55,9 @@ namespace XMLWriterAPI {
     void write(const float& output);
     void write(const double& output);
     void write(const bool& output);
+
+    // Write XML string
+    void writeXML(const std::string& output);
 
 
   protected:

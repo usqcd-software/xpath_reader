@@ -2,6 +2,9 @@
 #include <xml_simplewriter.h>
 #include <sstream>
 
+
+#define INDENT_SPACES ((unsigned int)2)
+
 using namespace std;
 using namespace XMLWriterAPI;
 
@@ -105,8 +108,6 @@ void XMLSimpleWriter::dumpTag(const string& nsprefix,
   }
 
   primitive_last = false;
-  
-
 }
   
 void XMLSimpleWriter::closeTag(void)
@@ -215,6 +216,16 @@ XMLSimpleWriter::writePrimitive(const T& output)
   }
 
   primitive_last = true;
+  os.flush();
+}
+
+void 
+XMLSimpleWriter::writeXML(const string& output)
+{
+  ostream& os=getOstream();
+
+  // Should this have more checking, e.g. of primitive_last or doctag?
+  os << output << endl;
   os.flush();
 }
 
