@@ -1,4 +1,4 @@
-/* $Id: basic_xpath_reader.h,v 1.4 2003-05-12 11:30:48 bjoo Exp $
+/* $Id: basic_xpath_reader.h,v 1.5 2003-08-25 10:48:59 bjoo Exp $
  *
  * File: basic_xpath_reader.h
  *
@@ -178,6 +178,10 @@ namespace XMLXPathReader {
     void evaluateXPath(const string& xpath);
     void printQueryResult(ostream& os);
 
+    void setCurrentXPath(const string& xpath);
+    xmlNodePtr getCurrentContextNode(void);
+    void setCurrentContextNode(xmlNodePtr new_context_node);
+
     //! Print the entire contents as a stream
     void print(ostream& os);
 
@@ -195,6 +199,7 @@ namespace XMLXPathReader {
     xmlNodePtr root_node;
     xmlXPathContextPtr xpath_context;
     xmlXPathObjectPtr  query_result;
+
 
     /* Init function for the xpath system */
     void setupXPath(void);

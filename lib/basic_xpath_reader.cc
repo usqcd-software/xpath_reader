@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader.cc,v 1.6 2003-05-13 04:21:57 edwards Exp $
+/* ID: $Id: basic_xpath_reader.cc,v 1.7 2003-08-25 10:48:59 bjoo Exp $
  *
  * File: basic_xpath_reader.cc
  * 
@@ -269,6 +269,52 @@ BasicXPathReader::getAttribute(const string& xpath_to_node,
 				  "bool");
 }
 
+xmlNodePtr 
+BasicXPathReader::getCurrentContextNode(void) {
+  return xpath_context->node;
+}
+
+void
+BasicXPathReader::setCurrentContextNode(xmlNodePtr new_context_node) {
+  xpath_context->node = new_context_node;
+}
+
+/*! Set the XPath Context to the Current XPath */
+void 
+BasicXPathReader::setCurrentXPath(const string& xpath)
+{
+  ostringstream error_message;
+  
+  try { 
+    evaluateXPath(xpath);
+  }
+  catch ( const string& e ) { 
+    throw e;
+  }
+
+  // Check that the query returned non-empty result
+  try { 
+    checkQuery(xpath);
+  }
+  catch( const string& e) { 
+    throw;
+  }
+
+      /* Check that the node set contains only 1 element */
+  if( query_result->nodesetval->nodeNr != 1 ) {
+    error_message << "XPath Query: " << xpath << " did not return unique node."
+		  << " nodes returned = " << query_result->nodesetval->nodeNr 
+		  << endl;
+    throw error_message.str();
+  }
+
+  /* Check that the node returned is an element */
+  xmlNodePtr res_node = query_result->nodesetval->nodeTab[0];
+
+  /* Set the current context */
+  xpath_context->node = res_node;
+}
+
 /*! count elements returned by xpath */
 int
 BasicXPathReader::count(const string& xpath)
@@ -286,6 +332,7 @@ BasicXPathReader::count(const string& xpath)
   catch(const string& e) {
     throw e;
   }
+
 
   // Check that the result is a number otherwise something is very wrong! 
   if( query_result->type != XPATH_NUMBER ) {
@@ -932,6 +979,7 @@ BasicXPathReader::setupXPath(void)
      from doc and register them with the XPath processor */
   root_node = xmlDocGetRootElement(doc);
 
+  
   /* Recursively register every namespace you find into the 
      xpath context */
   snarfNamespaces(root_node, xpath_context);

@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader_test.cc,v 1.1 2003-04-27 03:26:39 edwards Exp $ 
+/* ID: $Id: basic_xpath_reader_test.cc,v 1.2 2003-08-25 10:48:59 bjoo Exp $ 
  * File: basic_xpath_reader_test.cc 
  * 
  * This file was a test to see how well I understood libxml xpath, 
@@ -49,14 +49,21 @@ int main(int argc, char *argv[])
 
     if ( (xpath_expression != "exit") && (xpath_expression != "quit") ) {
       // Tryto evaluate the XPath
-      try { 
-	reader.evaluateXPath(xpath_expression);
+      if( xpath_expression == "set" ) { 
+	cout << "Enter XPATH to set:" << endl;
+	cin >> xpath_expression;
+	reader.setCurrentXPath(xpath_expression);
       }
-      catch(string &error_mesg) { 
-	// Catch errors but don't bomb. 
-	// let the user try again...
-	cerr << error_mesg;
-      }      
+      else { 
+	try { 
+	  reader.evaluateXPath(xpath_expression);
+	}
+	catch(string &error_mesg) { 
+	  // Catch errors but don't bomb. 
+	  // let the user try again...
+	  cerr << error_mesg;
+	}      
+      }
     }
     else {
       // exit or quit was entered 

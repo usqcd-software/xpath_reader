@@ -1,4 +1,4 @@
-/* Id: $Id: xpath_reader.h,v 1.2 2003-05-12 11:30:48 bjoo Exp $
+/* Id: $Id: xpath_reader.h,v 1.3 2003-08-25 10:48:59 bjoo Exp $
  *
  * File: xpath_reader.h
  *
@@ -188,16 +188,28 @@ namespace XMLXPathReader {
       getXPath(const string& xpath, TComplex<T>& result)
       {
 	ostringstream error_message;
+
+	xmlNodePtr context_node_before_read = getCurrentContextNode();
+
+	// Change context to the top of the complex
+	setCurrentXPath(xpath);
+
+	// Relative XPath for the real part 
+	string path_real = "cmpx/re";
 	
-	// XPath for the real part 
-	string path_real = xpath + "/cmpx/re";
-	
-	// XPath for the imaginary part.
-	string path_imag = xpath + "/cmpx/im";
+	// Relative XPath for the imaginary part.
+	string path_imag = "cmpx/im";
 	
 	// Try and recursively get the real part
 	try { 
+	  // Save current context 
+	  xmlNodePtr context_node_before_real = getCurrentContextNode();
+
+	  // Recurse
 	  getXPath(path_real, result.real());
+
+	  // Restore current context
+	  setCurrentContextNode(context_node_before_real);
 	}
 	catch(const string &e) {
 	  error_message << "XPath Query: " << xpath << " Error: "
@@ -208,7 +220,16 @@ namespace XMLXPathReader {
 	
 	// Try and recursively get the imaginary part
 	try {
+
+	  // Save context
+	  xmlNodePtr context_node_before_imag = getCurrentContextNode();
+
+	  // Recurse
 	  getXPath(path_imag, result.imag());
+
+	  // Restore context
+	  setCurrentContextNode(context_node_before_imag);
+
 	}
 	catch(const string &e) {
 	  error_message << "XPath Query: " << xpath <<" Error:"
@@ -216,6 +237,9 @@ namespace XMLXPathReader {
 	  
 	  throw error_message.str();
 	}
+
+	// Restore context to before you called this function
+	setCurrentContextNode(context_node_before_read);
       }
 
     // getXPath for Arrays
@@ -225,8 +249,18 @@ namespace XMLXPathReader {
       {
 	ostringstream error_message;
 
+	xmlNodePtr context_node_before_read = getCurrentContextNode();
+	cout << "Setting Current Path to " << xpath << endl;
+	try { 
+	  setCurrentXPath(xpath);
+	}
+	catch( const string& e) { 
+	  error_message << "Couldnt set current path to " << xpath << endl;
+	  throw error_message.str();
+	}
+
 	// XPath to array tag
-	string array_xpath = xpath + "/array";
+	string array_xpath = "array";
 
 	// Values to be gleaned from attributes of <array>
 	string sizeName="";
@@ -286,11 +320,15 @@ namespace XMLXPathReader {
 
 	// Construct query to read size of array from <sizeName> 
 	// tag
-	string n_elem_query = array_xpath + "/" + sizeName;
+	setCurrentXPath(array_xpath);
+
+	string n_elem_query =  sizeName;
 	int array_size; 
 
 	// try and do the read
 	try {
+	  cout << "Getting no of array elements with query: " << n_elem_query << endl;
+
 	  getXPath(n_elem_query, array_size) ;
 	}
 	catch( const string& e) {
@@ -301,10 +339,12 @@ namespace XMLXPathReader {
 	}
 	
 	// Count the number of elements
-	string elem_base_query = array_xpath + "/" + elemName;
+	string elem_base_query = elemName;
 	
 	int array_size_check;
 	try {
+
+	  cout << "Getting array size check with count of "<<elem_base_query<< endl;
 	  array_size_check = countXPath(elem_base_query);
 	}
 	catch( const string& e) { 
@@ -337,7 +377,12 @@ namespace XMLXPathReader {
 
 	  // recursively try and get the element.
 	  try {
+
+
+	    xmlNodePtr context_node_before_recurse = getCurrentContextNode();
 	    getXPath(element_xpath.str(), result[i]);
+	    setCurrentContextNode(context_node_before_recurse);
+
 	  } catch( const string& e ) {
 	    error_message << "Failed to match element " << i
 			  << " of array with query " << element_xpath.str()
@@ -345,9 +390,12 @@ namespace XMLXPathReader {
 			  << "Query returned error: " << e;
 	    throw error_message.str();
 	  }
+
 	}
-      }
-    
+
+
+        setCurrentContextNode(context_node_before_read);
+      }    
   };
 
 
