@@ -1,11 +1,11 @@
 
-#include <xml_writer.h>
+#include <xml_simplewriter.h>
 #include <sstream>
 
 using namespace std;
 using namespace XMLWriterAPI;
 
-void XMLWriterBase::openTag(const string& tagname)
+void XMLSimpleWriter::openTag(const string& tagname)
 {
   string empty_string;
   AttributeList empty_list;
@@ -13,27 +13,27 @@ void XMLWriterBase::openTag(const string& tagname)
   dumpTag(empty_string, tagname, empty_list, false);
 }
 
-void XMLWriterBase::openTag(const string& nsprefix, const string& tagname)
+void XMLSimpleWriter::openTag(const string& nsprefix, const string& tagname)
 {
   AttributeList empty_list;
 
   dumpTag(nsprefix, tagname, empty_list, false);
 }
 
-void XMLWriterBase::openTag(const string& tagname, AttributeList& al)
+void XMLSimpleWriter::openTag(const string& tagname, AttributeList& al)
 {
   string empty_string;
   dumpTag(empty_string, tagname, al, false);
 }
 
-void XMLWriterBase::openTag(const string& nsprefix, 
+void XMLSimpleWriter::openTag(const string& nsprefix, 
 			    const string& tagname, 
 			    AttributeList& al)
 {
   dumpTag(nsprefix, tagname, al, false);
 }
 
-void XMLWriterBase::emptyTag(const string& tagname)
+void XMLSimpleWriter::emptyTag(const string& tagname)
 {
   string empty_string;
   AttributeList empty_list;
@@ -41,13 +41,13 @@ void XMLWriterBase::emptyTag(const string& tagname)
   dumpTag(empty_string, tagname, empty_list, true);
 }
 
-void XMLWriterBase::emptyTag(const string& tagname,  AttributeList& al)
+void XMLSimpleWriter::emptyTag(const string& tagname,  AttributeList& al)
 {
   string empty_string;
   dumpTag(empty_string, tagname, al, true);
 }
 
-void XMLWriterBase::emptyTag(const string& nsprefix, 
+void XMLSimpleWriter::emptyTag(const string& nsprefix, 
 			     const string& tagname, 
 			     AttributeList& al)
 {
@@ -55,7 +55,7 @@ void XMLWriterBase::emptyTag(const string& nsprefix,
 }
 
 
-void XMLWriterBase::dumpTag(const string& nsprefix, 
+void XMLSimpleWriter::dumpTag(const string& nsprefix, 
 			    const string& tagname, 
 			    AttributeList& al,
 			    bool is_empty)
@@ -109,7 +109,7 @@ void XMLWriterBase::dumpTag(const string& nsprefix,
 
 }
   
-void XMLWriterBase::closeTag(void)
+void XMLSimpleWriter::closeTag(void)
 {
   string qualified_tagname;
   ostream& os=getOstream();
@@ -137,62 +137,62 @@ void XMLWriterBase::closeTag(void)
 
 
 void 
-XMLWriterBase::write(const string& output)
+XMLSimpleWriter::write(const string& output)
 {
   writePrimitive<string>(output);
 }
 
 void
-XMLWriterBase::write(const int& output) 
+XMLSimpleWriter::write(const int& output) 
 {
   writePrimitive<int>(output);
 }
 
 void
-XMLWriterBase::write(const unsigned int& output)
+XMLSimpleWriter::write(const unsigned int& output)
 {
   writePrimitive<unsigned int>(output);
 }
 
 void
-XMLWriterBase::write(const short int& output)
+XMLSimpleWriter::write(const short int& output)
 {
   writePrimitive<short int>(output);
 }
 
 
 void 
-XMLWriterBase::write(const unsigned short int& output)
+XMLSimpleWriter::write(const unsigned short int& output)
 {
   writePrimitive<unsigned short int>(output);
 }
 
 void
-XMLWriterBase::write(const long int& output)
+XMLSimpleWriter::write(const long int& output)
 {
   writePrimitive<long int>(output);
 }
 
 void 
-XMLWriterBase::write(const unsigned long int& output)
+XMLSimpleWriter::write(const unsigned long int& output)
 {
   writePrimitive<unsigned long int>(output);
 }
 
 void 
-XMLWriterBase::write(const float& output)
+XMLSimpleWriter::write(const float& output)
 {
   writePrimitive<float>(output);
 }
 
 void 
-XMLWriterBase::write(const double& output)
+XMLSimpleWriter::write(const double& output)
 {
   writePrimitive<double>(output);
 }
 
 void
-XMLWriterBase::write(const bool& output)
+XMLSimpleWriter::write(const bool& output)
 {
   writePrimitive<bool>(output);
 }
@@ -200,7 +200,7 @@ XMLWriterBase::write(const bool& output)
 
 template < typename T > 
 void
-XMLWriterBase::writePrimitive(const T& output)
+XMLSimpleWriter::writePrimitive(const T& output)
 {
   ostream& os=getOstream();
 
@@ -219,10 +219,10 @@ XMLWriterBase::writePrimitive(const T& output)
 }
 
 void 
-XMLWriterBase::writePrologue(ostream& os)
+XMLSimpleWriter::writePrologue(ostream& os)
 {
    os << (const string)"<?xml version=\"1.0\"?>" << endl;
-   os << (const string)"<!-- Written by XMLWriterBase class by Balint Joo -->";
+   os << (const string)"<!-- Written by XMLSimpleWriter class by Balint Joo -->";
    os << endl;
    os.flush();
 }

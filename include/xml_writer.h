@@ -4,71 +4,37 @@
 #include <attribute.h>
 #include <tcomplex.h>
 #include <array.h>
-#include <ostream>
+#include <xml_simplewriter.h>
 #include <sstream>
 #include <fstream>
-#include <string>
-#include <stack>
-
-
-#define INDENT_SPACES ((unsigned int)3)
-
-using namespace std;
 
 namespace XMLWriterAPI {
 
   // Base class for the XMLWriter classes
-  class XMLWriterBase {
+  class XMLWriterBase : public XMLSimpleWriter {
   public:
-    XMLWriterBase(void) {
-      doctag_written = false;
-      primitive_last = false;
-    }
-
-    ~XMLWriterBase(void) { 
-      while ( namestack.empty() == false ) {
-	closeTag();
-      }
-    }
-
-    void openTag(const string& tagname);
-    void openTag(const string& nsprefix, const string& tagname);
-    void openTag(const string& tagname, AttributeList& al);
-
-    void openTag(const string& nsprefix,
-		 const string& tagname, 
-		 AttributeList& al);
-
-    void closeTag();
-
-    void emptyTag(const string& tagname);
-    void emptyTag(const string& nsprefix, const string& tagname);
-    void emptyTag(const string& tagname, AttributeList& al);
-
-    void emptyTag(const string& nsprefix,
-		  const string& tagname, 
-		  AttributeList& al);
-    
-
-   
+    XMLWriterBase(void) {}
+    ~XMLWriterBase(void) {}
 
     // Overloaded Writer Functions
-    void write(const string& output);
-    void write(const int& output);
-    void write(const unsigned int& output);
-    void write(const short int& output);
-    void write(const unsigned short int& output);
-    void write(const long int& output);
-    void write(const unsigned long int& output);
-    void write(const float& output);
-    void write(const double& output);
-    void write(const bool& output);
-
-
+    /* These wrappers are needed since there is overloading of the name "write"
+     * below for complex and array. The openTag's do not need to be re-overloaded */
+    void write(const std::string& output) {XMLSimpleWriter::write(output);}
+    void write(const int& output) {XMLSimpleWriter::write(output);}
+    void write(const unsigned int& output) {XMLSimpleWriter::write(output);}
+    void write(const short int& output) {XMLSimpleWriter::write(output);}
+    void write(const unsigned short int& output) {XMLSimpleWriter::write(output);}
+    void write(const long int& output) {XMLSimpleWriter::write(output);}
+    void write(const unsigned long int& output) {XMLSimpleWriter::write(output);}
+    void write(const float& output) {XMLSimpleWriter::write(output);}
+    void write(const double& output) {XMLSimpleWriter::write(output);}
+    void write(const bool& output) {XMLSimpleWriter::write(output);}
+   
+    // Additional overloaded Writer Functions
     template <typename T>
-    void write(TComplex<T>& output) {
-      openTag((string)"cmpx");
-      openTag((string)"re");
+      void write(TComplex<T>& output) {
+      openTag((std::string)"cmpx");
+      openTag((std::string)"re");
       write(output.real());
       closeTag();
       openTag("im");
@@ -78,20 +44,20 @@ namespace XMLWriterAPI {
     }
 
     template <typename T> 
-      void write(const string& sizeName, 
-		 const string& elemName, 
-		 const string& indexName,
+      void write(const std::string& sizeName, 
+		 const std::string& elemName, 
+		 const std::string& indexName,
 		 const unsigned int& indexStart,
 		 Array<T>& a) {
       
       AttributeList alist;
-      alist.push_back(Attribute((string)"sizeName",  sizeName));
-      alist.push_back(Attribute((string)"elemName",  elemName));
-      alist.push_back(Attribute((string)"indexName", indexName));
-      alist.push_back(Attribute((string)"indexStart", indexStart));
+      alist.push_back(Attribute((std::string)"sizeName",  sizeName));
+      alist.push_back(Attribute((std::string)"elemName",  elemName));
+      alist.push_back(Attribute((std::string)"indexName", indexName));
+      alist.push_back(Attribute((std::string)"indexStart", indexStart));
       
       // Write the array - tag
-      openTag((string)"array", alist);
+      openTag((std::string)"array", alist);
 
       openTag(sizeName);
       write(a.size());
@@ -111,46 +77,15 @@ namespace XMLWriterAPI {
 
     template < typename T > 
     void write(Array<T>& a) {
-      write((string)"size",
-	    (string)"element",
-	    (string)"index",
+      write((std::string)"size",
+	    (std::string)"element",
+	    (std::string)"index",
 	    0, a);
     }
-
-  protected:
-    // Protected functions -- for overloading access by derived classes
-    
-    // Get the internal ostream
-    virtual ostream& getOstream(void) = 0;
-
-    // Write the prologue
-    void writePrologue(ostream& os);
-    unsigned int indent_level;
-  private:
-    
-    // Check we have written a document tag...
-    // apparently we need this before writing anything else
-    bool doctag_written;
-    bool primitive_last;
-
-    // A stack to hold names.
-    stack<string> namestack;
-
-    // The universal tag-write function. Copes with empty tags too
-    // all the openTag, emptyTag functions call this basically
-     void dumpTag(const string& nsprefix,
-		  const string& tagname, 
-		  AttributeList& al,
-		  bool is_empty=false);
-     
-     // The universal data-write. All the write functions call this
-     template< typename T>
-       void
-       writePrimitive(const T& output);
   };
 
-  // A Class to write XML to a string
-  // Supplies an ostringstream as the outstream for the BaseClass
+  // A Class to write XML to a std::string
+  // Supplies an ostd::stringstream as the outstream for the BaseClass
   class XMLSimpleStringWriter : public XMLWriterBase {
   public:
 
@@ -163,17 +98,17 @@ namespace XMLWriterAPI {
     }  
   
     // Get the string -- not the stream...
-    string str(void) const { 
+    std::string str(void) const { 
       return output_stream.str();
     }
         
   private:
 
     // The output stream...
-    ostringstream output_stream;
+    std::ostringstream output_stream;
 
     // The function that supplies the stream to the parent...
-    ostream& getOstream(void) { 
+    std::ostream& getOstream(void) { 
       return output_stream;
     }
   };
@@ -181,7 +116,7 @@ namespace XMLWriterAPI {
  
   class XMLSimpleFileWriter : public XMLWriterBase {
   public:
-    XMLSimpleFileWriter(const string& filename, bool write_prologue=true) {
+    XMLSimpleFileWriter(const std::string& filename, bool write_prologue=true) {
     
       output_stream.open(filename.c_str(), ofstream::out);
       if( write_prologue ) {
@@ -200,8 +135,8 @@ namespace XMLWriterAPI {
     }
 
   private:
-    ofstream output_stream;
-    ostream& getOstream(void) { 
+    std::ofstream output_stream;
+    std::ostream& getOstream(void) { 
       return output_stream;
     }
   };
