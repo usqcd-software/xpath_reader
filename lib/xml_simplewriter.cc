@@ -234,7 +234,7 @@ void
 XMLSimpleWriter::writePrologue(ostream& os) const
 {
    os << "<?xml version=\"1.0\"?>" << endl;
-   os << "<!-- Written by XMLSimpleWriter class by Balint Joo -->";
+// os << "<!-- Written by XMLSimpleWriter class by Balint Joo -->";
    os << endl;
    os.flush();
 }
