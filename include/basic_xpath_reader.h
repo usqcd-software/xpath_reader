@@ -1,4 +1,4 @@
-/* $Id: basic_xpath_reader.h,v 1.10 2003-09-10 09:25:52 bjoo Exp $
+/* $Id: basic_xpath_reader.h,v 1.11 2003-09-10 12:07:29 bjoo Exp $
  *
  * File: basic_xpath_reader.h
  *
@@ -108,7 +108,7 @@
 #include <sstream>
 #include <string>
 #include <document.h>
-
+#include <list>
 
 using namespace std;
 
@@ -121,6 +121,25 @@ namespace XMLXPathReader {
     xpath_is_initialised = true;
   }
 
+  class NameSpace { 
+  public: 
+    NameSpace(const string& _prefix, const string& _uri) {
+      prefix = _prefix;
+      uri = _uri;
+    }
+    
+    const string& getPrefix() {
+      return prefix;
+    }
+
+    const string& getURI() {
+      return uri;
+    }
+      
+    private:
+      string prefix;
+      string uri;
+  };
 
   class BasicXPathReader {
   public:
@@ -211,7 +230,7 @@ namespace XMLXPathReader {
 	query_result = (xmlXPathObjectPtr) NULL;
 	xmlDocPtr doc = docref->getDoc();
 	xpath_context = xmlXPathNewContext(doc);
-	snarfNamespaces(xmlDocGetRootElement(doc), xpath_context);
+	// snarfNamespaces(xmlDocGetRootElement(doc), xpath_context);
       }
       catch ( const string& e ) { 
 	throw;
@@ -245,7 +264,7 @@ namespace XMLXPathReader {
 	query_result = (xmlXPathObjectPtr) NULL;
 	xmlDocPtr doc = docref->getDoc();
 	xpath_context = xmlXPathNewContext(doc);
-        snarfNamespaces(xmlDocGetRootElement(doc), xpath_context);
+        // snarfNamespaces(xmlDocGetRootElement(doc), xpath_context);
       }
       catch ( const string& e ) { 
 	throw;
@@ -264,23 +283,6 @@ namespace XMLXPathReader {
 	xmlDocPtr doc = docref->getDoc();
 	xpath_context = xmlXPathNewContext(doc);
 
-	int i;
-	// Copy the namespaces 
-	if( old.xpath_context->nsNr >  0 ) {
-	  xpath_context->nsNr = old.xpath_context->nsNr;
-	  xpath_context->namespaces = new (xmlNs *)[xpath_context->nsNr];
-	  for(i=0; i < xpath_context->nsNr; i++) { 
-	    xpath_context->namespaces[i] = xmlCopyNamespace(old.xpath_context->namespaces[i]);
-	  }
-	}
-	if( old.xpath_context->tmpNsNr > 0 ) { 
-	  xpath_context->tmpNsNr = old.xpath_context->tmpNsNr;
-	  xpath_context->tmpNsList = new (xmlNs *)[xpath_context->tmpNsNr];
-	  for(i=0; i < xpath_context->tmpNsNr; i++) { 
-	    xpath_context->tmpNsList[i] = xmlCopyNamespace(old.xpath_context->tmpNsList[i]);
-	  }
-	}
-	
 	// Now execute the xpath query and set the context node
 	ostringstream error_message;
 	
@@ -309,6 +311,12 @@ namespace XMLXPathReader {
 	
 	// Check that the node returned is an element
 	xpath_context->node = old.query_result->nodesetval->nodeTab[0];
+
+	list<NameSpace>::iterator iter;
+	for( iter = old.nslist.begin(); iter != old.nslist.end(); iter++) {
+	  registerNamespace(iter->getPrefix(), iter->getURI());
+	}
+	
 	docref->increaseRefcount();
       }
       else { 
@@ -346,7 +354,8 @@ namespace XMLXPathReader {
 	if( xpath_context != NULL ) { 
 	  xmlXPathFreeContext(xpath_context);
 	}
-	
+
+	nslist.clear();
       }
       else {
 	// Else we are not open so closing will do sod all
@@ -561,68 +570,59 @@ namespace XMLXPathReader {
     //! Print an element selected by XPath
     void printXPathNode(ostream& os, const string& xpath_to_node);
 
-  protected:
+    void registerNamespace(const string& prefix, const string& uri) {
+      if( docref != 0x0 ) { 
+	if( xpath_context != 0x0 ) { 
+	  xmlXPathRegisterNs(xpath_context, (xmlChar *)prefix.c_str(),
+			     (xmlChar *)uri.c_str());
+	  nslist.push_back(NameSpace(prefix, uri));
+	}
+      }
+    }
+
+  private:
     /* Stuff needed by libxml */
     XMLDocument* docref;
     xmlXPathContextPtr xpath_context;
     xmlXPathObjectPtr  query_result;
+    list<NameSpace> nslist;
 
-  private:
-/*! This contentious piece of code goes through the whole "tree"
- *  and registers every single namespace it finds into the XPath context.
- *  This may or may not be standard compliant as is */
+
+    /*! This contentious piece of code goes through the whole "tree"
+     *  and registers every single namespace it finds into the XPath context.
+     *  This may or may not be standard compliant as is */
+#if 0
     void 
       snarfNamespaces(xmlNodePtr current_node,
 		      xmlXPathContextPtr xpath_context) {
       
       ostringstream error_message;
-      
-      if( current_node == (xmlNodePtr)NULL ) {
-	/* End of recursion -- we are NULL */
-	return;
-      }
-      else { 
-	
-	/* Do my own namespaces */
-	xmlNsPtr nsdefptr = current_node->nsDef;
-	while( nsdefptr != NULL ) { 
-	  
-	  // if the namespace prefix is not null it is a non-default
-	  // namespace -- register it.
-	  if( nsdefptr->prefix != NULL ) { 
-	    string prefix((char *)nsdefptr->prefix);
-	    string href((char *)nsdefptr->href);
-#if 0
-	    cout << "Found Namespace Definition: " << endl;
-	    cout << "\t Prefix = " << prefix << " URI = " << href;
-	    cout << "... Registering" << endl; 
-#endif
-	    xmlXPathRegisterNs(xpath_context, 
-			       nsdefptr->prefix,
-			       nsdefptr->href);
+      xmlNsPtr *ns_ptr_array;
+      xmlNsPtr *shadow;
+      xmlDocPtr doc;
+      int i;
+
+      doc = docref->getDoc();
+
+      // Get the namespaces applying to the current node
+      ns_ptr_array = xmlGetNsList(doc,current_node);
+    
+      // Walk list and register xpath
+      if(  ns_ptr_array != NULL ) {
+	shadow = ns_ptr_array;
+	while( *shadow != NULL ) {
+	  if( (*shadow)->prefix != NULL ) { 
+	    xmlXPathRegisterNs(xpath_context, (*shadow)->prefix, (*shadow)->href);
 	  }
-	  else { 
-	    // If the prefix is null, the namespace is 'a' default
-	    // namespace. Dunno what to do with it...
-	    string href((char *)nsdefptr->href);
-#if 0
-	    cout << "Found Default Namespace Definition: " << endl;
-	    cout << "\t URI = " << href;
-	    cout << " ... Not Registering Default Namespace" << endl;
-#endif
-	  }
-	  
-	  nsdefptr=nsdefptr->next;
+	  shadow++; // Next
 	}
-	
-	/* Recurse down my siblings */
-	snarfNamespaces(current_node->next, xpath_context);
-    
-	/* Recurse down my children */
-	snarfNamespaces(current_node->children, xpath_context);
+   
+	/* xmlFreeNsList(*ns_ptr_array); */
       }
+      
     }
-    
+#endif
+
     /* Ensure that the query returned something non-null */
     void checkQuery(const string& xpath) {
       ostringstream error_message;

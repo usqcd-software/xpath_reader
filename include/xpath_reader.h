@@ -1,4 +1,4 @@
-/* Id: $Id: xpath_reader.h,v 1.6 2003-09-10 09:25:52 bjoo Exp $
+/* Id: $Id: xpath_reader.h,v 1.7 2003-09-10 12:07:29 bjoo Exp $
  *
  * File: xpath_reader.h
  *
@@ -155,6 +155,10 @@ namespace XMLXPathReader {
     // evaluate "count(xpath)" and return an INTEGER
     int countXPath(const string& xpath) {
       return BasicXPathReader::count(xpath);
+    }
+
+    void registerNamespace(const string& prefix, const string& uri) {
+      BasicXPathReader::registerNamespace(prefix,uri);
     }
 
     // print out xml document into ostream os 

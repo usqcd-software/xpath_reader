@@ -5,7 +5,7 @@
     <kappa> 0.1440e-2 </kappa>
   </bar>
 
-  <bar xmlns:fred="http://www.ph.ed.ac.uk/~bj" funkyAttribute="Four and twenty virgins" index="5">
+  <bar xmlns:fred="http://www.ph.ed.ac.uk/~bj2" funkyAttribute="Four and twenty virgins" index="5">
     <fred:kappa>
 	0.1440e-2
 
@@ -103,5 +103,8 @@
        <y value="16"/>
      </size>
 
+    <bj:pooh>
+	<bj:bear>5</bj:bear>
+    </bj:pooh>
     <list>1 2 3 4 5 6</list>
 </foo>

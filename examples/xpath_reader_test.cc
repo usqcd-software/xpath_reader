@@ -26,6 +26,10 @@ int main(int argc, char *argv[])
   cout << "Document Open Complete" << endl;
 
 
+  // Register query namespace prefixes
+  reader.registerNamespace("bj", "http://www.ph.ed.ac.uk/~bj/");
+  reader.registerNamespace("fred", "http://www.ph.ed.ac.uk/~bj2");
+
   // Try and get a string 
   string sresult ="";  
   try {
@@ -329,6 +333,17 @@ int main(int argc, char *argv[])
       cout << "caa[" << idx1<<"]["<<idx2<<"] = (" << caa[idx1][idx2].real()
 	   <<" , " << caa[idx1][idx2].imag() << ")" << endl;
     }
+  }
+
+  XPathReader jimmi(reader, "//bj:pooh");
+  try {
+    //    jimmi.registerNamespace("bj", "http://www.ph.ed.ac.uk/~bj/");
+    jimmi.getXPath("bj:bear", idx1);
+
+    cout << "Reader jimmis query bj:bear returned " << idx1 << endl;
+  }
+  catch(const string& e) { 
+    cout << e << endl;
   }
 
   // We're done.

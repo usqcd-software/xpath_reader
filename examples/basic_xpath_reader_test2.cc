@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader_test2.cc,v 1.5 2003-09-08 20:49:35 edwards Exp $
+/* ID: $Id: basic_xpath_reader_test2.cc,v 1.6 2003-09-10 12:07:29 bjoo Exp $
  *
  * file: basic_xpath_reader2.cc
  *
@@ -31,6 +31,11 @@ int main(int argc, char *argv[])
     throw;
   }
   cout << "Document Open Complete" << endl;
+
+  // Register namespaces of interest that we will search in
+  reader.registerNamespace("bj", "http://www.ph.ed.ac.uk/~bj/");
+  reader.registerNamespace("f", "http://www.ph.ed.ac.uk/~bj2");
+
 
   // try to read a string 
   string sresult ="";
@@ -82,8 +87,8 @@ int main(int argc, char *argv[])
 
   // read another float and succeed -- use namespace in the xpath
   try { 
-    reader.get("/foo/bar/fred:kappa", fresult);
-    cout << "Query: /foo/bar/fred:kappa returned float: " << fresult <<endl;
+    reader.get("/foo/bar/f:kappa", fresult);
+    cout << "Query: /foo/bar/f:kappa returned float: " << fresult <<endl;
   }
   catch( const string& e) { 
     cout << e << endl;
@@ -119,8 +124,8 @@ int main(int argc, char *argv[])
 
   // try and read a double with a namespace and succeed
   try { 
-    reader.get("/foo/bar/fred:kappa", dresult);
-    cout << "Query: /foo/bar/fred:kappa returned double: " << dresult <<endl;
+    reader.get("/foo/bar/f:kappa", dresult);
+    cout << "Query: /foo/bar/f:kappa returned double: " << dresult <<endl;
   }
   catch( const string& e) { 
     cout << e << endl;

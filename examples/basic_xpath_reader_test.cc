@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader_test.cc,v 1.5 2003-09-08 20:49:35 edwards Exp $ 
+/* ID: $Id: basic_xpath_reader_test.cc,v 1.6 2003-09-10 12:07:29 bjoo Exp $ 
  * File: basic_xpath_reader_test.cc 
  * 
  * This file was a test to see how well I understood libxml xpath, 
@@ -52,14 +52,26 @@ int main(int argc, char *argv[])
     cin >> xpath_expression;
     
     if ( (xpath_expression != "exit") && (xpath_expression != "quit") ) {
-      try { 
-	reader.evaluateXPath(xpath_expression);
+      if ( xpath_expression == "#setns" )  {
+        cout << "Enter prefix" <<endl;
+        string prefix;
+        cin >> prefix;
+        cout << "Enter URI " << endl;
+        string uri;
+        cin >> uri;
+	
+        reader.registerNamespace(prefix, uri);
       }
-      catch(string &error_mesg) { 
-	// Catch errors but don't bomb. 
-	// let the user try again...
-	cerr << error_mesg;
-      }      
+      else {
+	try { 
+	  reader.evaluateXPath(xpath_expression);
+	}
+	catch(string &error_mesg) { 
+	  // Catch errors but don't bomb. 
+	  // let the user try again...
+	  cerr << error_mesg;
+	}      
+      } 
     }
     else {
       // exit or quit was entered 
