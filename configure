@@ -272,7 +272,7 @@ PACKAGE_VERSION='1.0'
 PACKAGE_STRING='xpath_reader 1.0'
 PACKAGE_BUGREPORT='bj@ph.ed.ac.uk'
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT RANLIB ac_ct_RANLIB INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE am__leading_dot DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS LIBXML2_CONFIG LIBXML2_CXXFLAGS LIBXML2_LIBS LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT RANLIB ac_ct_RANLIB INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE am__leading_dot DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE LIBXML2_CONFIG LIBXML2_CXXFLAGS LIBXML2_LIBS LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -2394,73 +2394,6 @@ fi
 
 
 
-#AC_ARG_WITH(qdp,
-#  AC_HELP_STRING(
-#    [--with-qdp=DIR],
-#    [Build QDP++ Apps on top of QDP++ where QDP++ is installed in DIR]
-#  ),
-#  [QDPXX_HOME="$with_qdp"]
-#)
-#
-#if test "X${QDPXX_HOME}X" = "XX" ; then
-#  AC_PATH_PROG(QDPXX_CONFIG, [qdp++-config], [])
-#else
-#  AC_PATH_PROG(QDPXX_CONFIG, [qdp++-config], [], [${QDPXX_HOME}/bin:${PATH}])
-#fi
-#
-#if test "X${QDPXX_CONFIG}X" = "XX" ; then
-#  AC_MSG_ERROR([QDP++ configuration program qdp++-config not found.])
-#fi
-#
-#AC_MSG_NOTICE([Found QDP++ configuration program ${QDPXX_CONFIG}])
-#AC_SUBST(QDPXX_CXXFLAGS, "`${QDPXX_CONFIG} --cxxflags`")
-#AC_MSG_NOTICE([QDP++ compile flags: ${QDPXX_CXXFLAGS}])
-#AC_SUBST(QDPXX_LDFLAGS,  "`${QDPXX_CONFIG} --ldflags`")
-#AC_MSG_NOTICE([QDP++ linking flags: ${QDPXX_LDFLAGS}])
-#AC_SUBST(QDPXX_LIBS,     "`${QDPXX_CONFIG} --libs`")
-#AC_MSG_NOTICE([QDP++ libraries flags: ${QDPXX_LIBS}])
-#AC_SUBST(QDPXX_ND,       "`${QDPXX_CONFIG} --Nd`")
-#if test "X${QDPXX_ND}X" = "XX" ; then
-#  AC_MSG_ERROR([Cannot determine QDP++ spacetime dimension])
-#else
-#  AC_MSG_NOTICE([QDP++ spacetime dimension: ${QDPXX_ND}])
-#fi
-#AC_SUBST(QDPXX_NC,       "`${QDPXX_CONFIG} --Nc`")
-#AC_MSG_NOTICE([QDP++ number of colors: ${QDPXX_NC}])
-#AC_SUBST(QDPXX_NS,       "`${QDPXX_CONFIG} --Ns`")
-#if test "X${QDPXX_NS}X" = "XX" ; then
-#  AC_MSG_ERROR([Cannot determine number of spin components in QDP++])
-#else
-#  AC_MSG_NOTICE([QDP++ number of spin components: ${QDPXX_NS}])
-#fi
-#
-#dnl Try to compile a QDP++ program to check the --with options
-#AC_MSG_CHECKING([if we can compile/link a simple QDP++ program])
-#
-#PAC_QDPXX_LINK_CXX_FUNC(
-#  ${QDPXX_CXXFLAGS},
-#  ${QDPXX_LDFLAGS},
-#  ${QDPXX_LIBS},
-#  ,
-#  ,
-#  [qdpxx_link_ok=yes],
-#  [qdpxx_link_ok=no]
-#)
-#
-#if test "X${qdpxx_link_ok}X" = "XyesX" ; then
-#  AC_MSG_RESULT(yes)
-#else
-#  AC_MSG_RESULT(no)
-#  AC_MSG_ERROR([Cannot compile/link a program with QDP++.
-#    Use --with-qdp=<dir> to select a working version.])
-#fi
-
-# these are dummies for now
-
-
-
-
-
 
 # Check whether --with-libxml2 or --without-libxml2 was given.
 if test "${with_libxml2+set}" = set; then
@@ -3377,9 +3310,6 @@ s,@AMDEPBACKSLASH@,$AMDEPBACKSLASH,;t t
 s,@CXXDEPMODE@,$CXXDEPMODE,;t t
 s,@am__fastdepCXX_TRUE@,$am__fastdepCXX_TRUE,;t t
 s,@am__fastdepCXX_FALSE@,$am__fastdepCXX_FALSE,;t t
-s,@QDPXX_CXXFLAGS@,$QDPXX_CXXFLAGS,;t t
-s,@QDPXX_LDFLAGS@,$QDPXX_LDFLAGS,;t t
-s,@QDPXX_LIBS@,$QDPXX_LIBS,;t t
 s,@LIBXML2_CONFIG@,$LIBXML2_CONFIG,;t t
 s,@LIBXML2_CXXFLAGS@,$LIBXML2_CXXFLAGS,;t t
 s,@LIBXML2_LIBS@,$LIBXML2_LIBS,;t t
