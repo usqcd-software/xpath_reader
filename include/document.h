@@ -64,6 +64,11 @@ namespace XMLXPathReader {
       xmlKeepBlanksDefault(0);
     }
 
+    ~XMLDocument(void)
+    {
+	if( doc != 0x0 ) xmlFreeDoc(doc);
+	doc = 0x0;
+    }
   protected:
     void increaseRefcount() {
       refcount++;
