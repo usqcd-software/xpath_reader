@@ -9,8 +9,7 @@ AM_LDFLAGS=-L@top_builddir@/lib
 LDADD = -lXPathReader -lxmlWriter @LIBS@ @LIBXML2_LIBS@ 
 
 check_PROGRAMS=basic_xpath_reader_test  basic_xpath_reader_test2 \
-	xpath_reader_test simple_writer_test
-
+	xpath_reader_test simple_writer_test schema_writer_test
 
 basic_xpath_reader_test_SOURCES=basic_xpath_reader_test.cc
 basic_xpath_reader_test_DEPENDENCIES = build_lib
@@ -23,6 +22,9 @@ xpath_reader_test_DEPENDENCIES= build_lib
 
 simple_writer_test_SOURCES=simple_writer_test.cc
 simple_writer_test_DEPENDENCIES = build_lib
+
+schema_writer_test_SOURCES=schema_writer_test.cc
+schema_writer_test_DEPENDENCIES=build_lib
 
 .PHONY: build_lib
 build_lib:
