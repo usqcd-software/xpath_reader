@@ -1,4 +1,4 @@
-/* $Id: array.h,v 1.6 2003-10-13 16:24:13 edwards Exp $ 
+/* $Id: array.h,v 1.7 2004-02-10 22:21:07 kostas Exp $ 
  *
  * File: array.h
  *
@@ -149,7 +149,52 @@ template<class T> class Array
       F[i] /= s1.F[i];
     return *this;
   }
+
+  //! add to all ellements
+  /*! Uses the underlying += */
+  Array<T>& operator+=(const T& s1)
+    {
+      for(int i=0; i < n1; ++i)
+	F[i] += s1 ;
+      return *this;
+    }
+
+  //! subtruct from all ellements
+  /*! Uses the underlying -= */
+  Array<T>& operator-=(const T& s1)
+    {
+      for(int i=0; i < n1; ++i)
+	F[i] -= s1 ;
+      return *this;
+    }
   
+  //! multiply   all ellements
+  /*! Uses the underlying *= */
+  Array<T>& operator*=(const T& s1)
+    {
+      for(int i=0; i < n1; ++i)
+	F[i] *= s1 ;
+      return *this;
+    }
+
+  //! devide  all ellements
+  /*! Uses the underlying *= */
+  Array<T>& operator/=(const T& s1)
+    {
+      for(int i=0; i < n1; ++i)
+	F[i] /= s1 ;
+      return *this;
+    }
+
+  //!unary -
+  /*! Uses the underlying unary - */
+  Array<T>& operator-()
+    {
+      for(int i=0; i < n1; ++i)
+	F[i] = -F[i] ;
+      return *this;
+    }
+
   //! Return ref to a column slice
   const T* slice() const {return F;}
   
