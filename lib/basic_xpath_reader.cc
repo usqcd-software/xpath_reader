@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader.cc,v 1.8 2003-08-27 19:33:42 edwards Exp $
+/* ID: $Id: basic_xpath_reader.cc,v 1.9 2003-08-28 17:00:28 edwards Exp $
  *
  * File: basic_xpath_reader.cc
  * 
@@ -44,16 +44,54 @@ void
 BasicXPathReader::open(istream& is)
 {
   string xml_document;
-  char buffer[256];
-  int bytes_read;
   
+#if 0
+  char buffer[256];
+
   // Read the file line by line
-  while( is.eof() == false ) {
+  // NOTE: on really long lines, this seems to fail under gcc
+  // for my test input
+  while( is.eof() == false && is.good() ) {
     is.getline(buffer, 255);
     // append to the internal document
     buffer[ is.gcount() ] = '\0';
     xml_document += string(buffer);
   }
+#endif
+
+#if 0
+  char buffer[256];
+
+  // Read the stream chunk by chunk
+  // NOTE: this just always returns len on first read and sets errors
+  // for my test input
+  while( is.good() ) 
+  {
+    int len = is.readsome(buffer, 255);
+    // append to the internal document
+    buffer[ len ] = '\0';
+    xml_document += string(buffer);
+  }
+#endif
+
+#if 1
+  // RGE: I don't understand why, but the above 2 failed on some particular
+  // input. This method works fine. It is not necessarily that bad since the
+  // underlying stream will buffer the data. However, the above should be
+  // faster and are preferable.
+  xml_document = "";
+
+  // Read the stream char by char
+  int c = is.get();
+  while( is.good() ) 
+  {
+    // append to the internal document
+    xml_document += c;
+
+    // get next char
+    c = is.get();
+  }
+#endif
 
   // Now parse the document from memory.
   doc = xmlParseMemory(xml_document.c_str(), xml_document.length());
