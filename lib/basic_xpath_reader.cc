@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader.cc,v 1.10 2003-09-05 15:43:52 bjoo Exp $
+/* ID: $Id: basic_xpath_reader.cc,v 1.11 2003-09-08 15:45:08 bjoo Exp $
  *
  * File: basic_xpath_reader.cc
  * 
@@ -19,91 +19,204 @@ using namespace std;
 /* This is our namespace */
 using namespace XMLXPathReader;
 
-/*! Open a file whose name is in filename */
-BasicXPathReader::BasicXPathReader(XMLDocument& document) : docref(document)
+// Your basic empty reader 
+BasicXPathReader::BasicXPathReader(void)
+{
+  docref = 0x0;
+  xpath_context = NULL;
+  query_result = NULL;
+}
+
+
+BasicXPathReader::BasicXPathReader(istream& is)
+{
+  docref = 0x0;
+  xpath_context = NULL;
+  query_result = NULL; 
+  try {
+    open(is);
+  }
+  catch( const string& e) {
+    throw;
+  }
+}
+
+BasicXPathReader::BasicXPathReader(const string& filename)
+{
+  docref = 0x0;
+  xpath_context = NULL;
+  query_result = NULL;
+  try { 
+    open(filename);
+  }
+  catch( const string& e) {
+    throw;
+  }
+}
+
+
+void BasicXPathReader::open(const string& filename)
+{
+  // There are two possibilities to opening
+  //
+  // i) Reader is already open
+  // ii) The reader is not yet open.
+  //
+  //
+  // case i) Reader is already open.
+  close();
+
+  // Ok, open the document
+  try { 
+    
+    docref = new XMLDocument(filename);
+
+    if( docref == 0x0 ) {
+      ostringstream error_stream;
+      error_stream << "Unable to create new XML Document using open(filename) filename=" << filename << ")";
+      throw error_stream.str();
+    }
+    
+    // Make sure the document feels referred to.
+    docref->increaseRefcount();
+    query_result = (xmlXPathObjectPtr) NULL;
+    xmlDocPtr doc = docref->getDoc();
+    xpath_context = xmlXPathNewContext(doc);
+    snarfNamespaces(xmlDocGetRootElement(doc), xpath_context);
+  }
+  catch ( const string& e ) { 
+    throw;
+  }
+}
+
+
+void BasicXPathReader::open(istream& is)
+{
+  // There are two possibilities to opening
+  //
+  // i) Reader is already open
+  // ii) The reader is not yet open.
+  //
+  //
+  // case i) Reader is already open.
+  close();
+
+  // Ok, open the document
+  try { 
+    
+    docref = new XMLDocument(is);
+
+    if( docref == 0x0 ) {
+      ostringstream error_stream;
+      error_stream << "Unable to create new XML Document using open(istream& is)";
+      throw error_stream.str();
+    }
+    
+    // Make sure the document feels referred to.
+    docref->increaseRefcount();
+	
+    query_result = (xmlXPathObjectPtr) NULL;
+    xmlDocPtr doc = docref->getDoc();
+    xpath_context = xmlXPathNewContext(doc);
+    snarfNamespaces(xmlDocGetRootElement(doc), xpath_context);
+  }
+  catch ( const string& e ) { 
+    throw;
+  }
+}
+
+void BasicXPathReader::close(void) 
 {
 
-  doc = docref.getDocument();
+  if( docref != 0x0 ) { 
+    // Reader is already open. 
+    // We detach from the current document:
 
-  // Check the document is non null
-  if ( doc == (xmlDocPtr)NULL ) { 
-    throw "Attempting to instantiate reader on null document";
+    // decrement its refcount
+    docref->decreaseRefcount();
+
+    // if decrementing the refcount means there are no more references
+    // then delete the object -- this ought to call the destructor
+    if ( docref->getRefcount() == 0 ) { 
+      cout << "Reader: docrefs refcount reached 0. Deleting" << endl;
+      delete docref;
+    }
+    
+    // We are now officially not open 
+    docref = 0x0;
+
+    // Clean up any left-over query result
+    if ( query_result != NULL ) { 
+      xmlXPathFreeObject(query_result);
+    }
+
+    // Clean up the XPath content
+    if( xpath_context != NULL ) { 
+      xmlXPathFreeContext(xpath_context);
+    }
+
+  }
+  else {
+    // Else we are not open so closing will do sod all
   }
 
-  docref.increaseRefcount();
-
-  query_result = (xmlXPathObjectPtr) NULL;
-  
-  setupXPath();
-
-  
 }
 
 
 BasicXPathReader::~BasicXPathReader(void)
 {
-  /* Clean Up the XPath stuff */
 
-  // Clean up any left-over query result
-  if ( query_result != NULL ) { 
-    xmlXPathFreeObject(query_result);
+  if( docref != 0x0) { 
+    close();
   }
-
-  // Clean up the XPath content
-  if( xpath_context != NULL ) { 
-    xmlXPathFreeContext(xpath_context);
-  }
-
-  // I can set mine to NULL as it is just a pointer to the docref's
-  doc = (xmlDocPtr)NULL;
-
-  // I can signal my document that I am done with it.
-  docref.decreaseRefcount();
 
 }
 
-BasicXPathReader::BasicXPathReader(BasicXPathReader& old, const string& xpath) : docref(old.docref)
+BasicXPathReader::BasicXPathReader(BasicXPathReader& old, const string& xpath)
 {
-  /* Copy the document and the root node poinetrs */
-  doc = docref.getDocument();
 
-  // Check the document is non null
-  if ( doc == (xmlDocPtr)NULL ) { 
-    throw "Attempting to instantiate reader on null document";
-  }
+  if( old.docref != 0x0) { 
 
-  docref.increaseRefcount();
+    docref = old.docref;
+   
+    query_result = (xmlXPathObjectPtr) NULL;
+    xmlDocPtr doc = docref->getDoc();
+    xpath_context = xmlXPathNewContext(doc);
+    snarfNamespaces(xmlDocGetRootElement(doc), xpath_context);
 
-  setupXPath();
-
-  /* Now execute the xpath query and set the context node */
-  ostringstream error_message;
+    /* Now execute the xpath query and set the context node */
+    ostringstream error_message;
   
-  try { 
-    old.evaluateXPath(xpath);
-  }
-  catch ( const string& e ) { 
-    throw e;
-  }
+    try { 
+      old.evaluateXPath(xpath);
+    }
+    catch ( const string& e ) { 
+      throw e;
+    }
+    
+    // Check that the query returned non-empty result
+    try { 
+      old.checkQuery(xpath);
+    }
+    catch( const string& e) { 
+      throw;
+    }
 
-  // Check that the query returned non-empty result
-  try { 
-    old.checkQuery(xpath);
-  }
-  catch( const string& e) { 
-    throw;
-  }
-
-      /* Check that the node set contains only 1 element */
-  if( old.query_result->nodesetval->nodeNr != 1 ) {
-    error_message << "XPath Query: " << xpath << " did not return unique node."
-		  << " nodes returned = " << old.query_result->nodesetval->nodeNr 
-		  << endl;
-    throw error_message.str();
-  }
-
+    /* Check that the node set contains only 1 element */
+    if( old.query_result->nodesetval->nodeNr != 1 ) {
+      error_message << "XPath Query: " << xpath << " did not return unique node."
+		    << " nodes returned = " << old.query_result->nodesetval->nodeNr 
+		    << endl;
+      throw error_message.str();
+    }
+    
   /* Check that the node returned is an element */
-  xpath_context->node = old.query_result->nodesetval->nodeTab[0];
+    xpath_context->node = old.query_result->nodesetval->nodeTab[0];
+    docref->increaseRefcount();
+  }
+  else { 
+    throw "Attempting to clone a closed Reader";
+  }
 
 }
 
@@ -284,55 +397,6 @@ BasicXPathReader::getAttribute(const string& xpath_to_node,
 				  "bool");
 }
 
-/*
-xmlNodePtr 
-BasicXPathReader::getCurrentContextNode(void) {
-  return xpath_context->node;
-}
-
-void
-BasicXPathReader::setCurrentContextNode(xmlNodePtr new_context_node) {
-  xpath_context->node = new_context_node;
-}
-*/
-
-/*! Set the XPath Context to the Current XPath */
-/*
-void 
-BasicXPathReader::setCurrentXPath(const string& xpath)
-{
-  ostringstream error_message;
-  
-  try { 
-    evaluateXPath(xpath);
-  }
-  catch ( const string& e ) { 
-    throw e;
-  }
-
-  // Check that the query returned non-empty result
-  try { 
-    checkQuery(xpath);
-  }
-  catch( const string& e) { 
-    throw;
-  }
-
-  // Check that the node set contains only 1 element
-  if( query_result->nodesetval->nodeNr != 1 ) {
-    error_message << "XPath Query: " << xpath << " did not return unique node."
-		  << " nodes returned = " << query_result->nodesetval->nodeNr 
-		  << endl;
-    throw error_message.str();
-  }
-
-  // Check that the node returned is an element
-  xmlNodePtr res_node = query_result->nodesetval->nodeTab[0];
-
-  // Set the current context
-  xpath_context->node = res_node;
-}
-*/
 
 /*! count elements returned by xpath */
 int
@@ -340,11 +404,13 @@ BasicXPathReader::count(const string& xpath)
 {
   ostringstream error_message;
   int ret_val;
-
+  
   // Construct query */
   string query="count("+xpath+")";
-
-  // Run query */
+  
+  // Run query 
+  // This is the bit that checks that what we are doing is legit
+  
   try { 
     evaluateXPath(query);
   }
@@ -353,7 +419,7 @@ BasicXPathReader::count(const string& xpath)
   }
 
 
-  // Check that the result is a number otherwise something is very wrong! 
+    // Check that the result is a number otherwise something is very wrong! 
   if( query_result->type != XPATH_NUMBER ) {
     error_message << "XPath Query: " << query
 		  << " did not succeed" << endl;
@@ -364,15 +430,16 @@ BasicXPathReader::count(const string& xpath)
     // as you cant count a non-integral no of things.
     ret_val = (int)(query_result->floatval);
   }
-
+  
   // Post query cleanup
   if ( query_result != NULL ) { 
     xmlXPathFreeObject(query_result);
     query_result = NULL;
   }  
-
+  
   // return the number 
   return ret_val;
+    
 }
 
 /*! basic routine for getting the string value of a desired attribute */
@@ -387,6 +454,7 @@ BasicXPathReader::getAttributeString(const string& xpath_to_node,
   // First check that the xpath to node identifies a unique node
 
   // run the query 
+  // This is the bit that checks that we have a document to query 
   try {
     evaluateXPath(xpath_to_node);
   }
@@ -461,20 +529,23 @@ BasicXPathReader::getAttributeString(const string& xpath_to_node,
 void
 BasicXPathReader::print(ostream& os)
 {
-  xmlChar *buffer=(xmlChar *)NULL;
-  int buflen;
-  ostringstream error_stream;
 
-
-  if( doc != NULL ) { 
-    xmlDocDumpFormatMemory(doc, &buffer, &buflen, 1);
-    if( buffer ==(xmlChar *)NULL ) { 
-      error_stream << "xmlDocDumpMemory produced NULL XML-char";
-      throw error_stream.str();      
+  if( docref != 0x0 ) {
+    xmlChar *buffer=(xmlChar *)NULL;
+    int buflen;
+    ostringstream error_stream;
+    xmlDocPtr doc = docref->getDoc();
+    
+    if( doc != NULL ) { 
+      xmlDocDumpFormatMemory(doc, &buffer, &buflen, 1);
+      if( buffer ==(xmlChar *)NULL ) { 
+	error_stream << "xmlDocDumpMemory produced NULL XML-char";
+	throw error_stream.str();      
+      }
+      buffer[buflen]='\0';
+      os << buffer << endl;
+      xmlFree(buffer);
     }
-    buffer[buflen]='\0';
-    os << buffer << endl;
-    xmlFree(buffer);
   }
 }      
 
@@ -482,7 +553,10 @@ BasicXPathReader::print(ostream& os)
 void 
 BasicXPathReader::printRoot(ostream& os)
 {
-  printNode(os,xmlDocGetRootElement(doc) );
+  if( docref != 0x0 ) { 
+    xmlDocPtr doc = docref->getDoc();
+    printNode(os,xmlDocGetRootElement(doc) );
+  }
 }
 
 void 
@@ -540,33 +614,37 @@ BasicXPathReader::printXPathNode(ostream& os, const string& xpath_to_node)
 void
 BasicXPathReader::printNode(ostream& os, xmlNodePtr node)
 {
-  xmlBufferPtr xmlBuf;
-  ostringstream error_message;
 
-  xmlBuf = xmlBufferCreate();
-  if ( xmlBuf == (xmlBufferPtr)NULL ) { 
-    error_message << "Failed to create buffer in printNode" << endl;
-    throw error_message.str();
-  }
-
+  if( docref != 0x0 ) { 
+    xmlDocPtr doc = docref->getDoc();
+    xmlBufferPtr xmlBuf;
+    ostringstream error_message;
+    
+    xmlBuf = xmlBufferCreate();
+    if ( xmlBuf == (xmlBufferPtr)NULL ) { 
+      error_message << "Failed to create buffer in printNode" << endl;
+      throw error_message.str();
+    }
+    
 #if 0
-  // RGE: This was the original: updated below
-  int size;
-  size = xmlNodeDump(xmlBuf, doc, node, 2, 1);
-
-  if ( size == -1 ) { 
-    error_message << "xmlNodeDump failed most heinously" << endl;
-    throw error_message.str();
-  }
-
-  os.write((char *)xmlBufferContent(xmlBuf), size);
+    // RGE: This was the original: updated below
+    int size;
+    size = xmlNodeDump(xmlBuf, doc, node, 2, 1);
+    
+    if ( size == -1 ) { 
+      error_message << "xmlNodeDump failed most heinously" << endl;
+      throw error_message.str();
+    }
+    
+    os.write((char *)xmlBufferContent(xmlBuf), size);
 #else
-  xmlNodeDump(xmlBuf, doc, node, 2, 1);
-
-  os << string((char *)xmlBufferContent(xmlBuf));
+    xmlNodeDump(xmlBuf, doc, node, 2, 1);
+    
+    os << string((char *)xmlBufferContent(xmlBuf));
 #endif
-
-  xmlBufferFree(xmlBuf);
+    
+    xmlBufferFree(xmlBuf);
+  }
 }
 
 
@@ -575,7 +653,14 @@ BasicXPathReader::printNode(ostream& os, xmlNodePtr node)
 void
 BasicXPathReader::evaluateXPath(const string& xpath)
 {
+
   ostringstream error_message;
+
+  // Guard against queries of empty readers
+  if ( docref == 0 ) { 
+    error_message << "Attempting to execute a query on an empty Reader";
+    throw error_message.str();
+  }
 
   // Make sure previos queries didn't leave anything kicking about 
   if( query_result != NULL ) { 
@@ -602,19 +687,25 @@ BasicXPathReader::checkQuery(const string& xpath)
   /* Check that the result of the XPath is a node set */
   /* Note: don't have to worry about query_result being NULL,
      that was already checked in evaluate XPath */
-  
-  if( query_result->type != XPATH_NODESET ) {
-    error_message << "XPath Query: " << xpath << " didn't return a node_set" 
-		  << endl;
-    throw error_message.str();
+  if( query_result != NULL ) { 
+
+    if( query_result->type != XPATH_NODESET ) {
+      error_message << "XPath Query: " << xpath << " didn't return a node_set" 
+		    << endl;
+      throw error_message.str();
+    }
+    
+    /* Check that the nodesetval is not NULL */
+    if( query_result->nodesetval == 0x0 ) { 
+      error_message << "XPath Query: " << xpath << " returned a NULL node set"
+		    << endl;
+      throw error_message.str();
+    }
+  }
+  else { 
+    throw "query_result is NULL in checkQuery";
   }
 
-  /* Check that the nodesetval is not NULL */
-  if( query_result->nodesetval == 0x0 ) { 
-    error_message << "XPath Query: " << xpath << " returned a NULL node set"
-		  << endl;
-    throw error_message.str();
-  }
 }
 
 /*! check a query to make sure it returned a unique element
@@ -666,6 +757,7 @@ void
 BasicXPathReader::getPrimitiveString(const string& xpath, string& result)
 {
   ostringstream error_message;
+
 
   // Run the query 
   try { 
@@ -840,93 +932,101 @@ BasicXPathReader::findNonWhitespace(istringstream& s)
 void
 BasicXPathReader::printQueryResult(ostream& os)
 {
-  int nset;
-  int i;
-  ostringstream error_message;
-
-  if( query_result == NULL ) { 
-    os << "Query Result is NULL" << endl;
-  }
-  else {
-
-    /* Print different stuff depending on the query result type */
-    switch(query_result->type) {
-    case XPATH_UNDEFINED:
-      os << "======== QUERY RESULT IS UNDEFINED =========" << endl;
-      break;
-    case XPATH_NODESET:
-      os << "======== QUERY RESULT IS A NODE_SET ========" << endl;
-      os << "====== NODE DUMP START ========" << endl;
-      os.flush();
+  if( docref != 0x0 ) { 
+    int nset;
+    int i;
+    ostringstream error_message;
+    
+    if( query_result == NULL ) { 
+      os << "Query Result is NULL" << endl;
+    }
+    else {
+      xmlDocPtr doc = docref->getDoc();
       
-      /* Dump a node set -- if it is not null */
-      if( query_result->nodesetval == NULL  ) { 
-	os << "====== NODE SET IS NULL =======" << endl;
-      }
-      else {
-	/* Get the number of nodes in the node set */
-	nset = query_result->nodesetval->nodeNr;
-	os << "Nset is " << nset << endl;
-	if( nset > 0 ) { 
-
-	  /* If there is more than one, than go through the nodes
-	   * and dump each one */
-	  for(i=0; i < nset; i++) { 
-	    os.flush();
-	    switch(query_result->nodesetval->nodeTab[i]->type) { 
-	    case XML_DOCUMENT_NODE:
-	      // if query was / we get back the whole document
-	      os << "NodeSet contains Document node" <<endl;
-	      xmlDocDump(stdout,doc );
-	      break;
-	    case XML_ELEMENT_NODE:
-	      // otherwise use different function to dump
-	      xmlElemDump(stdout, doc, query_result->nodesetval->nodeTab[i]);
-	      break;
-	    default:
-	      // We may get back other nodes, but I don't care about them.
-	      os << "Much Weirdness" << endl;
+      /* Print different stuff depending on the query result type */
+      switch(query_result->type) {
+      case XPATH_UNDEFINED:
+	os << "======== QUERY RESULT IS UNDEFINED =========" << endl;
+	break;
+      case XPATH_NODESET:
+	os << "======== QUERY RESULT IS A NODE_SET ========" << endl;
+	os << "====== NODE DUMP START ========" << endl;
+	os.flush();
+	
+	/* Dump a node set -- if it is not null */
+	if( query_result->nodesetval == NULL  ) { 
+	  os << "====== NODE SET IS NULL =======" << endl;
+	}
+	else {
+	  /* Get the number of nodes in the node set */
+	  nset = query_result->nodesetval->nodeNr;
+	  os << "Nset is " << nset << endl;
+	  if( nset > 0 ) { 
+	    
+	    /* If there is more than one, than go through the nodes
+	     * and dump each one */
+	    for(i=0; i < nset; i++) { 
+	      os.flush();
+	      switch(query_result->nodesetval->nodeTab[i]->type) { 
+	      case XML_DOCUMENT_NODE:
+		// if query was / we get back the whole document
+		os << "NodeSet contains Document node" <<endl;
+		
+		xmlDocDump(stdout,doc );
+		break;
+	      case XML_ELEMENT_NODE:
+		// otherwise use different function to dump
+		xmlElemDump(stdout, doc, query_result->nodesetval->nodeTab[i]);
+		break;
+	      default:
+		// We may get back other nodes, but I don't care about them.
+		os << "Much Weirdness" << endl;
+	      }
 	    }
 	  }
 	}
+	fflush(stdout);
+	
+	os << endl;
+	os << "======= NODE DUMP END =========" << endl;
+	os.flush();     
+	break;
+      case XPATH_BOOLEAN:
+	os << "======== QUERY RESULT IS A BOOLEAN ========" << endl;
+	os << "===== Value is: " << boolalpha << (bool)((query_result->boolval > 0) ? true : false)  << endl;
+	break;
+      case XPATH_NUMBER:
+	os << "======== QUERY RESULT IS A NUMBER =========" << endl;
+	os << "===== Value is: " << (query_result->floatval) << endl;
+	break;
+      case XPATH_STRING:
+	os << "======== QUERY RESULT IS A STRING =========" << endl;
+	os << "======== Value is: " << (query_result->stringval) <<endl;
+	break;
+      case XPATH_POINT:
+	os << "======== QUERY RESULT IS XPATH_POINT ========" <<endl;
+	break;
+      case XPATH_RANGE:
+	os << "======== QUERY RESULT IS XPATH_RANGE ========" << endl;
+	break;
+      case XPATH_LOCATIONSET:
+	os << "======== QUERY RESULT IS XPATH_LOCATIONSET =====" << endl;
+	break;
+      case XPATH_USERS:
+	os << "======== QUERY RESULT IS XPATH_USERS ==========" << endl;
+	break;
+      case XPATH_XSLT_TREE:
+	os << "======== QUERY RESULT IS XPATH_XSLT_TREE ======" << endl;
+	break;
+      default:
+	os << "======== DONT KNOW WHAT TO DO WITH QUERY_RESULT =======" <<endl;
+	break;
       }
-      fflush(stdout);
-
-      os << endl;
-      os << "======= NODE DUMP END =========" << endl;
-      os.flush();     
-      break;
-    case XPATH_BOOLEAN:
-      os << "======== QUERY RESULT IS A BOOLEAN ========" << endl;
-      os << "===== Value is: " << boolalpha << (bool)((query_result->boolval > 0) ? true : false)  << endl;
-      break;
-    case XPATH_NUMBER:
-      os << "======== QUERY RESULT IS A NUMBER =========" << endl;
-      os << "===== Value is: " << (query_result->floatval) << endl;
-      break;
-    case XPATH_STRING:
-      os << "======== QUERY RESULT IS A STRING =========" << endl;
-      os << "======== Value is: " << (query_result->stringval) <<endl;
-      break;
-    case XPATH_POINT:
-      os << "======== QUERY RESULT IS XPATH_POINT ========" <<endl;
-      break;
-    case XPATH_RANGE:
-      os << "======== QUERY RESULT IS XPATH_RANGE ========" << endl;
-      break;
-    case XPATH_LOCATIONSET:
-      os << "======== QUERY RESULT IS XPATH_LOCATIONSET =====" << endl;
-      break;
-    case XPATH_USERS:
-      os << "======== QUERY RESULT IS XPATH_USERS ==========" << endl;
-      break;
-    case XPATH_XSLT_TREE:
-      os << "======== QUERY RESULT IS XPATH_XSLT_TREE ======" << endl;
-      break;
-    default:
-      os << "======== DONT KNOW WHAT TO DO WITH QUERY_RESULT =======" <<endl;
-      break;
     }
+  }
+  else { 
+
+    // No Document -- Nothing to print.
   }
 }      
 
@@ -961,7 +1061,7 @@ BasicXPathReader::snarfNamespaces(xmlNodePtr current_node,
 #endif
 	xmlXPathRegisterNs(xpath_context, 
 			   nsdefptr->prefix,
-			       nsdefptr->href);
+			   nsdefptr->href);
       }
       else { 
 	// If the prefix is null, the namespace is 'a' default
@@ -985,21 +1085,3 @@ BasicXPathReader::snarfNamespaces(xmlNodePtr current_node,
   }
 }
 
-/*! this bit does the libxml magic to get XPath going. I am not 
-  sure if it is what the authors of libxml intended due to lack of
-  appropriate documentation */
-void
-BasicXPathReader::setupXPath(void)
-{
-  /* Initialise the XPathEnvironment */
-  /*   if ( XMLXPathReader::is_XPath_initialised == false ) { */
-  /* Get the XPath context */
-  xpath_context = xmlXPathNewContext(doc);
-
-  query_result = NULL;
-  /* It is at this point that I should snarf all the namespaces
-     from doc and register them with the XPath processor 
-     Recursively register every namespace you find into the 
-     xpath context */
-  snarfNamespaces(xmlDocGetRootElement(doc), xpath_context);
-}

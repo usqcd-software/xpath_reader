@@ -12,12 +12,14 @@ using namespace XMLXPathReader;
 int main(int argc, char *argv[])
 {
   // Instantiate a reader
-  XMLDocument the_document;
+  initXPath();
 
+  XPathReader reader;
 
+ 
   // Try and open the reader
   try { 
-  the_document.open("foo.xml");
+  reader.open("foo.xml");
   } 
   catch (string &error_mesg) {
     cerr << error_mesg << endl;
@@ -26,7 +28,6 @@ int main(int argc, char *argv[])
   cout << "Document Open Complete" << endl;
 
 
-  XPathReader reader(the_document);
   // Try and get a string 
   string sresult ="";  
   try {
@@ -336,11 +337,8 @@ int main(int argc, char *argv[])
   cout << "Closing reader." << endl;
 
   /* This bit kills the last refcount */
-  reader.~XPathReader();
+  reader.close();
 
-  /*
-  the_document.close();
-  */
   return EXIT_SUCCESS;
 }
 

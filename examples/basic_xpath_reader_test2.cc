@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader_test2.cc,v 1.3 2003-09-05 15:43:52 bjoo Exp $
+/* ID: $Id: basic_xpath_reader_test2.cc,v 1.4 2003-09-08 15:45:08 bjoo Exp $
  *
  * file: basic_xpath_reader2.cc
  *
@@ -19,21 +19,21 @@ using namespace XMLXPathReader;
 int main(int argc, char *argv[])
 {
 
+  // Get this going
+  initXPath();
+
   // Get the reader
-  XMLDocument the_doc;
+  BasicXPathReader reader;
 
   // Open the file
   try { 
-    the_doc.open("foo.xml");
+    reader.open("foo.xml");
   } 
   catch (string &error_mesg) {
     cerr << error_mesg << endl;
     throw;
   }
   cout << "Document Open Complete" << endl;
-
-  // Attach a reader
-  BasicXPathReader reader(the_doc);
 
   // try to read a string 
   string sresult ="";
@@ -271,10 +271,8 @@ int main(int argc, char *argv[])
 
   cout << "Trying to reopen reader on document" << endl;
   istringstream foo(document.str());
-  XMLDocument doc2;
-  doc2.open(foo);
 
-  BasicXPathReader reader2(doc2);
+  BasicXPathReader reader2(foo);
 
   reader2.print(cout);
   
@@ -284,9 +282,7 @@ int main(int argc, char *argv[])
   istringstream foo2(root.str());
   
 
-  doc2.close();
-  doc2.open(foo2);
-  BasicXPathReader reader3(doc2);
+  BasicXPathReader reader3(foo2);
   reader3.printRoot(cout);
   
   
@@ -294,12 +290,11 @@ int main(int argc, char *argv[])
   cout << "Trying to reopenm reader on node selection" << endl;
   
   istringstream foo3(node.str());
-  doc2.close();
+  reader3.close();
 
-  doc2.open(foo3);
-  BasicXPathReader reader4(doc2);
-  reader4.printRoot(cout);
- 
+  reader3.open(foo3);
+  reader3.printRoot(cout);
+  reader3.close();
   cout << endl;
   return EXIT_SUCCESS;
 }

@@ -1,4 +1,4 @@
-/* Id: $Id: xpath_reader.h,v 1.4 2003-09-05 15:43:52 bjoo Exp $
+/* Id: $Id: xpath_reader.h,v 1.5 2003-09-08 15:45:08 bjoo Exp $
  *
  * File: xpath_reader.h
  *
@@ -124,27 +124,26 @@ namespace XMLXPathReader {
   // Your basic Reader.
   class XPathReader : private BasicXPathReader {
   public:
-    /*
-    // Open file. filename contains name of file.
-    void open(const string& filename) {
+
+    XPathReader(void) : BasicXPathReader() {} ;
+    XPathReader(istream& is) : BasicXPathReader(is) {} ;
+    XPathReader(const string& filename) : BasicXPathReader(filename) {} ;
+    ~XPathReader(void) {};
+
+    XPathReader(XPathReader& old, const string& xpath) : BasicXPathReader((BasicXPathReader&) old, xpath) {} ;
+
+
+    void open(const string& filename) { 
       BasicXPathReader::open(filename);
     }
 
-    // Open from stream. 
-    void open(istream& is) {
+    void open(istream& is) { 
       BasicXPathReader::open(is);
     }
 
-    // Close & cleanup
-    void close(void) {
+    void close(void) { 
       BasicXPathReader::close();
     }
-    */
-
-    XPathReader(XMLDocument& document) : BasicXPathReader(document) {};
-    // ~XPathReader() : ~BasicXPathReader() {};
-    XPathReader(XPathReader& old, const string& xpath) : BasicXPathReader((BasicXPathReader&) old, xpath) {} ;
-
 
     // evaluate "count(xpath)" and return an INTEGER
     int countXPath(const string& xpath) {
@@ -195,27 +194,28 @@ namespace XMLXPathReader {
       {
 	ostringstream error_message;
 
+
+	XPathReader complex_top(*this, xpath);
+
 	try { 
-	  XPathReader complex_re(*this, xpath);
-	  complex_re.getXPath("cmpx/re", result.real());
+	  complex_top.getXPath("cmpx/re", result.real());
 	}
 	catch(const string &e) {
 	  error_message << "XPath Query: " << xpath << " Error: "
 			<< "Failed to match real part of TComplex Object with self constructed path: re" ;
 
-
+	  complex_top.close();
 	  throw error_message.str();
 	}
 
-
 	try { 
-	  XPathReader complex_im(*this, xpath);
-	  complex_im.getXPath("cmpx/im", result.imag());
+	  complex_top.getXPath("cmpx/im", result.imag());
 	}
 	catch(const string &e) {
 	  error_message << "XPath Query: " << xpath << " Error: "
 			<< "Failed to match real part of TComplex Object with self constructed path: ./cmpx/im" ;
 
+	  complex_top.close();
 	  throw error_message.str();
 	}	
 
@@ -250,9 +250,7 @@ namespace XMLXPathReader {
 			<< endl
 			<< "array_xpath is: " << array_xpath;
 
-	  // Kill! Kill!! Kill!!!
-	  arraytop.~XPathReader();
-
+	  arraytop.close();
 	  throw error_message.str();
 	}
 
@@ -266,10 +264,7 @@ namespace XMLXPathReader {
 			<< endl
 			<< "array_xpath is: " << array_xpath;
 
-	  // Kill! Kill!! Kill!!!
-	  arraytop.~XPathReader();
-
-	  
+	  arraytop.close();
 	  throw error_message.str();
 	}
 
@@ -282,9 +277,7 @@ namespace XMLXPathReader {
 			<< " starting at XPath: " << xpath
 			<< endl
 			<< "array_xpath is: " << array_xpath;
-
-	  // Kill! Kill!! Kill!!!
-	  arraytop.~XPathReader();
+	  arraytop.close();
 	  throw error_message.str();
 	}
 
@@ -298,8 +291,7 @@ namespace XMLXPathReader {
 			<< endl
 			<< "array_xpath is: " << array_xpath;
 
-	  // Kill! Kill!! Kill!!!
-	  arraytop.~XPathReader();
+	  arraytop.close();
 	  throw error_message.str();
 	}
 
@@ -322,9 +314,8 @@ namespace XMLXPathReader {
 			<< "with XPath Query: " << n_elem_query
 			<< endl;
 
-	  arrayelem.~XPathReader();
-	  arraytop.~XPathReader();
-
+	  arraytop.close();
+	  arrayelem.close();
 	  throw error_message.str();
 	}
 	
@@ -340,6 +331,9 @@ namespace XMLXPathReader {
 	catch( const string& e) { 
 	  error_message << "Exception occurred while counting " << elem_base_query 
 			<< " during array read " << endl;
+
+	  arraytop.close();
+	  arrayelem.close();
 	}
       
 	// If there is disagreement, that is a problem
@@ -348,10 +342,8 @@ namespace XMLXPathReader {
 			<< " elements but " << array_size_check 
 			<< " were counted" << endl;
 
-	  arrayelem.~XPathReader();
-	  arraytop.~XPathReader();
-
-
+	  arraytop.close();
+	  arrayelem.close();
 	  throw error_message.str();
 	}
 
@@ -381,10 +373,8 @@ namespace XMLXPathReader {
 			  << endl
 			  << "Query returned error: " << e;
 
-	  arrayelem.~XPathReader();
-	  arraytop.~XPathReader();
-
-
+	    arraytop.close();
+	    arrayelem.close();
 	    throw error_message.str();
 	  }
 
@@ -393,8 +383,9 @@ namespace XMLXPathReader {
 
 	// Arraytop and Arrayelem should get disposed of here, and 
 	// should decrease their refcount on 'the document'
-
-      }    
+	arraytop.close();
+	arrayelem.close();
+      }
   };
 
 

@@ -1,4 +1,4 @@
-/* $Id: basic_xpath_reader.h,v 1.6 2003-09-05 15:43:52 bjoo Exp $
+/* $Id: basic_xpath_reader.h,v 1.7 2003-09-08 15:45:08 bjoo Exp $
  *
  * File: basic_xpath_reader.h
  *
@@ -107,152 +107,40 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <document.h>
 
 
 using namespace std;
 
 namespace XMLXPathReader {
 
-  static bool is_XPath_initialised=false;
+  static bool xpath_is_initialised = false;
 
-  class XMLDocument { 
-
-    friend class BasicXPathReader;
-
-  public:
-    XMLDocument() {
-      refcount = 0;
-      doc = NULL;
-    }
-
-    ~XMLDocument() {
-      close();
-    }
-
-    void open(const string& filename) { 
-      // Call libxml2 to parse a file into a document.
-      doc = xmlParseFile(filename.c_str());
-      
-      // Check the document is non null
-      if ( doc == (xmlDocPtr)NULL ) { 
-	throw "Could not parse document";
-      }
-
-        // Stuff to do with dumping back node selections
-      xmlIndentTreeOutput = 1;
-      xmlKeepBlanksDefault(0);
-
-      xmlXPathInit();
-    }
-     
-    void open(istream& is) {
-      string xml_document;
-      xml_document = "";
-      
-      // Read the stream char by char
-      int c = is.get();
-      while( is.good() ) {
-	// append to the internal document
-	xml_document += c;
-	
-	// get next char
-	c = is.get();
-      }
-      
-      // Now parse the document from memory.
-      doc = xmlParseMemory(xml_document.c_str(), xml_document.length());
-      
-      // Ensure success
-      if ( doc == (xmlDocPtr)NULL ) { 
-	throw "Could not parse document";
-      }
-      
-      xmlIndentTreeOutput = 1;
-      xmlKeepBlanksDefault(0);
-      
-      xmlXPathInit();
-    }
-    
-    void close(void) {
-      if( refcount != 0 ) { 
-	cerr << "WARNING Calling close() on document when refcount != 0 (refcount = " << refcount << ") " << endl;
-	cerr << "Some of your readers may be adversly affected!!!! "<< endl;
-      }
-      
-      if( doc != (xmlDocPtr)NULL ) {
-	xmlFreeDoc(doc);
-	doc = (xmlDocPtr)NULL ;
-      }
-      
-      refcount = 0;
-    }
-
-
-  protected:
-
-    // Needs to be called by every reader, at instantiation
-    void increaseRefcount() {
-      refcount++;
-#ifdef DEBUG
-      cout << "Refcount increased. Refcount = " << refcount << endl;
-#endif
-    }
-    
-    
-    // Needs to be called by every reader on destruction
-    void decreaseRefcount() {
-
-      if( refcount > 0 ) {
-	refcount--;
-#ifdef DEBUG
-	cout << "Refcount decreased. Refcount = " << refcount << endl;
-#endif
-      }
-
-      if( refcount == 0 ) {
-	
-#ifdef DEBUG
-	cout << "Refcount reached 0.. ";
-#endif
-	if( doc != (xmlDocPtr)NULL ) {
-
-#ifdef DEBUG
-	  cout << " Freeing document internals ";
-#endif
-	  xmlFreeDoc(doc);
-	  doc = (xmlDocPtr)NULL ;
-	}
-	cout << endl;
-      }
-    }
-
-    // This allows readers to be able to be get at the XML
-    xmlDocPtr getDocument(void) {
-      return doc;
-    }
-
-  private:
-    int refcount;
-    xmlDocPtr doc;
-    xmlXPathContextPtr xpath_context;
-
-
-  };
-
+  static void initXPath(void) {
+    xmlXPathInit();
+    xpath_is_initialised = true;
+  }
 
 
   class BasicXPathReader {
   public:
 
     /* The meaning of these should be clear to you */
-    BasicXPathReader(XMLDocument& doc);
+    // BasicXPathReader(XMLDocument& doc);
+
+    BasicXPathReader(void);
+    BasicXPathReader(istream& is);
+    BasicXPathReader(const string& filename);
     ~BasicXPathReader(void);
 
 
     /* This should let you clone an XPath reader */
     BasicXPathReader(BasicXPathReader& old, const string& xpath);
 
-
+    void open(const string& filename);
+    void open(istream &is);
+    void close(void);
+    
     /* So should these, there is just a lot of overloading */
     void get(const string& xpath, string& result);
     void get(const string& xpath, int& result);
@@ -327,17 +215,11 @@ namespace XMLXPathReader {
 
   private:
 
+
     /* Stuff needed by libxml */
-    XMLDocument& docref;
-    xmlDocPtr doc;
+    XMLDocument* docref;
     xmlXPathContextPtr xpath_context;
     xmlXPathObjectPtr  query_result;
-
-    /* Is the data real. (Did I read it) */
-    bool   data_realP;
-
-    /* Init function for the xpath system */
-    void setupXPath(void);
 
     /* Recursively trawl the document for namespace definitions
      * and register them in the XPath context */
