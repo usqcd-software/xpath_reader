@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader.cc,v 1.7 2003-08-25 10:48:59 bjoo Exp $
+/* ID: $Id: basic_xpath_reader.cc,v 1.8 2003-08-27 19:33:42 edwards Exp $
  *
  * File: basic_xpath_reader.cc
  * 
@@ -103,7 +103,7 @@ BasicXPathReader::get(const string& xpath, string& result)
   }
   catch(const string& e) { 
     /* Pass up exception if it occurs */
-    throw;
+    throw e;
   }
 }
 
@@ -609,7 +609,7 @@ BasicXPathReader::checkQueryPrimitive(const string& xpath)
   try { 
     checkQuery(xpath);
   } catch(const string& e) {
-    throw;
+    throw e;
   }
 
   /* Check that the node set contains only 1 element */
@@ -661,7 +661,7 @@ BasicXPathReader::getPrimitiveString(const string& xpath, string& result)
     checkQueryPrimitive(xpath);
   }
   catch(const string& e) {
-    throw;
+    throw e;
   }
   
 
