@@ -70,7 +70,8 @@ void XMLSimpleWriter::dumpTag(const string& nsprefix,
   // root element. I thought this was allowed but apparently not
   if( doctag_written == true && namestack.empty() ) {
     ostringstream error_message;
-    error_message << "Attempt to write second root tag -- this is not XML compliant" << endl;
+    error_message << "Attempt to write second root tag -- this is not XML compliant: tagname = " 
+		  << tagname << endl;
     throw error_message.str();
   }
 
