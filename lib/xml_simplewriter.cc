@@ -5,73 +5,72 @@
 
 #define INDENT_SPACES ((unsigned int)2)
 
-using namespace std;
 using namespace XMLWriterAPI;
 
-void XMLSimpleWriter::openTag(const string& tagname)
+void XMLSimpleWriter::openTag(const std::string& tagname)
 {
-  string empty_string;
+  std::string empty_string;
   AttributeList empty_list;
 
   dumpTag(empty_string, tagname, empty_list, false);
 }
 
-void XMLSimpleWriter::openTag(const string& nsprefix, const string& tagname)
+void XMLSimpleWriter::openTag(const std::string& nsprefix, const std::string& tagname)
 {
   AttributeList empty_list;
 
   dumpTag(nsprefix, tagname, empty_list, false);
 }
 
-void XMLSimpleWriter::openTag(const string& tagname, AttributeList& al)
+void XMLSimpleWriter::openTag(const std::string& tagname, AttributeList& al)
 {
-  string empty_string;
+  std::string empty_string;
   dumpTag(empty_string, tagname, al, false);
 }
 
-void XMLSimpleWriter::openTag(const string& nsprefix, 
-			    const string& tagname, 
+void XMLSimpleWriter::openTag(const std::string& nsprefix, 
+			    const std::string& tagname, 
 			    AttributeList& al)
 {
   dumpTag(nsprefix, tagname, al, false);
 }
 
-void XMLSimpleWriter::emptyTag(const string& tagname)
+void XMLSimpleWriter::emptyTag(const std::string& tagname)
 {
-  string empty_string;
+  std::string empty_string;
   AttributeList empty_list;
 
   dumpTag(empty_string, tagname, empty_list, true);
 }
 
-void XMLSimpleWriter::emptyTag(const string& tagname,  AttributeList& al)
+void XMLSimpleWriter::emptyTag(const std::string& tagname,  AttributeList& al)
 {
-  string empty_string;
+  std::string empty_string;
   dumpTag(empty_string, tagname, al, true);
 }
 
-void XMLSimpleWriter::emptyTag(const string& nsprefix, 
-			     const string& tagname, 
+void XMLSimpleWriter::emptyTag(const std::string& nsprefix, 
+			     const std::string& tagname, 
 			     AttributeList& al)
 {
   dumpTag(nsprefix, tagname, al, true);
 }
 
 
-void XMLSimpleWriter::dumpTag(const string& nsprefix, 
-			    const string& tagname, 
+void XMLSimpleWriter::dumpTag(const std::string& nsprefix, 
+			    const std::string& tagname, 
 			    AttributeList& al,
 			    bool is_empty)
 {
-  string qualified_tagname;
-  ostream& os=getOstream();
+  std::string qualified_tagname;
+  std::ostream& os=getOstream();
 
   // Check whether we are trying to write a second 
   // root element. I thought this was allowed but apparently not
   if( doctag_written == true && namestack.empty() ) {
-    ostringstream error_message;
+    std::ostringstream error_message;
     error_message << "Attempt to write second root tag -- this is not XML compliant: tagname = " 
-		  << tagname << endl;
+		  << tagname << std::endl;
     throw error_message.str();
   }
 
@@ -82,10 +81,10 @@ void XMLSimpleWriter::dumpTag(const string& nsprefix,
     qualified_tagname = nsprefix + ":" + tagname;
   }
   
-  string indent(indent_level*INDENT_SPACES, ' ');
-  os << endl <<  indent << "<" << qualified_tagname;
+  std::string indent(indent_level*INDENT_SPACES, ' ');
+  os << std::endl <<  indent << "<" << qualified_tagname;
   
-  list<Attribute>::iterator the_iterator;
+  std::list<Attribute>::iterator the_iterator;
   for(the_iterator = al.begin(); the_iterator != al.end(); the_iterator++) {
     if( (*the_iterator).isEmpty() == false ) {
       os << "  " << the_iterator->getName() << "=\"" << the_iterator->getValue()
@@ -113,8 +112,8 @@ void XMLSimpleWriter::dumpTag(const string& nsprefix,
   
 void XMLSimpleWriter::closeTag(void)
 {
-  string qualified_tagname;
-  ostream& os=getOstream();
+  std::string qualified_tagname;
+  std::ostream& os=getOstream();
 
   if( namestack.empty() == false ) { 
     qualified_tagname = namestack.top();
@@ -122,13 +121,13 @@ void XMLSimpleWriter::closeTag(void)
     indent_level--;
 
     if(primitive_last == false) {
-      string indent(indent_level*INDENT_SPACES, ' ');
-      os << endl << indent;
+      std::string indent(indent_level*INDENT_SPACES, ' ');
+      os << std::endl << indent;
     }
     os << "</" << qualified_tagname << ">" ;
   }
   else {
-    ostringstream error_message;
+    std::ostringstream error_message;
     error_message << "Attempt to close non existent tag";
     throw error_message.str();
   }
@@ -139,9 +138,9 @@ void XMLSimpleWriter::closeTag(void)
 
 
 void 
-XMLSimpleWriter::write(const string& output)
+XMLSimpleWriter::write(const std::string& output)
 {
-  writePrimitive<string>(output);
+  writePrimitive<std::string>(output);
 }
 
 void
@@ -204,15 +203,15 @@ template < typename T >
 void
 XMLSimpleWriter::writePrimitive(const T& output)
 {
-  ostream& os=getOstream();
+  std::ostream& os=getOstream();
 
   if( ! namestack.empty() ) { 
 
-    os << boolalpha << output;
+    os << std::boolalpha << output;
   }
   else { 
-    ostringstream error_string;
-    error_string << "Attempt to write before opening root tag" << endl;
+    std::ostringstream error_string;
+    error_string << "Attempt to write before opening root tag" << std::endl;
     throw error_string.str();
   }
 
@@ -221,21 +220,21 @@ XMLSimpleWriter::writePrimitive(const T& output)
 }
 
 void 
-XMLSimpleWriter::writeXML(const string& output)
+XMLSimpleWriter::writeXML(const std::string& output)
 {
-  ostream& os=getOstream();
+  std::ostream& os=getOstream();
 
   // Should this have more checking, e.g. of primitive_last or doctag?
-  os << output << endl;
+  os << output << std::endl;
   os.flush();
 }
 
 void 
-XMLSimpleWriter::writePrologue(ostream& os) const
+XMLSimpleWriter::writePrologue(std::ostream& os) const
 {
-   os << "<?xml version=\"1.0\"?>" << endl;
+   os << "<?xml version=\"1.0\"?>" << std::endl;
 // os << "<!-- Written by XMLSimpleWriter class by Balint Joo -->";
-   os << endl;
+   os << std::endl;
    os.flush();
 }
 
