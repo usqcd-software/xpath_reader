@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader.cc,v 1.15 2003-09-09 20:29:49 bjoo Exp $
+/* ID: $Id: basic_xpath_reader.cc,v 1.16 2004-04-27 11:22:59 bjoo Exp $
  *
  * File: basic_xpath_reader.cc
  * 
@@ -19,31 +19,44 @@ using namespace std;
 /* This is our namespace */
 using namespace XMLXPathReader;
 
-
-/* dump the entire tree out as stream */
-void
-BasicXPathReader::print(ostream& os)
-{
-
+void 
+BasicXPathReader::printDoc(ostream &os)
+{  
   if( docref != 0x0 ) {
     xmlChar *buffer=(xmlChar *)NULL;
     int buflen;
     ostringstream error_stream;
     xmlDocPtr doc = docref->getDoc();
     
-    if( doc != NULL ) { 
+    if( doc != NULL ) {
       xmlDocDumpFormatMemory(doc, &buffer, &buflen, 1);
-      if( buffer ==(xmlChar *)NULL ) { 
-	error_stream << "xmlDocDumpMemory produced NULL XML-char";
-	throw error_stream.str();      
+      if( buffer ==(xmlChar *)NULL ) {
+        error_stream << "xmlDocDumpMemory produced NULL XML-char";
+        throw error_stream.str();
       }
       buffer[buflen]='\0';
       os << buffer << endl;
       xmlFree(buffer);
     }
   }
+}
+
+void
+BasicXPathReader::print(ostream& os)
+{
+  if( docref != 0x0 ) {
+    printXPathNode(os, ".");
+  }
 }      
 
+
+void
+BasicXPathReader::printChildren(ostream& os)
+{
+  if( docref != 0x0 ) { 
+    printXPathNode(os,"./*");
+  }
+}
 
 void 
 BasicXPathReader::printRoot(ostream& os)
@@ -75,30 +88,17 @@ BasicXPathReader::printXPathNode(ostream& os, const string& xpath_to_node)
     throw e;
   }
 
-  // check node for uniqueness
-  if( query_result->nodesetval->nodeNr != 1 ) { 
-    error_message << "XPath Query: " << xpath_to_node
-		  << " does not identify a unique node" ;
-    throw error_message.str();
-  }  
+  for(int i = 0; i < query_result->nodesetval->nodeNr; i++) {
 
-  /* Check that the node returned is an element */
-  xmlNodePtr res_node = query_result->nodesetval->nodeTab[0];
+    /* Check that the node returned is an element */
+    xmlNodePtr res_node = query_result->nodesetval->nodeTab[i];
   
-  if( res_node == (xmlNodePtr)NULL ) { 
-    error_message << "XPath Query: " << xpath_to_node << " claims to have returned a single node, but nodeTab[0] is NULL" << endl;
-    throw error_message.str();
+    if ( res_node != NULL) {
+      // print it 
+      printNode(os, res_node);
+      os << endl;
+    }
   }
-
-  if ( res_node->type != XML_ELEMENT_NODE ) {
-    error_message << "XPath Query: " << xpath_to_node << " returned a non-element node"
-                  << endl;
-    throw error_message.str();
-  }
-  
-  // print it 
-  printNode(os, res_node);
-  
   // clean up
   if ( query_result != NULL ) { 
     xmlXPathFreeObject(query_result);

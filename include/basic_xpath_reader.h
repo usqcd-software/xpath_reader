@@ -1,4 +1,4 @@
-/* $Id: basic_xpath_reader.h,v 1.11 2003-09-10 12:07:29 bjoo Exp $
+/* $Id: basic_xpath_reader.h,v 1.12 2004-04-27 11:22:59 bjoo Exp $
  *
  * File: basic_xpath_reader.h
  *
@@ -561,11 +561,17 @@ namespace XMLXPathReader {
     void setCurrentContextNode(xmlNodePtr new_context_node);
     */
 
-    //! Print the entire contents as a stream
+    //! Print self from context node down -- include context node
     void print(ostream& os);
 
     //! Print the root element as a stream
     void printRoot(ostream& os);
+
+    //! Print the children of the context node -- dont include context node
+    void printChildren(ostream& os);
+
+    void printDoc(ostream& os);
+
 
     //! Print an element selected by XPath
     void printXPathNode(ostream& os, const string& xpath_to_node);
@@ -974,6 +980,8 @@ namespace XMLXPathReader {
     
     /* Generic function to print a node to an ostream */
     void printNode(ostream& os, xmlNodePtr node);
+
+
   };
 
 };
