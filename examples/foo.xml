@@ -67,8 +67,8 @@
 	</array>
   </arraytest_tag>
 
-
-    <rarraytest>
+    <jimmi>
+    <bj:rarraytest>
        <array sizeName="size" elemName="el" indexName="i" indexStart="5">
         <size>2</size>
         <el i="6">
@@ -95,7 +95,9 @@
           </array>
         </el>
        </array>
-     </rarraytest>
+     </bj:rarraytest>
+     </jimmi>
+
      <size>
        <x value="16"/>
        <y value="16"/>

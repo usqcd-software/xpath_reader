@@ -11,7 +11,7 @@ WRITER_HDRS = xml_simplewriter.h xml_writer.h attribute.h $(TYPE_HDRS)
 
 lib_LIBRARIES = libXPathReader.a libxmlWriter.a
 
-libXPathReader_a_SOURCES = basic_xpath_reader.cc document.cc
+libXPathReader_a_SOURCES = basic_xpath_reader.cc
 libXPathReader_a_DEPENDENCIES = $(READER_HDRS)
 
 libxmlWriter_a_SOURCES = xml_simplewriter.cc attribute.cc xml_struct_writer.cc

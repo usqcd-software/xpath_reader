@@ -312,7 +312,7 @@ int main(int argc, char *argv[])
   Array< Array< TComplex< string > > > caa;
   
   try {
-    reader.getXPath("//rarraytest", caa);
+    reader.getXPath("//bj:rarraytest", caa);
   }
   catch(const string& e) { 
     cout << e << endl;
