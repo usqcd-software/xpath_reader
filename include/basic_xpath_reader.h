@@ -1,4 +1,4 @@
-/* $Id: basic_xpath_reader.h,v 1.2 2003-05-10 22:44:11 edwards Exp $
+/* $Id: basic_xpath_reader.h,v 1.3 2003-05-12 06:05:09 edwards Exp $
  *
  * File: basic_xpath_reader.h
  *
@@ -178,7 +178,10 @@ namespace XMLXPathReader {
     void evaluateXPath(const string& xpath);
     void printQueryResult(ostream& os);
 
-    //! Print the route 
+    //! Print the entire contents as a stream
+    void print(ostream& os) const;
+
+    //! Print the root element as a stream
     void printRoot(ostream& os) const;
 
   private:

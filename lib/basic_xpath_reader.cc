@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader.cc,v 1.3 2003-05-10 22:44:11 edwards Exp $
+/* ID: $Id: basic_xpath_reader.cc,v 1.4 2003-05-12 06:05:09 edwards Exp $
  *
  * File: basic_xpath_reader.cc
  * 
@@ -384,7 +384,16 @@ BasicXPathReader::getAttributeString(const string& xpath_to_node,
 }
 
 
-/*! dump the root node and tree out as stream */
+/* dump the entire tree out as stream */
+void
+BasicXPathReader::print(ostream& os) const
+{
+  // THIS NEEDS TO BE IMPLEMENTED
+  os << "print needs to be implemented" << endl;
+}      
+
+
+/* dump the root node and tree out as stream */
 void
 BasicXPathReader::printRoot(ostream& os) const
 {
