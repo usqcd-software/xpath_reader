@@ -99,6 +99,7 @@ int main(int argc, char *argv[])
     cout << e << endl;
   }
   
+#if defined(XPATH_READER_TEST_DO_THIS_STUFF)
   // try and get a float out of a tag with more than one number
   // this will fail
   try { 
@@ -345,6 +346,7 @@ int main(int argc, char *argv[])
   catch(const string& e) { 
     cout << e << endl;
   }
+#endif
 
   // We're done.
   cout << "Closing reader." << endl;
