@@ -16,6 +16,7 @@
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
+VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -34,7 +35,6 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-VPATH = @top_srcdir@/lib @top_srcdir@/include
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -110,17 +110,11 @@ INCFLAGS = -I@top_srcdir@/include
 
 AM_CXXFLAGS = $(INCFLAGS) @LIBXML2_CXXFLAGS@
 
-TYPE_HDRS = tcomplex.h array.h
-READER_HDRS = basic_xpath_reader.h document.h $(TYPE_HDRS)
-WRITER_HDRS = xml_simplewriter.h xml_writer.h attribute.h $(TYPE_HDRS)
-
 lib_LIBRARIES = libXPathReader.a libxmlWriter.a
 
 libXPathReader_a_SOURCES = basic_xpath_reader.cc
-libXPathReader_a_DEPENDENCIES = $(READER_HDRS)
 
 libxmlWriter_a_SOURCES = xml_simplewriter.cc attribute.cc xml_struct_writer.cc
-libxmlWriter_a_DEPENDENCIES = $(WRITER_HDRS)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
