@@ -1,4 +1,4 @@
-/* $Id: basic_xpath_reader.h,v 1.3 2003-05-12 06:05:09 edwards Exp $
+/* $Id: basic_xpath_reader.h,v 1.4 2003-05-12 11:30:48 bjoo Exp $
  *
  * File: basic_xpath_reader.h
  *
@@ -179,10 +179,13 @@ namespace XMLXPathReader {
     void printQueryResult(ostream& os);
 
     //! Print the entire contents as a stream
-    void print(ostream& os) const;
+    void print(ostream& os);
 
     //! Print the root element as a stream
-    void printRoot(ostream& os) const;
+    void printRoot(ostream& os);
+
+    //! Print an element selected by XPath
+    void printXPathNode(ostream& os, const string& xpath_to_node);
 
   private:
 
@@ -264,6 +267,8 @@ namespace XMLXPathReader {
 			    const string& ptype);
 
 
+    /* Generic function to print a node to an ostream */
+    void printNode(ostream& os, xmlNodePtr node);
   };
 
 };

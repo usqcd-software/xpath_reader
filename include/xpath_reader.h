@@ -1,4 +1,4 @@
-/* Id: $Id: xpath_reader.h,v 1.1 2003-04-27 03:26:39 edwards Exp $
+/* Id: $Id: xpath_reader.h,v 1.2 2003-05-12 11:30:48 bjoo Exp $
  *
  * File: xpath_reader.h
  *
@@ -143,6 +143,22 @@ namespace XMLXPathReader {
     // evaluate "count(xpath)" and return an INTEGER
     int countXPath(const string& xpath) {
       return BasicXPathReader::count(xpath);
+    }
+
+    // print out xml document into ostream os 
+    void printDocument(ostream& os) {
+      BasicXPathReader::print(os);
+    }
+
+    // print out xml document from root element into ostream os
+    void printRoot(ostream& os) { 
+      BasicXPathReader::printRoot(os);
+    }
+
+    // print out xml from the node selected by the xpath_to_node
+    // expression into ostream os
+    void printXPathNode(ostream& os, const string& xpath_to_node) { 
+      BasicXPathReader::printXPathNode(os, xpath_to_node);
     }
 
     // Basic getXPathAttribute function -- calls 

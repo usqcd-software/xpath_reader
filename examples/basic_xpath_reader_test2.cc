@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader_test2.cc,v 1.1 2003-04-27 03:26:39 edwards Exp $
+/* ID: $Id: basic_xpath_reader_test2.cc,v 1.2 2003-05-12 11:30:48 bjoo Exp $
  *
  * file: basic_xpath_reader2.cc
  *
@@ -224,10 +224,66 @@ int main(int argc, char *argv[])
   }
 
   cout << "Query /foo/bar occurs " << occursFooBar << " times" << endl;
+
+  cout << "Testing dump functions:" <<endl;
+ 
+  ostringstream document;
+  ostringstream root;
+  ostringstream node;
+
+  try {
+    reader.print(document);
+  }
+  catch(const string& e) {
+    cout << e << endl;
+  }
+  cout << "Document: " << endl << document.str() <<endl;
+
+  try {
+    reader.printRoot(root);
+  }
+  catch( const string& e) { 
+    cout << e << endl;
+  }
+  cout << "Root Node: " << endl << root.str() << endl;
   
+  try {
+    reader.printXPathNode(node, "/foo/bar[1]");
+  }
+  catch ( const string& e) { 
+    cout << e << endl;
+  }
+  cout << "/foo/bar[1]: " << endl << node.str() << endl;
+
+  try { 
+    reader.printXPathNode(node, "/foo/bar");
+  }
+  catch( const string& e) { 
+    cout << e << endl;
+  }
+
   cout << "Closing reader." << endl;
   reader.close();
 
+  cout << "Trying to reopen reader on document" << endl;
+  istringstream foo(document.str());
+  reader.open(foo);
+  reader.print(cout);
+  reader.close();
+  cout << endl;
+  cout << "Trying to reopen reader on root node" << endl;
+  istringstream foo2(root.str());
+  reader.open(foo2);
+  reader.printRoot(cout);
+  reader.close();
+  
+  cout << endl;
+  cout << "Trying to reopenm reader on node selection" << endl;
+  istringstream foo3(node.str());
+  reader.open(foo3);
+  reader.printRoot(cout);
+  reader.close();
+  cout << endl;
   return EXIT_SUCCESS;
 }
 

@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader.cc,v 1.4 2003-05-12 06:05:09 edwards Exp $
+/* ID: $Id: basic_xpath_reader.cc,v 1.5 2003-05-12 11:30:48 bjoo Exp $
  *
  * File: basic_xpath_reader.cc
  * 
@@ -34,6 +34,9 @@ BasicXPathReader::open(const string& filename)
   // Setup the XPath system
   setupXPath();
 
+  // Stuff to do with dumping back node selections
+  xmlIndentTreeOutput = 1;
+  xmlKeepBlanksDefault(0);
 }
 
 /*! Open a file from an istream */
@@ -62,6 +65,10 @@ BasicXPathReader::open(istream& is)
 
   // Init the XPath system
   setupXPath();
+
+  // Stuff to do with reading back node selections
+  xmlIndentTreeOutput = 1;
+  xmlKeepBlanksDefault(0);
 }
  
 void 
@@ -386,20 +393,108 @@ BasicXPathReader::getAttributeString(const string& xpath_to_node,
 
 /* dump the entire tree out as stream */
 void
-BasicXPathReader::print(ostream& os) const
+BasicXPathReader::print(ostream& os)
 {
-  // THIS NEEDS TO BE IMPLEMENTED
-  os << "print needs to be implemented" << endl;
+  xmlChar *buffer=(xmlChar *)NULL;
+  int buflen;
+  ostringstream error_stream;
+
+
+  if( doc != NULL ) { 
+    xmlDocDumpFormatMemory(doc, &buffer, &buflen, 1);
+    if( buffer ==(xmlChar *)NULL ) { 
+      error_stream << "xmlDocDumpMemory produced NULL XML-char";
+      throw error_stream.str();      
+    }
+    buffer[buflen]='\0';
+    os << buffer << endl;
+    xmlFree(buffer);
+  }
 }      
 
 
-/* dump the root node and tree out as stream */
+void 
+BasicXPathReader::printRoot(ostream& os)
+{
+  printNode(os, root_node);
+}
+
+void 
+BasicXPathReader::printXPathNode(ostream& os, const string& xpath_to_node)
+{
+  ostringstream error_message;
+
+  // Evaluate the Xpath to the node
+  try { 
+    evaluateXPath(xpath_to_node);
+  }
+  catch (const string& e) {
+    throw e;
+  }
+
+  // check for general non nullness
+  try { 
+    checkQuery(xpath_to_node);
+  }
+  catch (const string& e) {
+    throw e;
+  }
+
+  // check node for uniqueness
+  if( query_result->nodesetval->nodeNr != 1 ) { 
+    error_message << "XPath Query: " << xpath_to_node
+		  << " does not identify a unique node" ;
+    throw error_message.str();
+  }  
+
+  /* Check that the node returned is an element */
+  xmlNodePtr res_node = query_result->nodesetval->nodeTab[0];
+  
+  if( res_node == (xmlNodePtr)NULL ) { 
+    error_message << "XPath Query: " << xpath_to_node << " claims to have returned a single node, but nodeTab[0] is NULL" << endl;
+    throw error_message.str();
+  }
+
+  if ( res_node->type != XML_ELEMENT_NODE ) {
+    error_message << "XPath Query: " << xpath_to_node << " returned a non-element node"
+                  << endl;
+    throw error_message.str();
+  }
+  
+  // print it 
+  printNode(os, res_node);
+  
+  // clean up
+  if ( query_result != NULL ) { 
+    xmlXPathFreeObject(query_result);
+    query_result = NULL;
+  }    
+}
+
 void
-BasicXPathReader::printRoot(ostream& os) const
+BasicXPathReader::printNode(ostream& os, xmlNodePtr node)
 {
-  // THIS NEEDS TO BE IMPLEMENTED
-  os << "printRoot needs to be implemented" << endl;
-}      
+  xmlBufferPtr xmlBuf;
+  ostringstream error_message;
+
+  xmlBuf = xmlBufferCreate();
+  if ( xmlBuf == (xmlBufferPtr)NULL ) { 
+    error_message << "Failed to create buffer in printNode" << endl;
+    throw error_message.str();
+  }
+
+  int size;
+  size = xmlNodeDump(xmlBuf, doc, node, 2, 1);
+
+  if ( size == -1 ) { 
+    error_message << "xmlNodeDump failed most heinously" << endl;
+    throw error_message.str();
+  }
+
+  os.write((char *)xmlBufferContent(xmlBuf), size);
+
+  xmlBufferFree(xmlBuf);
+}
 
 
 
