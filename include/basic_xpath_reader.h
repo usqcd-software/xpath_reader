@@ -1,4 +1,4 @@
-/* $Id: basic_xpath_reader.h,v 1.12 2004-04-27 11:22:59 bjoo Exp $
+/* $Id: basic_xpath_reader.h,v 1.13 2004-11-01 17:40:56 edwards Exp $
  *
  * File: basic_xpath_reader.h
  *
@@ -872,7 +872,7 @@ namespace XMLXPathReader {
 
     template< typename T >
       void
-      getPrimitive(const string& xpath, T& result, const string& ptype) {
+      getPrimitive(const string& xpath, T& result, const char* ptype) {
         string pstring;
 
 	// Get the string value of the query 
@@ -931,7 +931,7 @@ namespace XMLXPathReader {
       getPrimitiveAttribute(const string& xpath_to_node,
 			    const string& attrib_name,
 			    T& result,
-			    const string& ptype)
+			    const char* ptype)
       {
 	string stringval;
 	ostringstream error_message;
