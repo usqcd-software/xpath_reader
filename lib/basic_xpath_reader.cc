@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader.cc,v 1.12 2003-09-08 15:56:11 bjoo Exp $
+/* ID: $Id: basic_xpath_reader.cc,v 1.13 2003-09-08 15:56:46 bjoo Exp $
  *
  * File: basic_xpath_reader.cc
  * 
@@ -140,7 +140,7 @@ void BasicXPathReader::close(void)
     if ( docref->getRefcount() == 0 ) { 
 #ifdef DEBUG_XML_REFCOUNT
       cout << "Reader: docrefs refcount reached 0. Deleting" << endl;
-#ednif
+#endif
       delete docref;
     }
     
