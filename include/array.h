@@ -1,4 +1,4 @@
-/* $Id: array.h,v 1.2 2003-05-05 16:22:00 bjoo Exp $ 
+/* $Id: array.h,v 1.3 2003-07-02 16:05:37 edwards Exp $ 
  *
  * File: array.h
  *
@@ -13,6 +13,8 @@
 
 #ifndef ARRAY_H
 #define ARRAY_H
+
+#include <iostream>
 
 //! Container for a multi-dimensional 1D array
 template<class T> class Array
@@ -34,7 +36,7 @@ template<class T> class Array
   
   //! Allocate mem for the array
   void resize(int ns1) 
-    {if(copymem) {cerr<<"invalid resize in 1d\n";exit(1);}; delete[] F; n1=ns1; F = new T[n1];}
+    {if(copymem) {std::cerr<<"invalid resize in 1d\n";exit(1);}; delete[] F; n1=ns1; F = new T[n1];}
   
   //! Size of array
   int size() const {return n1;}
@@ -57,7 +59,7 @@ template<class T> class Array
   {
     if (F == 0)
       {
-	cerr << "left hand side not initialized\n";
+	std::cerr << "left hand side not initialized\n";
 	exit(1);
       }
     
@@ -71,7 +73,7 @@ template<class T> class Array
   {
     if (F == 0)
       {
-	cerr << "left hand side not initialized\n";
+	std::cerr << "left hand side not initialized\n";
 	exit(1);
       }
     
@@ -86,7 +88,7 @@ template<class T> class Array
   {
     if (size() != s1.size())
       {
-	cerr << "Sizes incompatible in +=\n";
+	std::cerr << "Sizes incompatible in +=\n";
 	  exit(1);
       }
     
@@ -101,7 +103,7 @@ template<class T> class Array
   {
     if (size() != s1.size())
       {
-	cerr << "Sizes incompatible in -=\n";
+	std::cerr << "Sizes incompatible in -=\n";
 	exit(1);
       }
     
@@ -116,7 +118,7 @@ template<class T> class Array
   {
     if (size() != s1.size())
       {
-	cerr << "Sizes incompatible in *=\n";
+	std::cerr << "Sizes incompatible in *=\n";
 	exit(1);
       }
     
@@ -131,7 +133,7 @@ template<class T> class Array
   {
     if (size() != s1.size())
       {
-	cerr << "Sizes incompatible in /=\n";
+	std::cerr << "Sizes incompatible in /=\n";
 	exit(1);
       }
     
