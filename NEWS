@@ -1,0 +1,4 @@
+09-Apr-2003:(BJ)
+ 
+	Created -- can deal with doubles, ints and strings read from file,
+ 	and written to file.		
