@@ -4,7 +4,7 @@ INCFLAGS=-I@top_srcdir@/include
 AM_CXXFLAGS= $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ @LIBXML2_CXXFLAGS@
 
 
-AM_LFLAGS=-L@top_builddir@/lib @QDPXX_LDFLAGS@
+AM_LDFLAGS=-L@top_builddir@/lib @QDPXX_LDFLAGS@
 
 LDADD = -lXPathReader @LIBS@ @QDPXX_LIBS@ @LIBXML2_LIBS@ 
 
