@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader.cc,v 1.11 2003-09-08 15:45:08 bjoo Exp $
+/* ID: $Id: basic_xpath_reader.cc,v 1.12 2003-09-08 15:56:11 bjoo Exp $
  *
  * File: basic_xpath_reader.cc
  * 
@@ -138,7 +138,9 @@ void BasicXPathReader::close(void)
     // if decrementing the refcount means there are no more references
     // then delete the object -- this ought to call the destructor
     if ( docref->getRefcount() == 0 ) { 
+#ifdef DEBUG_XML_REFCOUNT
       cout << "Reader: docrefs refcount reached 0. Deleting" << endl;
+#ednif
       delete docref;
     }
     

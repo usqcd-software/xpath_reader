@@ -67,13 +67,18 @@ namespace XMLXPathReader {
   protected:
     void increaseRefcount() {
       refcount++;
+#ifdef DEBUG_XML_REFCOUNT
       cout << "Refcount increased. It is now: " << refcount << endl;
+#endif
     }
                                                                                 
     void decreaseRefcount() {
       if ( refcount > 0 ) {
         refcount--;
+
+#ifdef DEBUG_XML_REFCOUNT
         cout << "Refcount decreased.. It is now: " << refcount << endl;
+#endif
       }
       else {
         ostringstream error_message;
