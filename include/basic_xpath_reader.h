@@ -1,4 +1,4 @@
-/* $Id: basic_xpath_reader.h,v 1.13 2004-11-01 17:40:56 edwards Exp $
+/* $Id: basic_xpath_reader.h,v 1.14 2005-02-28 16:46:38 bjoo Exp $
  *
  * File: basic_xpath_reader.h
  *
@@ -217,7 +217,7 @@ namespace XMLXPathReader {
       // Ok, open the document
       try { 
 	
-	docref = new XMLDocument(filename);
+	docref = new(nothrow) XMLDocument(filename);
 	
 	if( docref == 0x0 ) {
 	  ostringstream error_stream;
@@ -250,7 +250,7 @@ namespace XMLXPathReader {
       // Ok, open the document
       try { 
 	
-	docref = new XMLDocument(is);
+	docref = new(nothrow) XMLDocument(is);
 	
 	if( docref == 0x0 ) {
 	  ostringstream error_stream;

@@ -127,25 +127,33 @@ namespace XMLStructWriterAPI {
     
     
     XMLFileArrayWriter* elementArray(ArrayType t) {
-      XMLFileArrayWriter* child=new XMLFileArrayWriter(
+      XMLFileArrayWriter* child=new(nothrow) XMLFileArrayWriter(
 						       output_stream,
 						       elem_qname,
 						       "element",
 						       t,
 						       indent_level+1,
 						       false);
+      if( child == 0x0 ) { 
+	std::cerr << " Failed to allocate child " << endl << flush;
+	exit(-1);
+      }
 
       elems_written++;
       return child;
     }
     XMLFileArrayWriter* elementArray(const string& elem_name, ArrayType t) {
-      XMLFileArrayWriter* child=new XMLFileArrayWriter(
+      XMLFileArrayWriter* child=new(nothrow) XMLFileArrayWriter(
 						       output_stream,
 						       elem_qname,
 						       elem_name,
 						       t,
 						       indent_level+1,
 						       false);
+      if( child == 0x0 ) { 
+	std::cerr << " Failed to allocate child " << endl << flush;
+	exit(-1);
+      }
 
       elems_written++;
       return child;
@@ -185,7 +193,12 @@ namespace XMLStructWriterAPI {
     }
 
     XMLBufferStructWriter* structChild(const string& tagname) {
-      XMLBufferStructWriter* child=new XMLBufferStructWriter(output_stream, tagname, indent_level+1, false);
+      XMLBufferStructWriter* child=new(nothrow) XMLBufferStructWriter(output_stream, tagname, indent_level+1, false);
+
+      if( child == 0x0 ) { 
+        std::cerr << "Failed to new child " << endl << flush;
+	exit(-1);
+      }
       return child;
     }
   

@@ -1,4 +1,4 @@
-/* $Id: array.h,v 1.7 2004-02-10 22:21:07 kostas Exp $ 
+/* $Id: array.h,v 1.8 2005-02-28 16:46:38 bjoo Exp $ 
  *
  * File: array.h
  *
@@ -42,8 +42,14 @@ template<class T> class Array
 	exit(1);
       }
       delete[] F; 
-      n1 = ns1; 
-      F = new T[n1];
+      n1 = ns1;
+     
+      F = new(nothrow) T[n1];
+      if( F == 0x0 ) { 
+	std::cerr << "Failed to resize array" << endl << flush;
+	exit(-1);
+      }
+      
     }
   
   //! Size of array

@@ -93,7 +93,13 @@ namespace XMLStructWriterAPI {
     }
 
     XMLFileStructWriter* structChild(const string& tagname) {
-      XMLFileStructWriter* child=new XMLFileStructWriter(output_stream, tagname, indent_level+1, false);
+      XMLFileStructWriter* child=new(nothrow) XMLFileStructWriter(output_stream, tagname, indent_level+1, false);
+
+      if( child == 0x0 ) { 
+	std::cerr << "Failed to allocate child: structChild" << endl << flush;
+	exit(-1);
+      }
+
       return child;
     }
 
@@ -131,7 +137,12 @@ namespace XMLStructWriterAPI {
     }
 
     XMLBufferStructWriter* structChild(const string& tagname) {
-      XMLBufferStructWriter* child=new XMLBufferStructWriter(output_stream, tagname, indent_level+1, false);
+      XMLBufferStructWriter* child=new(nothrow) XMLBufferStructWriter(output_stream, tagname, indent_level+1, false);
+      if( child == 0x0 ) {
+	std::cerr << "Failed to allocate child: structChild() " << endl << flush ;
+	exit(-1);
+      }
+
       return child;
     }
   
