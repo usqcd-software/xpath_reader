@@ -10,6 +10,9 @@
 #include <string>
 #include <stack>
 
+
+#define INDENT_SPACES ((unsigned int)3)
+
 using namespace std;
 
 namespace XMLWriterAPI {
@@ -19,6 +22,7 @@ namespace XMLWriterAPI {
   public:
     XMLWriterBase(void) {
       doctag_written = false;
+      primitive_last = false;
     }
 
     ~XMLWriterBase(void) { 
@@ -127,6 +131,8 @@ namespace XMLWriterAPI {
     // Check we have written a document tag...
     // apparently we need this before writing anything else
     bool doctag_written;
+    bool primitive_last;
+
     // A stack to hold names.
     stack<string> namestack;
 

@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 
   
   swriter2.openTag("stringArray");
-  swriter2.write(sa);
+  swriter2.write("length", "fred", "idx", 5, sa);
   swriter2.closeTag();
   
 

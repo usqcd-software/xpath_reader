@@ -78,8 +78,8 @@ void XMLWriterBase::dumpTag(const string& nsprefix,
     qualified_tagname = nsprefix + ":" + tagname;
   }
   
-  string indent(indent_level*4, ' ');
-  os << indent << "<" << qualified_tagname;
+  string indent(indent_level*INDENT_SPACES, ' ');
+  os << endl <<  indent << "<" << qualified_tagname;
   
   list<Attribute>::iterator the_iterator;
   for(the_iterator = al.begin(); the_iterator != al.end(); the_iterator++) {
@@ -90,10 +90,10 @@ void XMLWriterBase::dumpTag(const string& nsprefix,
   }
   
   if(is_empty == true) { 
-    os << "/>" << endl;
+    os << "/>";
   }
   else {
-    os << ">" << endl;
+    os << ">" ;
     namestack.push(qualified_tagname);
     indent_level++;
   }
@@ -104,6 +104,7 @@ void XMLWriterBase::dumpTag(const string& nsprefix,
     doctag_written = true; 
   }
 
+  primitive_last = false;
   
 
 }
@@ -117,9 +118,12 @@ void XMLWriterBase::closeTag(void)
     qualified_tagname = namestack.top();
     namestack.pop();
     indent_level--;
-    string indent(indent_level*4, ' ');
-   
-    os << indent << "</" << qualified_tagname << ">" <<endl;
+
+    if(primitive_last == false) {
+      string indent(indent_level*INDENT_SPACES, ' ');
+      os << endl << indent;
+    }
+    os << "</" << qualified_tagname << ">" ;
   }
   else {
     ostringstream error_message;
@@ -127,6 +131,7 @@ void XMLWriterBase::closeTag(void)
     throw error_message.str();
   }
 
+  primitive_last = false;
 
 }
 
@@ -198,10 +203,10 @@ void
 XMLWriterBase::writePrimitive(const T& output)
 {
   ostream& os=getOstream();
-  string indent(indent_level*4, ' ');
+
   if( ! namestack.empty() ) { 
-    os << indent << boolalpha << output << endl ;
-    // os << boolalpha << output;
+
+    os << boolalpha << output;
   }
   else { 
     ostringstream error_string;
@@ -209,6 +214,7 @@ XMLWriterBase::writePrimitive(const T& output)
     throw error_string.str();
   }
 
+  primitive_last = true;
   os.flush();
 }
 
@@ -216,7 +222,8 @@ void
 XMLWriterBase::writePrologue(ostream& os)
 {
    os << (const string)"<?xml version=\"1.0\"?>" << endl;
-   os << (const string)"<!-- Written by XMLWriterBase class by Balint Joo -->" << endl;
+   os << (const string)"<!-- Written by XMLWriterBase class by Balint Joo -->";
+   os << endl;
    os.flush();
 }
 
