@@ -1,8 +1,12 @@
-27-Apr-2004:(RGE)
+27-Apr-2005 -- Robert Edwards
+
+	Version 1.2.3. Last minor release before rearrangement.
+
+27-Apr-2004 -- (RGE)
  
 	More support for printing XML input trees.
 
-09-Apr-2003:(BJ)
+09-Apr-2003 -- (BJ)
  
 	Created -- can deal with doubles, ints and strings read from file,
  	and written to file.		
