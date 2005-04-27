@@ -3,7 +3,7 @@
 #include <istream>
 #include <string>
 
-#include <array_type.h>
+#include <xml_array_type.h>
 #include <xml_struct_writer.h>
 #include <xml_array_writer.h>
 

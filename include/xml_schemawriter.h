@@ -2,13 +2,11 @@
 #define XML_SCHEMAWRITER_H
 
 #include <xml_simpleschemawriter.h>
-#include <attribute.h>
+#include <xml_attribute.h>
 #include <ostream>
 #include <string>
 #include <stack>
 #include <xml_writer.h>
-
-using namespace std;
 
 namespace XMLWriterAPI {
 
@@ -20,24 +18,24 @@ namespace XMLWriterAPI {
 
     }
 
-    void write(const string& name, const string& s)
+    void write(const std::string& name, const std::string& s)
     {
       writeSimpleElement(name, s);
     }
 
-    void write(const string& name, const int &i) {
+    void write(const std::string& name, const int &i) {
       writeSimpleElement(name, i);
     }
 
-    void write(const string& name, const float &f) { 
+    void write(const std::string& name, const float &f) { 
       writeSimpleElement(name, f);
     }
     
-    void write(const string& name, const double &d) { 
+    void write(const std::string& name, const double &d) { 
       writeSimpleElement(name, d);
     }
 
-    void write(const string& name, const bool& b) {
+    void write(const std::string& name, const bool& b) {
       writeSimpleElement(name, b);
     }
 

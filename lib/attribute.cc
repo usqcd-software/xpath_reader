@@ -1,4 +1,4 @@
-#include <attribute.h>
+#include <xml_attribute.h>
 #include <string>
 #include <list>
 #include <sstream>

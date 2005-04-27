@@ -1,14 +1,19 @@
 #ifndef XML_WRITER_H
 #define XML_WRITER_H
 
-#include <attribute.h>
-#include <tcomplex.h>
-#include <array.h>
+#include <xml_attribute.h>
+#include <xml_tcomplex.h>
+#include <xml_array.h>
 #include <xml_simplewriter.h>
 #include <sstream>
 #include <fstream>
 
 namespace XMLWriterAPI {
+
+  // Namespace composition. 
+  using XMLArray::Array;
+  using XMLTComplex::TComplex;
+
 
   // Base class for the XMLWriter classes
   class XMLWriterBase : public XMLSimpleWriter {
@@ -104,7 +109,7 @@ namespace XMLWriterAPI {
 	try { 
 	  closeTag();
 	}
-	catch(string& error) { 
+	catch(std::string& error) { 
 	  done = true;
 	}
       }
@@ -131,7 +136,7 @@ namespace XMLWriterAPI {
   public:
     XMLSimpleFileWriter(const std::string& filename, bool write_prologue=true) {
     
-      output_stream.open(filename.c_str(), ofstream::out);
+      output_stream.open(filename.c_str(), std::ofstream::out);
       if( write_prologue ) {
 	writePrologue(output_stream);
       }
@@ -150,7 +155,7 @@ namespace XMLWriterAPI {
 	try { 
 	  closeTag();
 	}
-	catch(string& error) { 
+	catch(std::string& error) { 
 	  done = true;
 	}
       }

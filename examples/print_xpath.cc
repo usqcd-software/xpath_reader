@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <array.h>
+#include <xml_array.h>
 
 using namespace std;
 using namespace XMLXPathReader;

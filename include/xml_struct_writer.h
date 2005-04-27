@@ -6,12 +6,10 @@
 #include <fstream>
 #include <string>
 
-#include <array_type.h>
+#include <xml_array_type.h>
 
 #define INDENT_SPACES 2
 
-
-using namespace std;
 
 namespace XMLStructWriterAPI { 
 
@@ -20,7 +18,7 @@ namespace XMLStructWriterAPI {
   // Base class for struct writers
   class XMLStructWriterBase {
   public:
-    XMLStructWriterBase(const string& tagname, int _indent_level=0) 
+    XMLStructWriterBase(const std::string& tagname, int _indent_level=0) 
     { 
       indent_level = _indent_level;
       qname=tagname;
@@ -28,52 +26,52 @@ namespace XMLStructWriterAPI {
 
     virtual ~XMLStructWriterBase() {};
 
-    void writeSimple(const string& tagname, const int& value) {
+    void writeSimple(const std::string& tagname, const int& value) {
       writeSimpleTag(tagname, value);
     }
 
-    void writeSimple(const string& tagname, const float& value) {
+    void writeSimple(const std::string& tagname, const float& value) {
       writeSimpleTag(tagname, value);
     }
     
-    void writeSimple(const string& tagname, const string& value) {
+    void writeSimple(const std::string& tagname, const std::string& value) {
       writeSimpleTag(tagname, value);
     }
 
-    void writeSimple(const string& tagname, const bool& value) {
+    void writeSimple(const std::string& tagname, const bool& value) {
       writeSimpleTag(tagname, value);
     }  
 
     template <typename T>
-      void writeSimpleTag(const string& tagname, T& value)
+      void writeSimpleTag(const std::string& tagname, T& value)
       {
-	ostream &os=getOstream();
-	string indent((indent_level+1)*INDENT_SPACES, ' ');
-	os << endl << indent << "<" << tagname << ">";
-	os << boolalpha <<  value << "</" << tagname << ">";
+	std::ostream &os=getOstream();
+	std::string indent((indent_level+1)*INDENT_SPACES, ' ');
+	os << std::endl << indent << "<" << tagname << ">";
+	os << std::boolalpha <<  value << "</" << tagname << ">";
       }  
 
   protected:
     
     virtual std::ostream& getOstream() = 0;
 
-    void writePrologue(ostream& os) const {
-      os << "<?xml version=\"1.0\"?>" << endl;
+    void writePrologue(std::ostream& os) const {
+      os << "<?xml version=\"1.0\"?>" << std::endl;
       os << "<!-- Written by XMLSimpleWriter class by Balint Joo -->";
-      os << endl;
+      os << std::endl;
       os.flush();
     }
 
     bool simple_array;
     int indent_level;
-    string qname;
+    std::string qname;
     int elems_written;
   };
 
   class XMLFileStructWriter : public XMLStructWriterBase {
   public:
-    XMLFileStructWriter(ofstream& _os, 
-			const string& tagname, 
+    XMLFileStructWriter(std::ofstream& _os, 
+			const std::string& tagname, 
 			int indent_level=0, 
 			bool write_prologue=false) : 
       XMLStructWriterBase(tagname, indent_level), output_stream(_os) {
@@ -82,21 +80,21 @@ namespace XMLStructWriterAPI {
 	writePrologue(_os);
       }
 
-      string indent(indent_level*INDENT_SPACES, ' ');
-      output_stream  << endl << indent << "<" << qname << ">";
+      std::string indent(indent_level*INDENT_SPACES, ' ');
+      output_stream  << std::endl << indent << "<" << qname << ">";
 
     }
 
     ~XMLFileStructWriter(void) {
-      string indent(indent_level*INDENT_SPACES, ' ');
-      output_stream  << endl << indent << "</" << qname << ">";
+      std::string indent(indent_level*INDENT_SPACES, ' ');
+      output_stream  << std::endl << indent << "</" << qname << ">";
     }
 
-    XMLFileStructWriter* structChild(const string& tagname) {
-      XMLFileStructWriter* child=new(nothrow) XMLFileStructWriter(output_stream, tagname, indent_level+1, false);
+    XMLFileStructWriter* structChild(const std::string& tagname) {
+      XMLFileStructWriter* child=new(std::nothrow) XMLFileStructWriter(output_stream, tagname, indent_level+1, false);
 
       if( child == 0x0 ) { 
-	std::cerr << "Failed to allocate child: structChild" << endl << flush;
+	std::cerr << "Failed to allocate child: structChild" << std::endl << std::flush;
 	exit(-1);
       }
 
@@ -104,10 +102,10 @@ namespace XMLStructWriterAPI {
     }
 
     
-    XMLFileArrayWriter* arrayChild(const string& tagname, const string& elem_name, ArrayType t);
+    XMLFileArrayWriter* arrayChild(const std::string& tagname, const std::string& elem_name, ArrayType t);
     
   private:
-    ofstream& output_stream;
+    std::ofstream& output_stream;
     std::ostream& getOstream(void) { 
       return output_stream;
     }
@@ -116,8 +114,8 @@ namespace XMLStructWriterAPI {
 
   class XMLBufferStructWriter : public XMLStructWriterBase {
   public:
-    XMLBufferStructWriter(ostringstream& _os, 
-			  const string& tagname, 
+    XMLBufferStructWriter(std::ostringstream& _os, 
+			  const std::string& tagname, 
 			  int indent_level=0, 
 			  bool write_prologue=false) : 
       XMLStructWriterBase(tagname, indent_level), output_stream(_os) {
@@ -126,20 +124,20 @@ namespace XMLStructWriterAPI {
 	writePrologue(_os);
       }
 
-      string indent(indent_level*INDENT_SPACES, ' ');
-      output_stream  << endl << indent << "<" << qname << ">";
+      std::string indent(indent_level*INDENT_SPACES, ' ');
+      output_stream  << std::endl << indent << "<" << qname << ">";
 
     }
 
     ~XMLBufferStructWriter(void) {
-      string indent(indent_level*INDENT_SPACES, ' ');
-      output_stream  << endl << indent << "</" << qname << ">";
+      std::string indent(indent_level*INDENT_SPACES, ' ');
+      output_stream  << std::endl << indent << "</" << qname << ">";
     }
 
-    XMLBufferStructWriter* structChild(const string& tagname) {
-      XMLBufferStructWriter* child=new(nothrow) XMLBufferStructWriter(output_stream, tagname, indent_level+1, false);
+    XMLBufferStructWriter* structChild(const std::string& tagname) {
+      XMLBufferStructWriter* child=new(std::nothrow) XMLBufferStructWriter(output_stream, tagname, indent_level+1, false);
       if( child == 0x0 ) {
-	std::cerr << "Failed to allocate child: structChild() " << endl << flush ;
+	std::cerr << "Failed to allocate child: structChild() " << std::endl << std::flush ;
 	exit(-1);
       }
 
@@ -147,7 +145,7 @@ namespace XMLStructWriterAPI {
     }
   
   private:
-    ostringstream& output_stream;
+    std::ostringstream& output_stream;
     std::ostream& getOstream(void) { 
       return output_stream;
     }

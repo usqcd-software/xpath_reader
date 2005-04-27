@@ -1,7 +1,7 @@
 #ifndef XML_SIMPLEWRITER_H
 #define XML_SIMPLEWRITER_H
 
-#include <attribute.h>
+#include <xml_attribute.h>
 #include <ostream>
 #include <string>
 #include <stack>

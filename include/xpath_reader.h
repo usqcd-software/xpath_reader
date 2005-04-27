@@ -1,4 +1,4 @@
-/* Id: $Id: xpath_reader.h,v 1.7 2003-09-10 12:07:29 bjoo Exp $
+/* Id: $Id: xpath_reader.h,v 1.8 2005-04-27 19:48:33 edwards Exp $
  *
  * File: xpath_reader.h
  *
@@ -114,34 +114,37 @@
 #define XPATH_READER_H
 
 #include <basic_xpath_reader.h>
-#include <tcomplex.h>
-#include <array.h>
-
-using namespace std;
+#include <xml_tcomplex.h>
+#include <xml_array.h>
 
 namespace XMLXPathReader {
+
+  // Namespace composition. 
+  using XMLArray::Array;
+  using XMLTComplex::TComplex;
+
 
   // Your basic Reader.
   class XPathReader : private BasicXPathReader {
   public:
 
     XPathReader(void) : BasicXPathReader() {} ;
-    XPathReader(istream& is) : BasicXPathReader(is) {};
+    XPathReader(std::istream& is) : BasicXPathReader(is) {};
 
-    XPathReader(const string& filename) : BasicXPathReader(filename) {}
+    XPathReader(const std::string& filename) : BasicXPathReader(filename) {}
 
     ~XPathReader(void) {}
 
-    //   XPathReader(XPathReader& old, const string& xpath) : BasicXPathReader(old,xpath) {};
+    //   XPathReader(XPathReader& old, const std::string& xpath) : BasicXPathReader(old,xpath) {};
 
-    XPathReader(XPathReader& old, const string& xpath):BasicXPathReader(old,xpath) {};
+    XPathReader(XPathReader& old, const std::string& xpath):BasicXPathReader(old,xpath) {};
 
 
-    void open(const string& filename) { 
+    void open(const std::string& filename) { 
       BasicXPathReader::open(filename);
     }
 
-    void open(istream& is) { 
+    void open(std::istream& is) { 
       BasicXPathReader::open(is);
     }
 
@@ -149,31 +152,31 @@ namespace XMLXPathReader {
       BasicXPathReader::close();
     }
 
-    void open(XPathReader &old, const string& xpath) {
+    void open(XPathReader &old, const std::string& xpath) {
       BasicXPathReader::open((BasicXPathReader &)old, xpath);
     }
     // evaluate "count(xpath)" and return an INTEGER
-    int countXPath(const string& xpath) {
+    int countXPath(const std::string& xpath) {
       return BasicXPathReader::count(xpath);
     }
 
-    void registerNamespace(const string& prefix, const string& uri) {
+    void registerNamespace(const std::string& prefix, const std::string& uri) {
       BasicXPathReader::registerNamespace(prefix,uri);
     }
 
     // print out xml document into ostream os 
-    void printDocument(ostream& os) {
+    void printDocument(std::ostream& os) {
       BasicXPathReader::print(os);
     }
 
-    // print out xml document from root element into ostream os
-    void printRoot(ostream& os) { 
+    // print out xml document from root element into std::ostream os
+    void printRoot(std::ostream& os) { 
       BasicXPathReader::printRoot(os);
     }
 
     // print out xml from the node selected by the xpath_to_node
-    // expression into ostream os
-    void printXPathNode(ostream& os, const string& xpath_to_node) { 
+    // expression into std::ostream os
+    void printXPathNode(std::ostream& os, const std::string& xpath_to_node) { 
       BasicXPathReader::printXPathNode(os, xpath_to_node);
     }
 
@@ -181,8 +184,8 @@ namespace XMLXPathReader {
     //  BasicXPath parsers getAttribute functions
     template <typename T>
       void
-      getXPathAttribute(const string& xpath_to_node,
-			const string& attrib_name, 
+      getXPathAttribute(const std::string& xpath_to_node,
+			const std::string& attrib_name, 
 			T& value)
       {
 	getAttribute(xpath_to_node, attrib_name, value);
@@ -192,7 +195,7 @@ namespace XMLXPathReader {
     // Match primtive types (+ general tempate declaration)
     template< typename T > 
       void
-      getXPath(const string& xpath, T& result)
+      getXPath(const std::string& xpath, T& result)
       {
 	get(xpath, result);
       }
@@ -201,9 +204,9 @@ namespace XMLXPathReader {
     // Match TComplex's
     template< typename T >
       void
-      getXPath(const string& xpath, TComplex<T>& result)
+      getXPath(const std::string& xpath, XMLTComplex::TComplex<T>& result)
       {
-	ostringstream error_message;
+	std::ostringstream error_message;
 
 
 	XPathReader complex_top(*this, xpath);
@@ -211,7 +214,7 @@ namespace XMLXPathReader {
 	try { 
 	  complex_top.getXPath("cmpx/re", result.real());
 	}
-	catch(const string &e) {
+	catch(const std::string &e) {
 	  error_message << "XPath Query: " << xpath << " Error: "
 			<< "Failed to match real part of TComplex Object with self constructed path: re" ;
 
@@ -222,7 +225,7 @@ namespace XMLXPathReader {
 	try { 
 	  complex_top.getXPath("cmpx/im", result.imag());
 	}
-	catch(const string &e) {
+	catch(const std::string &e) {
 	  error_message << "XPath Query: " << xpath << " Error: "
 			<< "Failed to match real part of TComplex Object with self constructed path: ./cmpx/im" ;
 
@@ -235,18 +238,18 @@ namespace XMLXPathReader {
     // getXPath for Arrays
     template< typename T > 
       void 
-      getXPath(const string& xpath, Array<T>& result) 
+      getXPath(const std::string& xpath, Array<T>& result) 
       {
-	ostringstream error_message;
+	std::ostringstream error_message;
 
 	XPathReader arraytop(*this, xpath);
 	
-	string array_xpath = "array";
+	std::string array_xpath = "array";
 
 	// Values to be gleaned from attributes of <array>
-	string sizeName="";
-	string elemName="";
-	string indexName="";
+	std::string sizeName="";
+	std::string elemName="";
+	std::string indexName="";
 	int indexStart;
 	
 	// Try and get each attribute in turn with getXPathAttribute
@@ -255,10 +258,10 @@ namespace XMLXPathReader {
 	try {
 	  arraytop.getXPathAttribute(array_xpath, "sizeName", sizeName);
 	} 
-	catch(const string& e) { 
+	catch(const std::string& e) { 
 	  error_message << "Couldn't match sizeName attribute for array"
 			<< " starting at XPath: " << xpath
-			<< endl
+			<< std::endl
 			<< "array_xpath is: " << array_xpath;
 
 	  arraytop.close();
@@ -269,10 +272,10 @@ namespace XMLXPathReader {
 	try {
 	  arraytop.getXPathAttribute(array_xpath, "elemName", elemName);
 	} 
-	catch(const string& e) { 
+	catch(const std::string& e) { 
 	  error_message << "Couldn't match elemName attribute for array"
 			<< " starting at XPath: " << xpath
-			<< endl
+			<< std::endl
 			<< "array_xpath is: " << array_xpath;
 
 	  arraytop.close();
@@ -283,10 +286,10 @@ namespace XMLXPathReader {
 	try {
 	  arraytop.getXPathAttribute(array_xpath, "indexName", indexName);
 	} 
-	catch(const string& e) { 
+	catch(const std::string& e) { 
 	  error_message << "Couldn't match indexName attribute for array"
 			<< " starting at XPath: " << xpath
-			<< endl
+			<< std::endl
 			<< "array_xpath is: " << array_xpath;
 	  arraytop.close();
 	  throw error_message.str();
@@ -296,10 +299,10 @@ namespace XMLXPathReader {
 	try {
 	  arraytop.getXPathAttribute(array_xpath, "indexStart", indexStart);
 	} 
-	catch(const string& e) { 
+	catch(const std::string& e) { 
 	  error_message << "Couldn't match index attribute for array"
 			<< " starting at XPath: " << xpath
-			<< endl
+			<< std::endl
 			<< "array_xpath is: " << array_xpath;
 
 	  arraytop.close();
@@ -311,19 +314,19 @@ namespace XMLXPathReader {
 	XPathReader arrayelem(arraytop, array_xpath);
 
 
-	string n_elem_query =  sizeName;
+	std::string n_elem_query =  sizeName;
 	int array_size; 
 
 	// try and do the read
 	try {
-	  cout << "Getting no of array elements with query: " << n_elem_query << endl;
+	  std::cout << "Getting no of array elements with query: " << n_elem_query << std::endl;
 
 	  arrayelem.getXPath(n_elem_query, array_size) ;
 	}
-	catch( const string& e) {
+	catch( const std::string& e) {
 	  error_message << "Couldn't match array size tag: " << sizeName
 			<< "with XPath Query: " << n_elem_query
-			<< endl;
+			<< std::endl;
 
 	  arraytop.close();
 	  arrayelem.close();
@@ -331,17 +334,17 @@ namespace XMLXPathReader {
 	}
 	
 	// Count the number of elements
-	string elem_base_query = elemName;
+	std::string elem_base_query = elemName;
 	
 	int array_size_check;
 	try {
 
-	  cout << "Getting array size check with count of "<<elem_base_query<< endl;
+	  std::cout << "Getting array size check with count of "<<elem_base_query<< std::endl;
 	  array_size_check = arrayelem.countXPath(elem_base_query);
 	}
-	catch( const string& e) { 
+	catch( const std::string& e) { 
 	  error_message << "Exception occurred while counting " << elem_base_query 
-			<< " during array read " << endl;
+			<< " during array read " << std::endl;
 
 	  arraytop.close();
 	  arrayelem.close();
@@ -351,7 +354,7 @@ namespace XMLXPathReader {
 	if( array_size_check != array_size ) { 
 	  error_message << "Array markup claims array has " << array_size 
 			<< " elements but " << array_size_check 
-			<< " were counted" << endl;
+			<< " were counted" << std::endl;
 
 	  arraytop.close();
 	  arrayelem.close();
@@ -365,7 +368,7 @@ namespace XMLXPathReader {
 	// Get the elements one by one
 	int i;
 	for(i = 0; i < array_size; i++) { 
-	  ostringstream element_xpath;
+	  std::ostringstream element_xpath;
 
 	  // Create the query for the element 
 	  element_xpath << elem_base_query  
@@ -378,10 +381,10 @@ namespace XMLXPathReader {
 	    arrayelem.getXPath(element_xpath.str(), result[i]);
 	   
 
-	  } catch( const string& e ) {
+	  } catch( const std::string& e ) {
 	    error_message << "Failed to match element " << i
 			  << " of array with query " << element_xpath.str()
-			  << endl
+			  << std::endl
 			  << "Query returned error: " << e;
 
 	    arraytop.close();
