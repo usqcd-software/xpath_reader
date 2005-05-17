@@ -1,4 +1,5 @@
-/* $Id: xml_array.h,v 1.1 2005-04-27 19:48:33 edwards Exp $ 
+// -*- C++ -*-
+/* $Id: xml_array.h,v 1.2 2005-05-17 00:41:58 edwards Exp $ 
  *
  * File: xml_array.h
  *
@@ -257,12 +258,61 @@ namespace XMLArray {
     return true;
   }
   
-
   //! Check if two Array's are no the same
   template<typename T>
   inline bool operator!=(const Array<T>& n1, const Array<T>& n2)
   {
     return ! (n1 == n2);
+  }
+
+  //! a < b
+  /*! This definition follows that of string comparison */
+  template<typename T>
+  inline bool operator<(const Array<T>& a, const Array<T>& b)
+  {
+    bool ret = false;
+    int  len = (a.size() < b.size()) ? a.size() : b.size();
+
+    for(int i=0; i < len; ++i)
+    {
+      if (a[i] != b[i])
+	return (a[i] < b[i]) ? true : false;
+    }
+    
+    return (a.size() == b.size()) ? false : (a.size() < b.size()) ? true : false;
+  }
+
+  //! a > b
+  /*! This definition follows that of string comparison */
+  template<typename T>
+  inline bool operator>(const Array<T>& a, const Array<T>& b)
+  {
+    bool ret = false;
+    int  len = (a.size() < b.size()) ? a.size() : b.size();
+
+    for(int i=0; i < len; ++i)
+    {
+      if (a[i] != b[i])
+	return (a[i] > b[i]) ? true : false;
+    }
+    
+    return (a.size() == b.size()) ? false : (a.size() > b.size()) ? true : false;
+  }
+
+  //! a <= b
+  /*! This definition follows that of string comparison */
+  template<typename T>
+  inline bool operator<=(const Array<T>& a, const Array<T>& b)
+  {
+    return (a < b) || (a == b);
+  }
+
+  //! a >= b
+  /*! This definition follows that of string comparison */
+  template<typename T>
+  inline bool operator>=(const Array<T>& a, const Array<T>& b)
+  {
+    return (a > b) || (a == b);
   }
 
 
@@ -271,6 +321,7 @@ namespace XMLArray {
   //
   //! add Arrays
   template< typename T> 
+  inline
   Array<T> operator+(const Array<T>& a, const Array<T>& b)
   {
     Array<T> c(a); 
@@ -280,6 +331,7 @@ namespace XMLArray {
   
   //! subtract Arrays
   template< typename T> 
+  inline
   Array<T> operator-(const Array<T>& a, const Array<T>& b)
   {
     Array<T> c(a); 
@@ -289,6 +341,7 @@ namespace XMLArray {
   
   //! multiply Arrays
   template< typename T> 
+  inline
   Array<T> operator*(const Array<T>& a, const Array<T>& b)
   {
     Array<T> c(a); 
@@ -298,6 +351,7 @@ namespace XMLArray {
   
   //!divide Arrays
   template< typename T> 
+  inline
   Array<T> operator/(const Array<T>& a, const Array<T>& b)
   {
     Array<T> c(a); 
@@ -307,6 +361,7 @@ namespace XMLArray {
 
   //! scalar + Array
   template< typename T> 
+  inline
   Array<T> operator+(const T& s, const Array<T>& a)
   {
     Array<T> c(a); 
@@ -316,6 +371,7 @@ namespace XMLArray {
 
   //! Array + scalar
   template< typename T> 
+  inline
   Array<T> operator+(const Array<T>& a, const T& s)
   {
     Array<T> c(a); 
@@ -325,6 +381,7 @@ namespace XMLArray {
   
   //! scalar - Array
   template< typename T> 
+  inline
   Array<T> operator-(const T& s, const Array<T>& a)
   {
     Array<T> c(-a); 
@@ -333,6 +390,7 @@ namespace XMLArray {
   }
   //! Array - scalar
   template< typename T> 
+  inline
   Array<T> operator-(const Array<T>& a, const T& s)
   {
     Array<T> c(a); 
@@ -342,6 +400,7 @@ namespace XMLArray {
 
   //! scalar * Array
   template< typename T> 
+  inline
   Array<T> operator*(const T& s, const Array<T>& a)
   {
     Array<T> c(a); 
@@ -351,6 +410,7 @@ namespace XMLArray {
 
   //! Array * scalar
   template< typename T> 
+  inline
   Array<T> operator*(const Array<T>& a, const T& s)
   {
     Array<T> c(a); 
@@ -360,6 +420,7 @@ namespace XMLArray {
 
   //! scalar / Array
   template< typename T> 
+  inline
   Array<T> operator/(const T& s, const Array<T>& a)
   {
     Array<T> c(a.size());
@@ -370,6 +431,7 @@ namespace XMLArray {
 
   //! Array / scalar
   template< typename T> 
+  inline
   Array<T> operator/(const Array<T>& a, const T& s)
   {
     Array<T> c(a); 
@@ -379,6 +441,7 @@ namespace XMLArray {
 
   //! sqrt
   template< typename T> 
+  inline
   Array<T> sqrt(const Array<T>& a)
   {
     Array<T> c(a.size()); 
@@ -389,6 +452,18 @@ namespace XMLArray {
       c[i] = std::sqrt(a[i]);
     }
     return c;
+  }
+
+  //! norm2 of an array
+  template< typename T> 
+  inline
+  T norm2(const Array<T>& a)
+  {
+    T nn = a[0]*a[0];  // assumes at least 1 element
+    for(int i=1; i < a.size(); ++i)
+      nn += a[i]*a[i];
+
+    return nn;
   }
 
 } // namespace XMLArray
