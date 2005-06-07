@@ -2,6 +2,7 @@ AC_INIT(xpath_reader, 1.3, bj@ph.ed.ac.uk)
 AC_CONFIG_AUX_DIR(config)
 AC_PROG_CXX(g++)
 AC_PROG_RANLIB()
+AC_CHECK_TOOL(AR,ar,[ar])
 AM_INIT_AUTOMAKE
 
 dnl now libxml2
