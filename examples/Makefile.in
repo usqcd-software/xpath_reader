@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(basic_xpath_reader_test_SOURCES) $(basic_xpath_reader_test2_SOURCES) $(basic_xpath_reader_test3_SOURCES) $(print_xpath_SOURCES) $(schema_writer_test_SOURCES) $(simple_schema_writer_test_SOURCES) $(simple_writer_test_SOURCES) $(struct_writer_test_SOURCES) $(xpath_reader_test_SOURCES)
+SOURCES = $(basic_xpath_reader_test_SOURCES) $(basic_xpath_reader_test2_SOURCES) $(basic_xpath_reader_test3_SOURCES) $(print_nodeset_SOURCES) $(print_xpath_SOURCES) $(schema_writer_test_SOURCES) $(simple_schema_writer_test_SOURCES) $(simple_writer_test_SOURCES) $(struct_writer_test_SOURCES) $(xpath_reader_test_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -36,7 +36,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = print_xpath$(EXEEXT)
+bin_PROGRAMS = print_xpath$(EXEEXT) print_nodeset$(EXEEXT)
 check_PROGRAMS = basic_xpath_reader_test$(EXEEXT) \
 	basic_xpath_reader_test2$(EXEEXT) \
 	basic_xpath_reader_test3$(EXEEXT) xpath_reader_test$(EXEEXT) \
@@ -69,6 +69,9 @@ am_basic_xpath_reader_test3_OBJECTS =  \
 basic_xpath_reader_test3_OBJECTS =  \
 	$(am_basic_xpath_reader_test3_OBJECTS)
 basic_xpath_reader_test3_LDADD = $(LDADD)
+am_print_nodeset_OBJECTS = print_nodeset.$(OBJEXT)
+print_nodeset_OBJECTS = $(am_print_nodeset_OBJECTS)
+print_nodeset_LDADD = $(LDADD)
 am_print_xpath_OBJECTS = print_xpath.$(OBJEXT)
 print_xpath_OBJECTS = $(am_print_xpath_OBJECTS)
 print_xpath_LDADD = $(LDADD)
@@ -99,15 +102,15 @@ CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 SOURCES = $(basic_xpath_reader_test_SOURCES) \
 	$(basic_xpath_reader_test2_SOURCES) \
-	$(basic_xpath_reader_test3_SOURCES) $(print_xpath_SOURCES) \
-	$(schema_writer_test_SOURCES) \
+	$(basic_xpath_reader_test3_SOURCES) $(print_nodeset_SOURCES) \
+	$(print_xpath_SOURCES) $(schema_writer_test_SOURCES) \
 	$(simple_schema_writer_test_SOURCES) \
 	$(simple_writer_test_SOURCES) $(struct_writer_test_SOURCES) \
 	$(xpath_reader_test_SOURCES)
 DIST_SOURCES = $(basic_xpath_reader_test_SOURCES) \
 	$(basic_xpath_reader_test2_SOURCES) \
-	$(basic_xpath_reader_test3_SOURCES) $(print_xpath_SOURCES) \
-	$(schema_writer_test_SOURCES) \
+	$(basic_xpath_reader_test3_SOURCES) $(print_nodeset_SOURCES) \
+	$(print_xpath_SOURCES) $(schema_writer_test_SOURCES) \
 	$(simple_schema_writer_test_SOURCES) \
 	$(simple_writer_test_SOURCES) $(struct_writer_test_SOURCES) \
 	$(xpath_reader_test_SOURCES)
@@ -196,6 +199,8 @@ AM_LDFLAGS = -L@top_builddir@/lib
 LDADD = -lXPathReader -lxmlWriter @LIBS@ @LIBXML2_LIBS@ 
 print_xpath_SOURCES = print_xpath.cc
 print_xpath_DEPENDENCIES = build_lib
+print_nodeset_SOURCES = print_nodeset.cc
+print_nodeset_DEPENDENCIES = build_lib
 basic_xpath_reader_test_SOURCES = basic_xpath_reader_test.cc
 basic_xpath_reader_test_DEPENDENCIES = build_lib
 basic_xpath_reader_test2_SOURCES = basic_xpath_reader_test2.cc
@@ -280,6 +285,9 @@ basic_xpath_reader_test2$(EXEEXT): $(basic_xpath_reader_test2_OBJECTS) $(basic_x
 basic_xpath_reader_test3$(EXEEXT): $(basic_xpath_reader_test3_OBJECTS) $(basic_xpath_reader_test3_DEPENDENCIES) 
 	@rm -f basic_xpath_reader_test3$(EXEEXT)
 	$(CXXLINK) $(basic_xpath_reader_test3_LDFLAGS) $(basic_xpath_reader_test3_OBJECTS) $(basic_xpath_reader_test3_LDADD) $(LIBS)
+print_nodeset$(EXEEXT): $(print_nodeset_OBJECTS) $(print_nodeset_DEPENDENCIES) 
+	@rm -f print_nodeset$(EXEEXT)
+	$(CXXLINK) $(print_nodeset_LDFLAGS) $(print_nodeset_OBJECTS) $(print_nodeset_LDADD) $(LIBS)
 print_xpath$(EXEEXT): $(print_xpath_OBJECTS) $(print_xpath_DEPENDENCIES) 
 	@rm -f print_xpath$(EXEEXT)
 	$(CXXLINK) $(print_xpath_LDFLAGS) $(print_xpath_OBJECTS) $(print_xpath_LDADD) $(LIBS)
@@ -308,6 +316,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basic_xpath_reader_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basic_xpath_reader_test2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basic_xpath_reader_test3.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/print_nodeset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/print_xpath.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schema_writer_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_schema_writer_test.Po@am__quote@
