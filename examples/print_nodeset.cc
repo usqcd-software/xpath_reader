@@ -9,7 +9,7 @@
 using namespace std;
 using namespace XMLXPathReader;
 
-#undef USE_BASIC
+#define USE_BASIC
 
 int main(int argc, char *argv[])
 {
