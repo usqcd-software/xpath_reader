@@ -1,4 +1,4 @@
-AC_INIT(xpath_reader, 1.3, bj@ph.ed.ac.uk)
+AC_INIT(xpath_reader, 1.3.2, bj@ph.ed.ac.uk)
 AC_CONFIG_AUX_DIR(config)
 AC_PROG_CXX(g++)
 AC_PROG_RANLIB()
