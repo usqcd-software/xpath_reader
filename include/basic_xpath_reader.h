@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: basic_xpath_reader.h,v 1.16 2005-10-17 04:30:11 edwards Exp $
+/* $Id: basic_xpath_reader.h,v 1.17 2006-02-23 15:41:08 bjoo Exp $
  *
  * File: basic_xpath_reader.h
  *
@@ -260,6 +260,27 @@ namespace XMLXPathReader {
 
     void registerNamespace(const std::string& prefix, const std::string& uri);
 
+    template<typename T>
+    void set(const std::string& xpath, const T& to_set)
+    {
+      std::ostringstream to_set_string;
+      
+      to_set_string << to_set;
+      try {
+	setPrimitiveString(xpath, to_set_string.str());
+      }
+      catch(const std::string& e) {
+	std::cerr << e;
+	throw e;
+      }
+    }
+
+    /* Set a primitive string
+     * Locate an xpath defined node and destructively change its content
+     * to the string in result
+     */
+    void setPrimitiveString(const std::string& xpath, const std::string& result);
+
   private:
     /* Stuff needed by libxml */
     XMLDocument* docref;
@@ -292,6 +313,7 @@ namespace XMLXPathReader {
      * is freed (hopefully properly).
      */
     void getPrimitiveString(const std::string& xpath, std::string& result);
+
 
     /* Get the attribute std::string from a query, that satisfies 
        checkQuery, and is a unique element node ( but doesn't have to have 

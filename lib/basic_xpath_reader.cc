@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader.cc,v 1.17 2005-10-17 04:30:11 edwards Exp $
+/* ID: $Id: basic_xpath_reader.cc,v 1.18 2006-02-23 15:41:08 bjoo Exp $
  *
  * File: basic_xpath_reader.cc
  * 
@@ -997,6 +997,45 @@ void BasicXPathReader::getPrimitiveString(const std::string& xpath, std::string&
     result = "";
   }
       
+  // Clean up post query
+  if ( query_result != NULL ) { 
+    xmlXPathFreeObject(query_result);
+    query_result = NULL;
+  }
+}
+
+
+/* Get a std::string from a path expression that matches checkQueryPrimitive.
+ * this std::string is copied into result, after which the query result
+ * is freed (hopefully properly).
+ */
+void BasicXPathReader::setPrimitiveString(const std::string& xpath, const std::string& to_write){
+  std::ostringstream error_message;
+
+  // Run the query 
+  try { 
+    evaluateXPath(xpath);
+  }
+  catch(const std::string& e) {
+    std::cerr << e;
+    throw e;
+  }
+      
+  try { 
+    checkQueryPrimitive(xpath);
+  }
+  catch(const std::string& e) {
+    throw e;
+  }
+      
+  xmlChar *new_content = xmlCharStrndup(to_write.c_str(), to_write.length());
+
+  // get the "simple" content as a std::string.
+  xmlNodeSetContent(query_result->nodesetval->nodeTab[0],new_content);
+  
+    
+  xmlFree(new_content);
+
   // Clean up post query
   if ( query_result != NULL ) { 
     xmlXPathFreeObject(query_result);
