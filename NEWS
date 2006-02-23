@@ -1,7 +1,6 @@
-16-Oct-2005 -- Robert Edwards
+23-Feb-2006 -- Balint Joo
 
-	Version 1.3.2. Moved function BasicXPathReader inline functions to lib file
-        to save code space. No change in functionality.
+	Version 1.4.0. Added set function to reader.
 
 16-May-2005 -- Robert Edwards
 
