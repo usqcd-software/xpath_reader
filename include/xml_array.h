@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array.h,v 1.2 2005-05-17 00:41:58 edwards Exp $ 
+/* $Id: xml_array.h,v 1.3 2006-03-15 19:17:06 kostas Exp $ 
  *
  * File: xml_array.h
  *
@@ -453,6 +453,115 @@ namespace XMLArray {
     }
     return c;
   }
+
+ //! log
+  template< typename T> 
+  inline
+  Array<T> log(const Array<T>& a)
+  {
+    Array<T> c(a.size()); 
+    for(int i(0);i<a.size();i++)
+    {
+      T tt;
+      tt = a[i];
+      c[i] = std::log(a[i]);
+    }
+    return c;
+  }
+
+ //! sin
+  template< typename T> 
+  inline
+  Array<T> sin(const Array<T>& a)
+  {
+    Array<T> c(a.size()); 
+    for(int i(0);i<a.size();i++)
+    {
+      T tt;
+      tt = a[i];
+      c[i] = std::sin(a[i]);
+    }
+    return c;
+  }
+
+
+ //! cos
+  template< typename T> 
+  inline
+  Array<T> cos(const Array<T>& a)
+  {
+    Array<T> c(a.size()); 
+    for(int i(0);i<a.size();i++)
+    {
+      T tt;
+      tt = a[i];
+      c[i] = std::cos(a[i]);
+    }
+    return c;
+  }
+
+ //! tan
+  template< typename T> 
+  inline
+  Array<T> tan(const Array<T>& a)
+  {
+    Array<T> c(a.size()); 
+    for(int i(0);i<a.size();i++)
+    {
+      T tt;
+      tt = a[i];
+      c[i] = std::tan(a[i]);
+    }
+    return c;
+  }
+
+//! asin
+  template< typename T> 
+  inline
+  Array<T> asin(const Array<T>& a)
+  {
+    Array<T> c(a.size()); 
+    for(int i(0);i<a.size();i++)
+    {
+      T tt;
+      tt = a[i];
+      c[i] = std::asin(a[i]);
+    }
+    return c;
+  }
+
+
+ //! acos
+  template< typename T> 
+  inline
+  Array<T> acos(const Array<T>& a)
+  {
+    Array<T> c(a.size()); 
+    for(int i(0);i<a.size();i++)
+    {
+      T tt;
+      tt = a[i];
+      c[i] = std::acos(a[i]);
+    }
+    return c;
+  }
+
+ //! atan
+  template< typename T> 
+  inline
+  Array<T> atan(const Array<T>& a)
+  {
+    Array<T> c(a.size()); 
+    for(int i(0);i<a.size();i++)
+    {
+      T tt;
+      tt = a[i];
+      c[i] = std::atan(a[i]);
+    }
+    return c;
+  }
+
+
 
   //! norm2 of an array
   template< typename T> 
