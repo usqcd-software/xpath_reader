@@ -86,6 +86,14 @@ namespace XMLWriterAPI {
     template< typename T>
       void
       writePrimitive(const T& output);
+
+
+    void
+      writePrimitive(const float& output);
+    
+
+    void
+      writePrimitive(const double& output);
   };
 
 };

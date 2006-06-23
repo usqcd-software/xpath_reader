@@ -1,7 +1,9 @@
 
 #include <xml_simplewriter.h>
+#include <iostream>
 #include <sstream>
-
+#include <iomanip>
+#include <ios>
 
 #define INDENT_SPACES ((unsigned int)2)
 
@@ -183,13 +185,13 @@ XMLSimpleWriter::write(const unsigned long int& output)
 void 
 XMLSimpleWriter::write(const float& output)
 {
-  writePrimitive<float>(output);
+  writePrimitive(output);
 }
 
 void 
 XMLSimpleWriter::write(const double& output)
 {
-  writePrimitive<double>(output);
+  writePrimitive(output);
 }
 
 void
@@ -198,6 +200,52 @@ XMLSimpleWriter::write(const bool& output)
   writePrimitive<bool>(output);
 }
 
+using namespace std;
+void
+XMLSimpleWriter::writePrimitive(const float& output)
+{
+  std::ostream& os=getOstream();
+
+  if( ! namestack.empty() ) { 
+    streamsize initPrec = os.precision();
+
+    os.precision(11);
+    os << scientific << output;
+    os.precision(initPrec);
+    
+  }
+  else { 
+    std::ostringstream error_string;
+    error_string << "Attempt to write before opening root tag" << std::endl;
+    throw error_string.str();
+  }
+
+  primitive_last = true;
+  os.flush();
+}
+
+
+void
+XMLSimpleWriter::writePrimitive(const double& output)
+{
+  std::ostream& os=getOstream();
+
+  if( ! namestack.empty() ) { 
+    streamsize initPrec = os.precision();
+    os.precision(23);
+    os << scientific << output;
+    os.precision(initPrec);
+
+  }
+  else { 
+    std::ostringstream error_string;
+    error_string << "Attempt to write before opening root tag" << std::endl;
+    throw error_string.str();
+  }
+
+  primitive_last = true;
+  os.flush();
+}
 
 template < typename T > 
 void
@@ -218,6 +266,7 @@ XMLSimpleWriter::writePrimitive(const T& output)
   primitive_last = true;
   os.flush();
 }
+
 
 void 
 XMLSimpleWriter::writeXML(const std::string& output)
