@@ -207,7 +207,10 @@ XMLSimpleWriter::writePrimitive(const float& output)
   std::ostream& os=getOstream();
 
   if( ! namestack.empty() ) { 
+    streamsize initPrec = os.precision();
+    os.precision(6);
     os << output;
+    os.precision(initPrec);
   }
   else { 
     std::ostringstream error_string;
