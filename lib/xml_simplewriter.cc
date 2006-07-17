@@ -208,7 +208,7 @@ XMLSimpleWriter::writePrimitive(const float& output)
 
   if( ! namestack.empty() ) { 
     streamsize initPrec = os.precision();
-    os.precision(6);
+    os.precision(7);
     os << output;
     os.precision(initPrec);
   }
