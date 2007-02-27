@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array2d.h,v 1.1 2006-09-10 22:10:44 edwards Exp $
+/* $Id: xml_array2d.h,v 1.2 2007-02-27 16:22:37 edwards Exp $
  *
  * File: xml_array2d.h
  *
@@ -51,6 +51,10 @@ namespace XMLArray
     //! Size of array
     int size1() const {return n1;}
     int size2() const {return n2;}
+
+    //! Another variant on the size of the 2d array
+    int nrows() const {return n2;}
+    int ncols() const {return n1;}
 
     //! Equal operator uses underlying = of T
     Array2d<T>& operator=(const Array2d<T>& s1)
