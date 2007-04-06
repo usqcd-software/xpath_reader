@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array.h,v 1.4 2007-04-06 05:00:04 kostas Exp $ 
+/* $Id: xml_array.h,v 1.5 2007-04-06 05:02:31 kostas Exp $ 
  *
  * File: xml_array.h
  *
@@ -573,50 +573,6 @@ namespace XMLArray {
       nn += a[i]*a[i];
 
     return nn;
-  }
-
-  template<typename T>
-  inline Array<T> zero(const Array<T>& l){
-    Array<T> r(l.size());
-    for(int i(0);i<l.size();i++){
-      r[i].resize(l[i].size());
-      r[i] = 0.0 ;
-    }
-    return r ;
-  }
-
-  template<typename T>
-  inline Array<T> one(const Array<T>& l){
-    Array<T> r(l.size());
-    for(int i(0);i<l.size();i++)
-      r[i] = 1.0 ;
-    return r ;
-  }
-
-  template<typename T>
-  inline Array<T> copyval(const Array<T>& l, double& v){
-    Array<T> r(l.size());
-    for(int i(0);i<l.size();i++)
-      r[i] = v ;
-    return r ;
-  }
-
-  // assume T is a simple type double complex etc.
-  template<typename T>
-  inline T zero(const T& l){
-    T r = 0.0 ;
-    return r ;
-  }
-
-  template<typename T>
-  inline T one(const T& l){
-    T r = 1.0 ;
-    return r ;
-  }
-  template<typename T>
-  inline T copyval(const T& l,double& v){
-    T r = v ;
-    return r ;
   }
 
 } // namespace XMLArray
