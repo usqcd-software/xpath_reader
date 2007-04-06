@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array2d.h,v 1.2 2007-02-27 16:22:37 edwards Exp $
+/* $Id: xml_array2d.h,v 1.3 2007-04-06 05:00:04 kostas Exp $
  *
  * File: xml_array2d.h
  *
@@ -66,11 +66,26 @@ namespace XMLArray
 	return *this;
       }
 
+    //! Equal operator uses underlying = of T
+    template<typename T1>
+    Array<T>& operator=(const T1& s1)
+      {
+	if (F == 0)
+	{
+	  std::cerr << "left hand side not initialized\n";
+	  exit(1);
+	}
+    
+	for(int i=0; i < sz; ++i)
+	  F[i] = s1;
+	return *this;
+      }
+  
     //! Add-replace on each element
     /*! Uses underlying += */
-    Array<T>& operator+=(const Array<T>& s1)
+    Array2d<T>& operator+=(const Array2d<T>& s1)
       {
-	if (size1() != s1.size() || size2() != s1.size2())
+	if (size1() != s1.size1() || size2() != s1.size2())
 	{
 	  std::cerr << "Sizes incompatible in +=\n";
 	  exit(1);
@@ -83,9 +98,9 @@ namespace XMLArray
   
     //! Subtract-replace on each element
     /*! Uses underlying -= */
-    Array<T>& operator-=(const Array<T>& s1)
+    Array2d<T>& operator-=(const Array2d<T>& s1)
       {
-	if (size1() != s1.size() || size2() != s1.size2())
+	if (size1() != s1.size1() || size2() != s1.size2())
 	{
 	  std::cerr << "Sizes incompatible in -=\n";
 	  exit(1);
@@ -98,9 +113,9 @@ namespace XMLArray
   
     //! Mult-replace on each element
     /*! Uses underlying *= */
-    Array<T>& operator*=(const Array<T>& s1)
+    Array2d<T>& operator*=(const Array2d<T>& s1)
       {
-	if (size1() != s1.size() || size2() != s1.size2())
+	if (size1() != s1.size1() || size2() != s1.size2())
 	{
 	  std::cerr << "Sizes incompatible in *=\n";
 	  exit(1);
@@ -113,9 +128,9 @@ namespace XMLArray
   
     //! Divide-replace on each element
     /*! Uses underlying /= */
-    Array<T>& operator/=(const Array<T>& s1)
+    Array2d<T>& operator/=(const Array2d<T>& s1)
       {
-	if (size1() != s1.size() || size2() != s1.size2())
+	if (size1() != s1.size1() || size2() != s1.size2())
 	{
 	  std::cerr << "Sizes incompatible in /=\n";
 	  exit(1);
@@ -128,7 +143,7 @@ namespace XMLArray
 
     //! multiply   all ellements
     /*! Uses the underlying *= */
-    Array<T>& operator*=(const T& s1)
+    Array2d<T>& operator*=(const T& s1)
       {
 	for(int i=0; i < sz; ++i)
 	  F[i] *= s1 ;
@@ -137,7 +152,7 @@ namespace XMLArray
 
     //! devide  all ellements
     /*! Uses the underlying *= */
-    Array<T>& operator/=(const T& s1)
+    Array2d<T>& operator/=(const T& s1)
       {
 	for(int i=0; i < sz; ++i)
 	  F[i] /= s1 ;
@@ -146,7 +161,7 @@ namespace XMLArray
 
     //!unary -
     /*! Uses the underlying unary - */
-    Array<T>& operator-()
+    Array2d<T>& operator-()
       {
 	for(int i=0; i < sz; ++i)
 	  F[i] = -F[i] ;
