@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array2d.h,v 1.3 2007-04-06 05:00:04 kostas Exp $
+/* $Id: xml_array2d.h,v 1.4 2007-04-07 04:44:24 kostas Exp $
  *
  * File: xml_array2d.h
  *
@@ -68,7 +68,7 @@ namespace XMLArray
 
     //! Equal operator uses underlying = of T
     template<typename T1>
-    Array<T>& operator=(const T1& s1)
+    Array2d<T>& operator=(const T1& s1)
       {
 	if (F == 0)
 	{
