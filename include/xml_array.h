@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array.h,v 1.5 2007-04-06 05:02:31 kostas Exp $ 
+/* $Id: xml_array.h,v 1.6 2007-04-11 18:01:12 kostas Exp $ 
  *
  * File: xml_array.h
  *
@@ -17,8 +17,11 @@
 
 #include <iostream>
 #include <cmath>
+//#include "xml_array2d.h"
 
 namespace XMLArray {
+
+  template<typename T> class Array2d ;
 
   //! Container for a multi-dimensional 1D array
   template<typename T> class Array
@@ -70,7 +73,11 @@ namespace XMLArray {
 	  F[i] = s1.F[i];
 	return *this;
       }
-  
+
+    //! Equal operator: converts a 2d array to an 1d
+    // can't make this work... although I  the 1d to 2d conversion works
+    //Array<T>& operator=(const Array2d<T>& s1) ;
+    
     //! Equal operator uses underlying = of T
     template<typename T1>
     Array<T>& operator=(const T1& s1)

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array2d.h,v 1.4 2007-04-07 04:44:24 kostas Exp $
+/* $Id: xml_array2d.h,v 1.5 2007-04-11 18:01:12 kostas Exp $
  *
  * File: xml_array2d.h
  *
@@ -17,6 +17,7 @@
 
 namespace XMLArray 
 {
+  
   //! Container for a Array-dimensional 2D array
   template<typename T> class Array2d
   {
@@ -66,6 +67,23 @@ namespace XMLArray
 	return *this;
       }
 
+    /**/
+     //! Equal operator uses underlying = of T
+    Array2d<T>& operator=(const Array<T>& s1)
+      {
+	int ss = int(sqrt(s1.size())) ;
+	if( ss*ss != s1.size()){
+	  std::cerr<<"Conversion to square matrix failed. ";
+	  std::cerr<<"Array size: "<<s1.size()<<std::endl;
+	}
+	resize(ss, ss);   // always resize
+	
+	for(int i=0; i < sz; ++i)
+	  F[i] = s1[i];
+
+	return *this;
+      }
+    /**/
     //! Equal operator uses underlying = of T
     template<typename T1>
     Array2d<T>& operator=(const T1& s1)
@@ -187,6 +205,22 @@ namespace XMLArray
     T *F;
   };
 
+  //! Equal operator: converts a 2d array to an 1d
+  // can't make this work... although I  the 1d to 2d conversion works
+  /**
+  template<typename T> Array<T>& Array<T>::operator=(const Array2d<T>& s1) 
+  {
+    int ss = s1.size1()*s1.size2() ;
+    resize(ss);   // always resize                                          
+
+    for(int i=0; i < s1.size1(); ++i)
+      for(int j=0; j < s1.size2(); ++j)
+	F(i+n1*j) = s1(j,i);
+ 
+
+    return *this;
+  }
+  **/
 } // namespace XMLArray
 
 #endif
