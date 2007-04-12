@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array2d.h,v 1.5 2007-04-11 18:01:12 kostas Exp $
+/* $Id: xml_array2d.h,v 1.6 2007-04-12 04:46:46 kostas Exp $
  *
  * File: xml_array2d.h
  *
@@ -67,7 +67,7 @@ namespace XMLArray
 	return *this;
       }
 
-    /**/
+    /**
      //! Equal operator uses underlying = of T
     Array2d<T>& operator=(const Array<T>& s1)
       {
@@ -83,7 +83,7 @@ namespace XMLArray
 
 	return *this;
       }
-    /**/
+    **/
     //! Equal operator uses underlying = of T
     template<typename T1>
     Array2d<T>& operator=(const T1& s1)
@@ -197,6 +197,15 @@ namespace XMLArray
 
     //! Subscripting: pointer to row j
     inline const T* operator[](const int j) const {return F+n1*j;}
+
+    inline operator T*()
+    {
+      return F;
+    }
+    inline operator const T*() const
+    {
+      return F;
+    }
 
   private:
     int n1;
