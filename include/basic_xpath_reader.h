@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: basic_xpath_reader.h,v 1.17 2006-02-23 15:41:08 bjoo Exp $
+/* $Id: basic_xpath_reader.h,v 1.18 2007-07-17 16:56:10 bjoo Exp $
  *
  * File: basic_xpath_reader.h
  *
@@ -113,12 +113,9 @@
 
 namespace XMLXPathReader {
 
-  static bool xpath_is_initialised = false;
+  extern bool xpath_is_initialised;
 
-  static void initXPath(void) {
-    xmlXPathInit();
-    xpath_is_initialised = true;
-  }
+  void initXPath(void); 
 
   class NameSpace { 
   public: 

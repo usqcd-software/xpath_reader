@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader.cc,v 1.18 2006-02-23 15:41:08 bjoo Exp $
+/* ID: $Id: basic_xpath_reader.cc,v 1.19 2007-07-17 16:56:10 bjoo Exp $
  *
  * File: basic_xpath_reader.cc
  * 
@@ -16,8 +16,17 @@
 /* need this for iostream and string */
 using namespace std;
 
+namespace XMLXPathReader {
+  bool xpath_is_initialised = false;
+
+  void initXPath(void) {
+    xmlXPathInit();
+    xpath_is_initialised = true;
+  }
+};
 /* This is our namespace */
 using namespace XMLXPathReader;
+
 
 BasicXPathReader::BasicXPathReader(void) 
 {
