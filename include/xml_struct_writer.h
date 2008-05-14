@@ -7,6 +7,7 @@
 #include <string>
 
 #include <xml_array_type.h>
+#include <cstdlib>
 
 #define INDENT_SPACES 2
 
