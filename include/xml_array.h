@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array.h,v 1.6 2007-04-11 18:01:12 kostas Exp $ 
+/* $Id: xml_array.h,v 1.7 2008-06-17 14:23:56 bjoo Exp $ 
  *
  * File: xml_array.h
  *
@@ -17,6 +17,8 @@
 
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
+
 //#include "xml_array2d.h"
 
 namespace XMLArray {
@@ -46,7 +48,7 @@ namespace XMLArray {
 	if (ns1 < 0) 
 	{
 	  std::cerr<<"invalid resize in 1d\n";
-	  exit(1);
+	  std::exit(1);
 	}
 	delete[] F; 
 	n1 = ns1;
@@ -54,7 +56,7 @@ namespace XMLArray {
 	F = new(std::nothrow) T[n1];
 	if( F == 0x0 ) { 
 	  std::cerr << "Failed to resize array" << std::endl << std::flush;
-	  exit(-1);
+	  std::exit(-1);
 	}
       
       }
@@ -85,7 +87,7 @@ namespace XMLArray {
 	if (F == 0)
 	{
 	  std::cerr << "left hand side not initialized\n";
-	  exit(1);
+	  std::exit(1);
 	}
     
 	for(int i=0; i < n1; ++i)
@@ -99,7 +101,7 @@ namespace XMLArray {
 	if (F == 0)
 	{
 	  std::cerr << "left hand side not initialized\n";
-	  exit(1);
+	  std::exit(1);
 	}
     
 	for(int i=0; i < n1; ++i)
@@ -114,7 +116,7 @@ namespace XMLArray {
 	if (size() != s1.size())
 	{
 	  std::cerr << "Sizes incompatible in +=\n";
-	  exit(1);
+	  std::exit(1);
 	}
     
 	for(int i=0; i < n1; ++i)
@@ -129,7 +131,7 @@ namespace XMLArray {
 	if (size() != s1.size())
 	{
 	  std::cerr << "Sizes incompatible in -=\n";
-	  exit(1);
+	  std::exit(1);
 	}
     
 	for(int i=0; i < n1; ++i)
@@ -144,7 +146,7 @@ namespace XMLArray {
 	if (size() != s1.size())
 	{
 	  std::cerr << "Sizes incompatible in *=\n";
-	  exit(1);
+	  std::exit(1);
 	}
     
 	for(int i=0; i < n1; ++i)
@@ -159,7 +161,7 @@ namespace XMLArray {
 	if (size() != s1.size())
 	{
 	  std::cerr << "Sizes incompatible in /=\n";
-	  exit(1);
+	  std::exit(1);
 	}
     
 	for(int i=0; i < n1; ++i)
