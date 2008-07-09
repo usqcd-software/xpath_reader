@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array.h,v 1.7 2008-06-17 14:23:56 bjoo Exp $ 
+/* $Id: xml_array.h,v 1.8 2008-07-09 12:06:38 edwards Exp $ 
  *
  * File: xml_array.h
  *
@@ -207,11 +207,12 @@ namespace XMLArray {
 
     //!unary -
     /*! Uses the underlying unary - */
-    Array<T>& operator-()
+    Array<T> operator-()
       {
+	Array<T> d(n1);
 	for(int i=0; i < n1; ++i)
-	  F[i] = -F[i] ;
-	return *this;
+	  d.F[i] = -F[i] ;
+	return d;
       }
 
     //! Return ref to a column slice

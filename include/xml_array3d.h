@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array3d.h,v 1.1 2007-06-21 18:16:22 edwards Exp $
+/* $Id: xml_array3d.h,v 1.2 2008-07-09 12:06:38 edwards Exp $
  *
  * File: xml_array3d.h
  *
@@ -160,11 +160,12 @@ namespace XMLArray
 
     //!unary -
     /*! Uses the underlying unary - */
-    Array3d<T>& operator-()
+    Array3d<T> operator-()
       {
+	Array3d<T> d(n3,n2,n1);
 	for(int i=0; i < sz; ++i)
-	  F[i] = -F[i] ;
-	return *this;
+	  d.F[i] = -F[i] ;
+	return d;
       }
 
     //! Return ref to an element

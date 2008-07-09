@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array2d.h,v 1.6 2007-04-12 04:46:46 kostas Exp $
+/* $Id: xml_array2d.h,v 1.7 2008-07-09 12:06:38 edwards Exp $
  *
  * File: xml_array2d.h
  *
@@ -179,11 +179,12 @@ namespace XMLArray
 
     //!unary -
     /*! Uses the underlying unary - */
-    Array2d<T>& operator-()
+    Array2d<T> operator-()
       {
+	Array2d<T> d(n2,n1);
 	for(int i=0; i < sz; ++i)
-	  F[i] = -F[i] ;
-	return *this;
+	  d.F[i] = -F[i] ;
+	return d;
       }
 
     //! Return ref to an element
