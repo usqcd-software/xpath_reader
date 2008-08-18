@@ -84,7 +84,7 @@ void XMLSimpleWriter::dumpTag(const std::string& nsprefix,
   }
   
   std::string indent(indent_level*INDENT_SPACES, ' ');
-  os << std::endl <<  indent << "<" << qualified_tagname;
+  os << "\n" <<  indent << "<" << qualified_tagname;
   
   std::list<Attribute>::iterator the_iterator;
   for(the_iterator = al.begin(); the_iterator != al.end(); the_iterator++) {
@@ -103,8 +103,6 @@ void XMLSimpleWriter::dumpTag(const std::string& nsprefix,
     indent_level++;
   }
   
-  os.flush();
-
   if( doctag_written == false ) { 
     doctag_written = true; 
   }
@@ -124,7 +122,7 @@ void XMLSimpleWriter::closeTag(void)
 
     if(primitive_last == false) {
       std::string indent(indent_level*INDENT_SPACES, ' ');
-      os << std::endl << indent;
+      os << "\n" << indent;
     }
     os << "</" << qualified_tagname << ">" ;
   }
@@ -219,7 +217,6 @@ XMLSimpleWriter::writePrimitive(const float& output)
   }
 
   primitive_last = true;
-  os.flush();
 }
 
 
@@ -241,7 +238,6 @@ XMLSimpleWriter::writePrimitive(const double& output)
   }
 
   primitive_last = true;
-  os.flush();
 }
 
 template < typename T > 
@@ -261,7 +257,6 @@ XMLSimpleWriter::writePrimitive(const T& output)
   }
 
   primitive_last = true;
-  os.flush();
 }
 
 
@@ -271,17 +266,14 @@ XMLSimpleWriter::writeXML(const std::string& output)
   std::ostream& os=getOstream();
 
   // Should this have more checking, e.g. of primitive_last or doctag?
-  os << output << std::endl;
-  os.flush();
+  os << output << "\n";
 }
 
 void 
 XMLSimpleWriter::writePrologue(std::ostream& os) const
 {
-   os << "<?xml version=\"1.0\"?>" << std::endl;
-// os << "<!-- Written by XMLSimpleWriter class by Balint Joo -->";
-   os << std::endl;
-   os.flush();
+   os << "<?xml version=\"1.0\"?>" << "\n";
+   os << "\n";
 }
 
 
