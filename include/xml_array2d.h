@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array2d.h,v 1.7 2008-07-09 12:06:38 edwards Exp $
+/* $Id: xml_array2d.h,v 1.8 2008-10-08 03:32:04 edwards Exp $
  *
  * File: xml_array2d.h
  *
@@ -44,7 +44,7 @@ namespace XMLArray
 	sz = n1*n2; 
 	F = new(std::nothrow) T[sz];
 	if( F == 0x0 ) { 
-	  std::cerr << "Unable to new memory in Array2d::resize()\n";
+	  std::cerr << "Unable to new memory in Array2d::resize(): n_left= " << ns2 << " n_right= " << ns1 << "\n";
 	  exit(1);
 	}
       }
