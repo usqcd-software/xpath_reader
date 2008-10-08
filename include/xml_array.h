@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array.h,v 1.8 2008-07-09 12:06:38 edwards Exp $ 
+/* $Id: xml_array.h,v 1.9 2008-10-08 03:32:33 edwards Exp $ 
  *
  * File: xml_array.h
  *
@@ -205,16 +205,6 @@ namespace XMLArray {
 	return *this;
       }
 
-    //!unary -
-    /*! Uses the underlying unary - */
-    Array<T> operator-()
-      {
-	Array<T> d(n1);
-	for(int i=0; i < n1; ++i)
-	  d.F[i] = -F[i] ;
-	return d;
-      }
-
     //! Return ref to a column slice
     const T* slice() const {return F;}
   
@@ -329,6 +319,17 @@ namespace XMLArray {
   //---------------------------------------------------------------
   // Basic math support
   //
+  //!unary -
+  template< typename T> 
+  inline
+  Array<T> operator-(const Array<T>& a)
+  {
+    Array<T> d(a.size());
+    for(int i=0; i < d.size(); ++i)
+      d[i] = -a[i];
+    return d;
+  }
+
   //! add Arrays
   template< typename T> 
   inline
