@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array.h,v 1.9 2008-10-08 03:32:33 edwards Exp $ 
+/* $Id: xml_array.h,v 1.10 2009-03-05 04:19:13 edwards Exp $ 
  *
  * File: xml_array.h
  *
@@ -169,7 +169,52 @@ namespace XMLArray {
 	return *this;
       }
 
-    //! add to all ellements
+    //! And-replace on each element
+    /*! Uses underlying &= */
+    Array<T>& operator&=(const Array<T>& s1)
+      {
+	if (size() != s1.size())
+	{
+	  std::cerr << "Sizes incompatible in &=\n";
+	  std::exit(1);
+	}
+    
+	for(int i=0; i < n1; ++i)
+	  F[i] &= s1.F[i];
+	return *this;
+      }
+
+    //! Or-replace on each element
+    /*! Uses underlying |= */
+    Array<T>& operator|=(const Array<T>& s1)
+      {
+	if (size() != s1.size())
+	{
+	  std::cerr << "Sizes incompatible in |=\n";
+	  std::exit(1);
+	}
+    
+	for(int i=0; i < n1; ++i)
+	  F[i] |= s1.F[i];
+	return *this;
+      }
+
+    //! ^-replace on each element
+    /*! Uses underlying ^= */
+    Array<T>& operator^=(const Array<T>& s1)
+      {
+	if (size() != s1.size())
+	{
+	  std::cerr << "Sizes incompatible in ^=\n";
+	  std::exit(1);
+	}
+    
+	for(int i=0; i < n1; ++i)
+	  F[i] ^= s1.F[i];
+	return *this;
+      }
+
+    //! add to all elements
     /*! Uses the underlying += */
     Array<T>& operator+=(const T& s1)
       {
@@ -178,7 +223,7 @@ namespace XMLArray {
 	return *this;
       }
 
-    //! subtruct from all ellements
+    //! subtruct from all elements
     /*! Uses the underlying -= */
     Array<T>& operator-=(const T& s1)
       {
@@ -187,7 +232,7 @@ namespace XMLArray {
 	return *this;
       }
   
-    //! multiply   all ellements
+    //! multiply  all elements
     /*! Uses the underlying *= */
     Array<T>& operator*=(const T& s1)
       {
@@ -196,12 +241,39 @@ namespace XMLArray {
 	return *this;
       }
 
-    //! devide  all ellements
-    /*! Uses the underlying *= */
+    //! divide all elements
+    /*! Uses the underlying /= */
     Array<T>& operator/=(const T& s1)
       {
 	for(int i=0; i < n1; ++i)
 	  F[i] /= s1 ;
+	return *this;
+      }
+
+    //! and all elements
+    /*! Uses the underlying &= */
+    Array<T>& operator&=(const T& s1)
+      {
+	for(int i=0; i < n1; ++i)
+	  F[i] &= s1 ;
+	return *this;
+      }
+
+    //! or all elements
+    /*! Uses the underlying |= */
+    Array<T>& operator|=(const T& s1)
+      {
+	for(int i=0; i < n1; ++i)
+	  F[i] |= s1 ;
+	return *this;
+      }
+
+    //! ^ all elements
+    /*! Uses the underlying ^= */
+    Array<T>& operator^=(const T& s1)
+      {
+	for(int i=0; i < n1; ++i)
+	  F[i] ^= s1 ;
 	return *this;
       }
 
@@ -360,13 +432,43 @@ namespace XMLArray {
     return c;
   }
   
-  //!divide Arrays
+  //! divide Arrays
   template< typename T> 
   inline
   Array<T> operator/(const Array<T>& a, const Array<T>& b)
   {
     Array<T> c(a); 
     c/=b;
+    return c;
+  }
+
+  //! and Arrays
+  template< typename T> 
+  inline
+  Array<T> operator&(const Array<T>& a, const Array<T>& b)
+  {
+    Array<T> c(a); 
+    c&=b;
+    return c;
+  }
+
+  //! or Arrays
+  template< typename T> 
+  inline
+  Array<T> operator|(const Array<T>& a, const Array<T>& b)
+  {
+    Array<T> c(a); 
+    c|=b;
+    return c;
+  }
+
+  //! ^ Arrays
+  template< typename T> 
+  inline
+  Array<T> operator^(const Array<T>& a, const Array<T>& b)
+  {
+    Array<T> c(a); 
+    c^=b;
     return c;
   }
 
