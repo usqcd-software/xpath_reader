@@ -5,6 +5,7 @@ AC_PROG_RANLIB()
 AC_CHECK_TOOL(AR,ar,[ar])
 AM_INIT_AUTOMAKE
 
+AC_CONFIG_HEADERS([include/xpath_reader_config_internal.h])
 dnl now libxml2
 AC_ARG_WITH(libxml2,
   AC_HELP_STRING(
