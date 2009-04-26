@@ -89,7 +89,7 @@ namespace XMLArray
   
     //! Subtract-replace on each element
     /*! Uses underlying -= */
-    Array4d<T>& operator-=(const Array3d<T>& s1)
+    Array4d<T>& operator-=(const Array4d<T>& s1)
       {
 	if (size1() != s1.size1() || size2() != s1.size2() || size3() != s1.size3()  || size4() != s1.size4() )
 	{
@@ -104,7 +104,7 @@ namespace XMLArray
   
     //! Mult-replace on each element
     /*! Uses underlying *= */
-    Array4d<T>& operator*=(const Array3d<T>& s1)
+    Array4d<T>& operator*=(const Array4d<T>& s1)
       {
 	if (size1() != s1.size1() || size2() != s1.size2() || size3() != s1.size3()  || size4() != s1.size4() )
 	{
@@ -119,7 +119,7 @@ namespace XMLArray
   
     //! Divide-replace on each element
     /*! Uses underlying /= */
-    Array4d<T>& operator/=(const Array3d<T>& s1)
+    Array4d<T>& operator/=(const Array4d<T>& s1)
       {
 	if (size1() != s1.size1() || size2() != s1.size2() || size3() != s1.size3()  || size4() != s1.size4()  )
 	{
