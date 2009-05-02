@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array3d.h,v 1.2 2008-07-09 12:06:38 edwards Exp $
+/* $Id: xml_array3d.h,v 1.3 2009-05-02 03:59:54 edwards Exp $
  *
  * File: xml_array3d.h
  *
@@ -71,7 +71,7 @@ namespace XMLArray
       {
 	if (F == 0)
 	{
-	  std::cerr << "left hand side not initialized\n";
+	  std::cerr << __func__ << ": Array3d - left hand side not initialized\n";
 	  exit(1);
 	}
     
@@ -160,7 +160,7 @@ namespace XMLArray
 
     //!unary -
     /*! Uses the underlying unary - */
-    Array3d<T> operator-()
+    Array3d<T> operator-() const
       {
 	Array3d<T> d(n3,n2,n1);
 	for(int i=0; i < sz; ++i)
@@ -193,6 +193,109 @@ namespace XMLArray
     int sz;
     T *F;
   };
+
+
+  //---------------------------------------------------------------
+  // Basic math support
+  //
+  //!unary -
+  template< typename T> 
+  inline
+  Array3d<T> operator-(const Array3d<T>& a)
+  {
+    Array3d<T> d(a);
+    d *= T(-1);
+    return d;
+  }
+
+  //! add Arrays
+  template< typename T> 
+  inline
+  Array3d<T> operator+(const Array3d<T>& a, const Array3d<T>& b)
+  {
+    Array3d<T> c(a); 
+    c+=b;
+    return c;
+  }
+  
+  //! subtract Arrays
+  template< typename T> 
+  inline
+  Array3d<T> operator-(const Array3d<T>& a, const Array3d<T>& b)
+  {
+    Array3d<T> c(a); 
+    c-=b;
+    return c;
+  }
+  
+  //! scalar + Array
+  template< typename T> 
+  inline
+  Array3d<T> operator+(const T& s, const Array3d<T>& a)
+  {
+    Array3d<T> c(a); 
+    c+=s;
+    return c;
+  }
+
+  //! Array + scalar
+  template< typename T> 
+  inline
+  Array3d<T> operator+(const Array3d<T>& a, const T& s)
+  {
+    Array3d<T> c(a); 
+    c+=s;
+    return c;
+  }
+  
+  //! scalar - Array
+  template< typename T> 
+  inline
+  Array3d<T> operator-(const T& s, const Array3d<T>& a)
+  {
+    Array3d<T> c(-a); 
+    c+=s;
+    return c;
+  }
+  //! Array - scalar
+  template< typename T> 
+  inline
+  Array3d<T> operator-(const Array3d<T>& a, const T& s)
+  {
+    Array3d<T> c(a); 
+    c-=s;
+    return c;
+  }
+
+  //! scalar * Array
+  template< typename T> 
+  inline
+  Array3d<T> operator*(const T& s, const Array3d<T>& a)
+  {
+    Array3d<T> c(a);
+    c*=s;
+    return c;
+  }
+
+  //! Array * scalar
+  template< typename T> 
+  inline
+  Array3d<T> operator*(const Array3d<T>& a, const T& s)
+  {
+    Array3d<T> c(a); 
+    c*=s;
+    return c;
+  }
+
+  //! Array / scalar
+  template< typename T> 
+  inline
+  Array3d<T> operator/(const Array3d<T>& a, const T& s)
+  {
+    Array3d<T> c(a); 
+    c/=s;
+    return c;
+  }
 
 
 } // namespace XMLArray
