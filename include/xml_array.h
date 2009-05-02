@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array.h,v 1.10 2009-03-05 04:19:13 edwards Exp $ 
+/* $Id: xml_array.h,v 1.11 2009-05-02 03:59:33 edwards Exp $ 
  *
  * File: xml_array.h
  *
@@ -86,7 +86,7 @@ namespace XMLArray {
       {
 	if (F == 0)
 	{
-	  std::cerr << "left hand side not initialized\n";
+	  std::cerr << __func__ << ": Array - left hand side not initialized in T1=s1\n";
 	  std::exit(1);
 	}
     
@@ -100,7 +100,7 @@ namespace XMLArray {
       {
 	if (F == 0)
 	{
-	  std::cerr << "left hand side not initialized\n";
+	  std::cerr << __func__ << ": Array - left hand side not initialized = s1[]\n";
 	  std::exit(1);
 	}
     
