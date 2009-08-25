@@ -1,4 +1,4 @@
-/* ID: $Id: basic_xpath_reader.cc,v 1.19 2007-07-17 16:56:10 bjoo Exp $
+/* ID: $Id: basic_xpath_reader.cc,v 1.20 2009-08-25 15:41:16 colin Exp $
  *
  * File: basic_xpath_reader.cc
  * 
@@ -118,6 +118,7 @@ void BasicXPathReader::open(const std::string& filename)
     query_result = (xmlXPathObjectPtr) NULL;
     xmlDocPtr doc = docref->getDoc();
     xpath_context = xmlXPathNewContext(doc);
+    xpath_context->node = xmlDocGetRootElement(doc);
     // snarfNamespaces(xmlDocGetRootElement(doc), xpath_context);
   }
   catch ( const std::string& e ) 
@@ -136,7 +137,7 @@ void BasicXPathReader::open(std::istream &is)
   //
   // case i) Reader is already open.
   close();
-      
+
   // Ok, open the document
   try 
   {
@@ -154,6 +155,7 @@ void BasicXPathReader::open(std::istream &is)
     query_result = (xmlXPathObjectPtr) NULL;
     xmlDocPtr doc = docref->getDoc();
     xpath_context = xmlXPathNewContext(doc);
+    xpath_context->node = xmlDocGetRootElement(doc);
     // snarfNamespaces(xmlDocGetRootElement(doc), xpath_context);
   }
   catch ( const std::string& e ) 
