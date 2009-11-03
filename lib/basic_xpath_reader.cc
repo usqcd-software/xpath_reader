@@ -317,7 +317,22 @@ void BasicXPathReader::get(const std::string& xpath, double& result)
 
 void BasicXPathReader::get(const std::string& xpath, bool& result) 
 {
-  getPrimitive<bool>(xpath, result, "bool");
+  //  getPrimitive<bool>(xpath, result, "bool");
+  std::string result_string;
+  getPrimitiveString(xpath, result_string);
+  if ( result_string == "true" ) { 
+    result = true;
+  }
+  else if( result_string == "false") { 
+    result = false;
+  }
+  else { 
+    std::ostringstream error_message;
+      
+    error_message << "Failed to extract boolean from result string "<< result_string <<" on xpath quary " << xpath << endl;
+    throw error_message.str();
+  }
+          
 }
 
 /* So should these, especially if you read the introductory comments */
@@ -796,11 +811,12 @@ BasicXPathReader::getPrimitive(const std::string& xpath, T& result, const char* 
   // Force the istringstream to throw an exception if it fails 
   // (to convert the string to our type)
   is.exceptions(std::ios::failbit);
-	
+  is.setf(ios_base::boolalpha);
+
   // Try to read the type from the istringstream. 
   //   bool-s should be "true" or "false" stirngs 
   try { 
-    is >> std::boolalpha >> result;
+    is  >> result;
   }
   catch(std::istringstream::failure e) { 
     error_message << "XPath Query: " << xpath 

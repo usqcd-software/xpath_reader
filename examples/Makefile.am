@@ -11,7 +11,7 @@ LDADD = -lXPathReader -lxmlWriter @LIBS@ @LIBXML2_LIBS@
 bin_PROGRAMS = print_xpath print_nodeset replace_xpath
 
 check_PROGRAMS=basic_xpath_reader_test  basic_xpath_reader_test2 \
-	basic_xpath_reader_test3 \
+	basic_xpath_reader_test3 xpath_reader_bool_test \
 	xpath_reader_test simple_writer_test simple_schema_writer_test \
 	schema_writer_test struct_writer_test
 
@@ -34,6 +34,9 @@ basic_xpath_reader_test3_DEPENDENCIES = build_lib
 
 xpath_reader_test_SOURCES=xpath_reader_test.cc
 xpath_reader_test_DEPENDENCIES= build_lib
+
+xpath_reader_bool_test_SOURCES=xpath_reader_bool_test.cc
+xpath_reader_bool_test_DEPENDENCIES= build_lib
 
 simple_writer_test_SOURCES=simple_writer_test.cc
 simple_writer_test_DEPENDENCIES = build_lib
