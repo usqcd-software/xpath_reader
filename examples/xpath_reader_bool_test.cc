@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
   // Get the reader
   BasicXPathReader reader;
   // Dummy xml file
-  std::string xml_input="<?xml version=\"1.0\"?><foo><bar>true</bar></foo>";
+  std::string xml_input="<?xml version=\"1.0\"?><foo><bar>true</bar><bar2>true false true</bar2></foo>";
   // Turn into an instream
   std::istringstream input_is(xml_input);
 
