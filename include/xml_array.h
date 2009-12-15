@@ -47,7 +47,7 @@ namespace XMLArray {
       {
 	if (ns1 < 0) 
 	{
-	  std::cerr<<"invalid resize in 1d\n";
+	  std::cerr<<"Invalid resize in 1d: size= " << ns1 << std::endl;
 	  std::exit(1);
 	}
 	delete[] F; 
@@ -55,7 +55,7 @@ namespace XMLArray {
      
 	F = new(std::nothrow) T[n1];
 	if( F == 0x0 ) { 
-	  std::cerr << "Failed to resize array" << std::endl << std::flush;
+	  std::cerr << "Failed to resize array: n1= " << n1 << std::endl;
 	  std::exit(-1);
 	}
       
