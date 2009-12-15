@@ -45,7 +45,7 @@ namespace XMLArray
 	sz = n1*n2*n3; 
 	F = new(std::nothrow) T[sz];
 	if( F == 0x0 ) { 
-	  std::cerr << "Unable to new memory in Array3d::resize()\n";
+          std::cerr << "Unable to new memory in Array3d::resize(): n_left= " << ns3 << " n_middle= " << ns2 << " n_right= " << ns1 << "\n";
 	  exit(1);
 	}
       }
