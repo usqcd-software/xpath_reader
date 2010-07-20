@@ -1,6 +1,5 @@
 // -*- C++ -*-
-/* $Id: xml_array3d.h,v 1.3 2009-05-02 03:59:54 edwards Exp $
- *
+/*
  * File: xml_array3d.h
  *
  * Description: 
@@ -54,6 +53,11 @@ namespace XMLArray
     int size1() const {return n1;}
     int size2() const {return n2;}
     int size3() const {return n3;}
+
+    //! Another variant on the size of the 3d array
+    int leftSize()   const {return n3;}
+    int middleSize() const {return n2;}
+    int rightSize()  const {return n1;}
 
     //! Equal operator uses underlying = of T
     Array3d<T>& operator=(const Array3d<T>& s1)
