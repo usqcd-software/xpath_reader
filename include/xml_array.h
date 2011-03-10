@@ -305,7 +305,7 @@ namespace XMLArray {
   template<typename T>
   inline Array<T> concat(const Array<T>& l, const Array<T>& r)
   {
-    Array<int> nz(l.size() + r.size());
+    Array<T> nz(l.size() + r.size());
     int j = 0;
     for(int i=0; i < l.size(); ++i)
       nz[j++] = l[i];
