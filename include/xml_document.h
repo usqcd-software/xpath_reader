@@ -51,7 +51,7 @@ namespace XMLXPathReader {
       }
                                                                                 
       // Now parse the document from memory.
-      doc = xmlParseMemory(xml_document.c_str(), xml_document.length());
+      doc = xmlParseMemory(xml_document.c_str(), xml_document.length()+1);
                                                                                 
       // Ensure success
       if ( doc == (xmlDocPtr)NULL ) {

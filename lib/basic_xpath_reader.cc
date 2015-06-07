@@ -240,9 +240,6 @@ void BasicXPathReader::close(void)
       delete docref;
     }
 	
-    // We are now officially not open 
-    docref = 0x0;
-	
     // Clean up any left-over query result
     if ( query_result != NULL ) { 
       xmlXPathFreeObject(query_result);
@@ -253,6 +250,9 @@ void BasicXPathReader::close(void)
       xmlXPathFreeContext(xpath_context);
     }
 
+    // We are now officially not open 
+    docref = 0x0;
+	
     nslist.clear();
   }
   else {
