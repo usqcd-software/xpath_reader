@@ -1,3 +1,5 @@
+// -*- C++ -*-
+
 #ifndef XML_DOCUMENT_H
 #define XML_DOCUMENT_H
 
@@ -21,7 +23,7 @@ namespace XMLXPathReader {
   private:
     XMLDocument() {}
     XMLDocument(const XMLDocument& in) {}
-    XMLDocument& operator=(const XMLDocument& in) {}
+    XMLDocument& operator=(const XMLDocument& in) {return *this;}
 
   public:
                                                                                 

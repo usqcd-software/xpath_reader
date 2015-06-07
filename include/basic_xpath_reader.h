@@ -1,5 +1,6 @@
 // -*- C++ -*-
-/* $Id: basic_xpath_reader.h,v 1.18 2007-07-17 16:56:10 bjoo Exp $
+/*! \file
+ * \brief Primary include file for xpath_reader lib
  *
  * File: basic_xpath_reader.h
  *
@@ -143,8 +144,8 @@ namespace XMLXPathReader {
     // disallow default copying
     BasicXPathReader(BasicXPathReader& old) {}
     BasicXPathReader(const BasicXPathReader& old) {}
-    BasicXPathReader& operator=(BasicXPathReader& old) {}
-    BasicXPathReader& operator=(const BasicXPathReader& old) {}
+    BasicXPathReader& operator=(BasicXPathReader& old) {return *this;}
+    BasicXPathReader& operator=(const BasicXPathReader& old) {return *this;}
 
   public:
 
