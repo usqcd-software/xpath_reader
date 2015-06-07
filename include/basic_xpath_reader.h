@@ -139,18 +139,25 @@ namespace XMLXPathReader {
 
   class BasicXPathReader 
   {
+  private:
+    // disallow default copying
+    BasicXPathReader(BasicXPathReader& old) {}
+    BasicXPathReader(const BasicXPathReader& old) {}
+    BasicXPathReader& operator=(BasicXPathReader& old) {}
+    BasicXPathReader& operator=(const BasicXPathReader& old) {}
+
   public:
 
     /* The meaning of these should be clear to you */
     // BasicXPathReader(XMLDocument& doc);
 
-    BasicXPathReader(void);
+    BasicXPathReader();
 
     BasicXPathReader(std::istream& is);
     
     BasicXPathReader(const std::string& filename);
     
-    ~BasicXPathReader(void);
+    ~BasicXPathReader();
     
     /* This should let you clone an XPath reader */
     BasicXPathReader(BasicXPathReader& old, const std::string& xpath);

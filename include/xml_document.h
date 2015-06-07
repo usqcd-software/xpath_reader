@@ -15,7 +15,14 @@
 namespace XMLXPathReader {
 
   class XMLDocument {
+
     friend class BasicXPathReader;
+
+  private:
+    XMLDocument() {}
+    XMLDocument(const XMLDocument& in) {}
+    XMLDocument& operator=(const XMLDocument& in) {}
+
   public:
                                                                                 
     XMLDocument(const std::string& filename) {
@@ -62,7 +69,7 @@ namespace XMLXPathReader {
       xmlKeepBlanksDefault(0);
     }
 
-    ~XMLDocument(void)
+    ~XMLDocument()
     {
 	if( doc != 0x0 ) xmlFreeDoc(doc);
 	doc = 0x0;

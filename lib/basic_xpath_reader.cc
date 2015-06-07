@@ -224,6 +224,15 @@ void BasicXPathReader::close(void)
 { 
   if( docref != 0x0 ) 
   {
+    // Clean up any left-over query result
+    if ( query_result != NULL ) {
+      xmlXPathFreeObject(query_result);
+    }
+
+    // Clean up the XPath content
+    if( xpath_context != NULL ) {
+      xmlXPathFreeContext(xpath_context);
+    }
     // Reader is already open. 
     // We detach from the current document:
 	
@@ -240,19 +249,10 @@ void BasicXPathReader::close(void)
       delete docref;
     }
 	
-    // Clean up any left-over query result
-    if ( query_result != NULL ) { 
-      xmlXPathFreeObject(query_result);
-    }
-	
-    // Clean up the XPath content
-    if( xpath_context != NULL ) { 
-      xmlXPathFreeContext(xpath_context);
-    }
-
     // We are now officially not open 
     docref = 0x0;
 	
+
     nslist.clear();
   }
   else {
