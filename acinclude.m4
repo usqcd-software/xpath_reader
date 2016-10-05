@@ -40,7 +40,7 @@ dnl - set the parallel compiler environment
       ], [
         int argc ; char **argv ;
         xmlDocPtr doc;
-	char *docname="foo";	
+	const char *docname="foo";	
 	doc = xmlParseFile(docname);
         $3 ;
         $4 ;
