@@ -374,7 +374,7 @@ namespace XMLXPathReader {
 
   };
 
-};
+}
 
 #endif  
   

@@ -170,7 +170,7 @@ namespace XMLWriterAPI {
     }
   };
   
-};
+}
 
 #endif
 

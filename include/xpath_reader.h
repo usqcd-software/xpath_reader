@@ -403,7 +403,7 @@ namespace XMLXPathReader {
   };
 
 
-};
+}
 
     
 

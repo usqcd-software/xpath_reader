@@ -20,7 +20,7 @@ echo ${LIBXML2_HOME}
 if test "X${LIBXML2_HOME}X" = "XX" ; then
   AC_PATH_PROG(LIBXML2_CONFIG, [xml2-config], [])
 else
-  AC_SUBST(LIBXML2_CONFIG, [${LIBXML2_HOME}])
+  AC_SUBST(LIBXML2_CONFIG, [${LIBXML2_HOME}/bin/xml2-config])
 fi
 
 if test "X${LIBXML2_CONFIG}X" = "XX" ; then

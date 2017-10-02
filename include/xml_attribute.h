@@ -67,5 +67,5 @@ namespace XMLWriterAPI {
   // Define attribute list...
   typedef std::list<Attribute> AttributeList;
 
-};
+}
 #endif

@@ -153,7 +153,7 @@ namespace XMLStructWriterAPI {
     
   };
 
-};
+}
 
 
 

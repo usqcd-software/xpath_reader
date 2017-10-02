@@ -112,6 +112,6 @@ namespace XMLXPathReader {
     xmlDocPtr doc;
   };
 
-};
+}
 
 #endif

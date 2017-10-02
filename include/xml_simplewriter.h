@@ -96,7 +96,7 @@ namespace XMLWriterAPI {
       writePrimitive(const double& output);
   };
 
-};
+}
 
 #endif
 

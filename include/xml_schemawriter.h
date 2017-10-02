@@ -42,7 +42,7 @@ namespace XMLWriterAPI {
 						
   };
  
-};
+}
 
 
 #endif

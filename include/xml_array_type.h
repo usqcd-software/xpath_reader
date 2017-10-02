@@ -3,6 +3,6 @@
 
 namespace XMLStructWriterAPI {
 enum ArrayType { SIMPLE_INT, SIMPLE_FLOAT, SIMPLE_BOOL, SIMPLE_STRING, STRUCT};
-};
+}
 
 #endif

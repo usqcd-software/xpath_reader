@@ -144,7 +144,7 @@ namespace XMLWriterAPI {
     XMLSimpleWriter& instance;
     XMLSimpleWriter& schema;
   };
-};
+}
 
 
 #endif
