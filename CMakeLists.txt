@@ -26,25 +26,9 @@ add_subdirectory(examples)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include
     	DESTINATION ${CMAKE_INSTALL_PREFIX}
     	FILES_MATCHING PATTERN "*.h")
- 		
-# write the file exporting the targets
-install(EXPORT XPathReader
-        FILE XPathReaderTargets.cmake
-        NAMESPACE XPathReader::
-        DESTINATION lib/cmake/XPathReader
-) 
  
-# Create a Package Config file.
-configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
-  "${CMAKE_CURRENT_BINARY_DIR}/XPathReaderConfig.cmake"
-  INSTALL_DESTINATION lib/cmake/XPathReader
-)
 
-install(FILES
-          "${CMAKE_CURRENT_BINARY_DIR}/XPathReaderConfig.cmake"
-        DESTINATION lib/cmake/XPathReader
-) 
-       
+    
 # generate the version file for the config file
 write_basic_package_version_file(
   "${CMAKE_CURRENT_BINARY_DIR}/XPathReaderConfigVersion.cmake"
@@ -52,8 +36,15 @@ write_basic_package_version_file(
   COMPATIBILITY AnyNewerVersion
 )
 
+# Create a Package Config file.
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
+  "${CMAKE_CURRENT_BINARY_DIR}/XPathReaderConfig.cmake"
+  INSTALL_DESTINATION lib/cmake/XPathReader
+)
+   
 # install it
 install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/XPathReaderConfig.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/XPathReaderConfigVersion.cmake
   DESTINATION lib/cmake/XPathReader
 )

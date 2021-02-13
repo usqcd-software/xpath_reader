@@ -1,10 +1,19 @@
+cmake_minimum_required(VERSION 3.17)
+PROJECT(XPathReaderExamples VERSION 1.0.0
+	LANGUAGES CXX)
+
+get_directory_property(hasParent PARENT_DIRECTORY)
+if(NOT hasParent)
+	find_package(XPathReader REQUIRED)
+endif()
+
 macro(add_example EXECNAME)
     # Make the executable
     add_executable(${EXECNAME} ${EXECNAME}.cc)
 
     # Add on the libs, transitively
     # add libxml2 libx
-    target_link_libraries(${EXECNAME} XPathReader xmlWriter)
+    target_link_libraries(${EXECNAME} XPathReader::XPathReader XPathReader::xmlWriter)
 	install( TARGETS ${EXECNAME} DESTINATION bin )
 endmacro()
 
