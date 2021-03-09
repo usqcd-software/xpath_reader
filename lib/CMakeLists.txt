@@ -4,7 +4,7 @@ target_include_directories( XPathReader PUBLIC
 						   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../include>
 						   $<INSTALL_INTERFACE:include> )
 target_link_libraries(XPathReader LibXml2::LibXml2)
-						   
+
 add_library(xmlWriter xml_simplewriter.cc attribute.cc xml_struct_writer.cc)
 target_include_directories( xmlWriter PUBLIC
 						   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
@@ -12,6 +12,12 @@ target_include_directories( xmlWriter PUBLIC
 						   $<INSTALL_INTERFACE:include> )
 target_link_libraries(xmlWriter LibXml2::LibXml2)
 
+if( XPathReader_SANITIZER_OPTS )
+  target_compile_options(XPathReader PUBLIC ${XPathreader_SANITIZER_OPTS})
+  target_link_options(XPathReader PUBLIC ${XPathReader_SANITIZER_OPTS})
+  target_compile_options(xmlWriter PUBLIC ${XPathReader_SANITIZER_OPTS})
+  target_link_options(xmlWriter PUBLIC ${XPathReader_SANITIZER_OPTS})
+endif() 
 
 install(TARGETS XPathReader xmlWriter
 		EXPORT XPathReaderTargets
