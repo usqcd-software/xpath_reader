@@ -13,9 +13,9 @@ target_include_directories( xmlWriter PUBLIC
 target_link_libraries(xmlWriter LibXml2::LibXml2)
 
 if( XPathReader_SANITIZER_OPTS )
-  target_compile_options(XPathReader PUBLIC ${XPathreader_SANITIZER_OPTS})
+  target_compile_options(XPathReader PRIVATE ${XPathreader_SANITIZER_OPTS})
   target_link_options(XPathReader PUBLIC ${XPathReader_SANITIZER_OPTS})
-  target_compile_options(xmlWriter PUBLIC ${XPathReader_SANITIZER_OPTS})
+  target_compile_options(xmlWriter PRIVATE ${XPathReader_SANITIZER_OPTS})
   target_link_options(xmlWriter PUBLIC ${XPathReader_SANITIZER_OPTS})
 endif() 
 

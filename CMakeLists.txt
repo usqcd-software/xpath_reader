@@ -22,13 +22,9 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/include/xpath_reader_config_internal.
 
 # Deal with Sanitizer
 if( XPathReader_ENABLE_SANITIZERS )
-  if( ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 3.1)
-     OR ( CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 4.8) )
-      message(STATUS "XPathReader: Setting Sanitizer options")
-      set(XPathReader_SANITIZER_OPTS "-fsanitize=address,undefined")
-  else()
-    message(STATUS "Don't know how to enable sanitizers for ${CMAKE_CXX_COMPILER_ID}... Ignoring")
-  endif()
+  include(cmake/CheckSanitizeOpts.cmake)
+  check_sanitizer_options( "${XPathReader_ENABLE_SANITIZERS}" XPathReader_SANITIZER_OPTS )
+  message(STATUS "XPathReader: Setting Sanitizer options: ${XPathReader_SANITIZER_OPTS}")
 endif()    
 
  
