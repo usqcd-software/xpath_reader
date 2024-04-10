@@ -31,7 +31,7 @@ namespace XMLXPathReader {
       refcount = 0;
                                                                                 
       // Call libxml2 to parse a file into a document.
-      doc = xmlParseFile(filename.c_str());
+      doc = xmlReadFile(filename.c_str(), 0, XML_PARSE_NOBLANKS);
                                                                                 
       // Check the document is non null
       if ( doc == (xmlDocPtr)NULL ) {
@@ -40,7 +40,6 @@ namespace XMLXPathReader {
                                                                                 
         // Stuff to do with dumping back node selections
       xmlIndentTreeOutput = 1;
-      xmlKeepBlanksDefault(0);
     }
                                                                                 
     XMLDocument(std::istream& is) {
@@ -60,7 +59,7 @@ namespace XMLXPathReader {
       }
                                                                                 
       // Now parse the document from memory.
-      doc = xmlParseMemory(xml_document.c_str(), xml_document.length()+1);
+      doc = xmlReadMemory(xml_document.c_str(), xml_document.length(), NULL, NULL, XML_PARSE_NOBLANKS);
                                                                                 
       // Ensure success
       if ( doc == (xmlDocPtr)NULL ) {
@@ -68,7 +67,6 @@ namespace XMLXPathReader {
       }
                                                                                 
       xmlIndentTreeOutput = 1;
-      xmlKeepBlanksDefault(0);
     }
 
     ~XMLDocument()

@@ -20,7 +20,8 @@ namespace XMLXPathReader {
   bool xpath_is_initialised = false;
 
   void initXPath(void) {
-    xmlXPathInit();
+    LIBXML_TEST_VERSION;
+    xmlInitParser();
     xpath_is_initialised = true;
   }
 };
