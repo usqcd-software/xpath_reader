@@ -1,4 +1,4 @@
-AC_INIT(xpath_reader, 1.4.0, bj@ph.ed.ac.uk)
+AC_INIT([xpath_reader],[1.4.0],[bj@ph.ed.ac.uk])
 AC_CONFIG_AUX_DIR(config)
 AC_PROG_CXX(g++)
 AC_PROG_RANLIB()
@@ -8,10 +8,8 @@ AM_INIT_AUTOMAKE
 AC_CONFIG_HEADERS([include/xpath_reader_config_internal.h])
 dnl now libxml2
 AC_ARG_WITH(libxml2,
-  AC_HELP_STRING(
-    [--with-libxml2=DIR],
-    [Build on top of libxml2 where libxml2 is installed in DIR]
-  ),
+  AS_HELP_STRING([--with-libxml2=DIR],[Build on top of libxml2 where libxml2 is installed in DIR
+  ]),
   [LIBXML2_HOME="$with_libxml2"]
 )
 
