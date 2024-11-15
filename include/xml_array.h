@@ -15,9 +15,10 @@
 #ifndef XML_ARRAY_H
 #define XML_ARRAY_H
 
-#include <iostream>
 #include <cmath>
 #include <cstdlib>
+#include <iostream>
+#include <vector>
 
 //#include "xml_array2d.h"
 
@@ -40,6 +41,24 @@ namespace XMLArray {
       
 	for(int i=0; i < n1; ++i)
 	  F[i] = s.F[i];
+      }
+
+    //! Copy constructor
+    Array(const std::vector<T>& s): n1(s.size()), F(0)
+      {
+	resize(n1);
+      
+	for(int i=0; i < n1; ++i)
+	  F[i] = s[i];
+      }
+
+    //! Conversion
+    operator std::vector<T>() const
+      {
+        std::vector<T> r(n1);
+	for(int i=0; i < n1; ++i)
+	  r[i] = F[i];
+        return r;
       }
   
     //! Allocate mem for the array
