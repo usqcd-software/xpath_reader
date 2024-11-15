@@ -24,7 +24,7 @@ dnl - so input variables can be CXXFLAGS, LDFLAGS or LIBS
     pac_LIBXML2_CXXFLAGS="$1"
     pac_LIBXML2_LIBS="$2"
     AC_LANG_SAVE
-    AC_LANG_CPLUSPLUS
+    AC_LANG([C++])
 dnl - save the original environment
     pac_saved_CXXFLAGS="$CXXFLAGS"
     pac_saved_LDFLAGS="$LDFLAGS"
@@ -33,21 +33,18 @@ dnl - set the parallel compiler environment
     CXXFLAGS="$CXXFLAGS $pac_LIBXML2_CXXFLAGS"
     LDFLAGS="$LDFLAGS $pac_LIBXML2_LDFLAGS"
     LIBS="$LIBS $pac_LIBXML2_LIBS"
-    AC_TRY_LINK(
-      [
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
         #include <libxml/xmlmemory.h>
 	#include <libxml/parser.h>
-      ], [
+      ]], [[
         int argc ; char **argv ;
         xmlDocPtr doc;
 	const char *docname="foo";	
 	doc = xmlParseFile(docname);
         $3 ;
         $4 ;
-      ],
-      [pac_libxml2_working=yes],
-      [pac_libxml2_working=no]
-    )
+      ]])],[pac_libxml2_working=yes],[pac_libxml2_working=no
+    ])
     CXXFLAGS="$pac_saved_CXXFLAGS"
     LDFLAGS="$pac_saved_LDFLAGS"
     LIBS="$pac_saved_LIBS"
