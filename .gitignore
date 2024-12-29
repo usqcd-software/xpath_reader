@@ -1,5 +1,6 @@
 aclocal.m4
 configure
+configure~
 examples/Makefile.in
 include/Makefile.in
 lib/Makefile.in
