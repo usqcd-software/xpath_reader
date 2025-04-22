@@ -339,7 +339,7 @@ namespace XMLArray {
   template<typename T>
   inline bool operator==(const Array<T>& n1, const Array<T>& n2)
   {
-    if (n1.size() == 0 || n1.size() != n2.size())
+    if (n1.size() != n2.size())
       return false;
     
     for(int i=0; i < n1.size(); ++i)
@@ -349,13 +349,6 @@ namespace XMLArray {
     return true;
   }
   
-  //! Check if two Array's are no the same
-  template<typename T>
-  inline bool operator!=(const Array<T>& n1, const Array<T>& n2)
-  {
-    return ! (n1 == n2);
-  }
-
   //! a < b
   /*! This definition follows that of string comparison */
   template<typename T>
